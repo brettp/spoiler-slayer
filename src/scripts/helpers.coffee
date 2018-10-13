@@ -39,6 +39,7 @@ loadUserPreferences = (callback) =>
         showSpecificWordEnabled: false
         extraWordsToBlock: ''
         destroySpoilers: false
+        warnBeforeReveal: true
       }
     else
       @userPreferences = JSON.parse userPreferencesJSONString
@@ -46,6 +47,7 @@ loadUserPreferences = (callback) =>
       @userPreferences.showSpecificWordEnabled = false unless @userPreferences.hasOwnProperty 'showSpecificWordEnabled'
       @userPreferences.extraWordsToBlock       = ''    unless @userPreferences.hasOwnProperty 'extraWordsToBlock'
       @userPreferences.destroySpoilers         = false unless @userPreferences.hasOwnProperty 'destroySpoilers'
+      @userPreferences.warnBeforeReveal        = false unless @userPreferences.hasOwnProperty 'warnBeforeReveal'
     callback() if callback
 
 
@@ -55,7 +57,7 @@ loadUserPreferences = (callback) =>
 # --------------------------------------- #
 
 # Change this to 'true' to enable debugging output
-GAME_O_SPOILERS_DEBUG_MODE = false
+GAME_O_SPOILERS_DEBUG_MODE = true
 
 if GAME_O_SPOILERS_DEBUG_MODE
   log_timeout = undefined

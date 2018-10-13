@@ -1,5 +1,48 @@
+$trans-dur: .5s
+
+.glamoured-active
+  cursor: no-drop !important
+  transition-duration: $trans-dur
+  filter: blur(1.5em)
+
+  &:hover
+    filter: blur(.5em)
+    transition-duration: $trans-dur
+
+.revealed
+  transition-duration: $trans-dur
+
+// .glamoured-active
+//   transition-duration: $trans-dur
+//   filter: blur(1.5em)
+
+.spoiler-info
+  transition-property: opacity
+  transition-duration: $trans-dur
+  position: absolute
+  font-size: 1.25em
+  color: black
+  filter: drop-shadow(0 0 .5em #ffffff00)
+  padding: 1em
+  text-align: center
+  margin: auto
+  min-width: fit-content
+  border-radius: 4px
+  z-index: 999999
+  animation: fade-in
+  opacity: 1
+
+@keyframes fade-in
+  from
+    opacity: 0
+  to
+    opacity: 1
+
+.spoiler-info.revealed
+  opacity: 0 !important
+
 .spoiler-glamour
-  font-family: "Lancelot", "Segoe UI", "Lucida Grande", Tahoma, serif
+  font-family: "Lucida Grande", Tahoma, serif
   position: absolute
   width: 100%
   height: 100%
@@ -8,25 +51,14 @@
   padding: 6px 10px 0px 10px
   box-sizing: border-box
   z-index: 100
-  background: black !important
-  color: white  !important
   cursor: not-allowed  !important
   overflow: hidden !important
-  -webkit-transition: height 2450ms ease-in, top 2450ms ease-in
-  -moz-transition: height 2450ms ease-in, top 2450ms ease-in
-  -o-transition: height 2450ms ease-in, top 2450ms ease-in
-  -ms-transition: height 2450ms ease-in, top 2450ms ease-in
-  transition: height 2450ms ease-in, top 2450ms ease-in
+
   &.revealed
     height: 0%
     top: 100%
     h3
       opacity: 0 !important
-      -webkit-transition: opacity 1700ms ease-in
-      -moz-transition: opacity 1700ms ease-in
-      -o-transition: opacity 1700ms ease-in
-      -ms-transition: opacity 1700ms ease-in
-      transition: opacity 1700ms ease-in
   &.small h3
     font-size: 18px !important
     line-height: 18px !important
@@ -52,8 +84,8 @@
     line-height: 35px !important
     padding-left: 16px
   &:hover
-    background: rgb(71, 24, 24)
-    opacity: 0.95
+    // background: rgb(71, 24, 24)
+    // opacity: 0.95
     .spoiler-obituary
       opacity: 0.8
     .click-to-view-spoiler
@@ -78,15 +110,9 @@ article.item
   right: 10px
   font-size: 14px
   font-family: monospace
-  transition: opacity 250ms ease-out
   opacity: 0
   &.show
     opacity: 1
-
-
-.glamoured
-  position: relative
-
 
 // Feedly specific
 .u0Entry.glamoured

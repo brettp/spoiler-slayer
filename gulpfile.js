@@ -17,10 +17,10 @@ var tinylr     = require('tiny-lr');
 // Copy static folders to build directory
 gulp.task('update-static', function() {
 
-  del('build/*/assets/fonts/*');
-  gulp.src('src/assets/fonts/**')
-      .pipe(gulp.dest('build/chrome/assets/fonts'))
-      .pipe(gulp.dest('build/firefox/assets/fonts'));
+  // del('build/*/assets/fonts/*');
+  // gulp.src('src/assets/fonts/**')
+  //     .pipe(gulp.dest('build/chrome/assets/fonts'))
+  //     .pipe(gulp.dest('build/firefox/assets/fonts'));
 
   del('build/*/assets/icons/*');
   gulp.src('src/assets/icons/**')
@@ -43,7 +43,7 @@ gulp.task('update-static', function() {
              .pipe(jsontf(function(data, file) {
                data.applications = {
                  "gecko": {
-                   "id": "gameofspoils@stu-blair.github.io"
+                   "id": "gameofspoilslite@brettp.github.io"
                  }
                };
                return data;
@@ -76,7 +76,7 @@ gulp.task('coffee', function() {
 gulp.task('sass', function () {
   del('build/*/styles/*.css');
   gulp.src('src/styles/*.sass')
-    .pipe(sass({outputStyle: 'compressed'}))
+    .pipe(sass({outputStyle: 'expanded'}))
     .pipe(gulp.dest('build/chrome/styles'))
     .pipe(gulp.dest('build/firefox/styles'));
 });

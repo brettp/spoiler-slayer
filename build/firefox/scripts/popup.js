@@ -7,12 +7,13 @@ document.addEventListener('DOMContentLoaded', (function(_this) {
     _this.blockingEnabledToggle = document.getElementById('blocking-enabled-toggle');
     _this.showSpecificWordToggle = document.getElementById('show-specific-word-toggle');
     _this.destroySpoilersToggle = document.getElementById('destroy-spoilers-toggle');
+    _this.warnBeforeReveal = document.getElementById('warn-before-reveal-toggle');
     _this.extraWordsHolder = document.getElementById('extra-words-to-block');
     _this.blockingEnabledToggle.addEventListener('change', storeUserPreferences);
     _this.showSpecificWordToggle.addEventListener('change', storeUserPreferences);
     _this.destroySpoilersToggle.addEventListener('change', storeUserPreferences);
+    _this.warnBeforeReveal.addEventListener('change', storeUserPreferences);
     _this.extraWordsHolder.addEventListener('keyup', storeUserPreferences);
-    $('.onoffswitch-switch').css('background-image', 'url("assets/images/targaryen.png")');
     loadUserPreferencesAndUpdate();
     return setTimeout((function() {
       return chrome.runtime.sendMessage({
@@ -33,6 +34,7 @@ loadUserPreferencesAndUpdate = (function(_this) {
       _this.blockingEnabledToggle.checked = _this.userPreferences.blockingEnabled;
       _this.showSpecificWordToggle.checked = _this.userPreferences.showSpecificWordEnabled;
       _this.destroySpoilersToggle.checked = _this.userPreferences.destroySpoilers;
+      _this.warnBeforeReveal.checked = _this.userPreferences.warnBeforeReveal;
       return _this.extraWordsHolder.value = _this.userPreferences.extraWordsToBlock;
     });
   };
@@ -46,6 +48,7 @@ storeUserPreferences = (function(_this) {
       blockingEnabled: _this.blockingEnabledToggle.checked,
       showSpecificWordEnabled: _this.showSpecificWordToggle.checked,
       destroySpoilers: _this.destroySpoilersToggle.checked,
+      warnBeforeReveal: _this.warnBeforeReveal.checked,
       extraWordsToBlock: _this.extraWordsHolder.value
     });
     cl("Storing user preferences: " + data);
@@ -65,19 +68,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 });
 
 updateSessionSpoilersBlocked = function() {
-  var _gaq, newText;
+  var newText;
   newText = sessionSpoilersBlocked + " spoilers prevented in this session.";
-  document.getElementById('num-spoilers-prevented').textContent = newText;
-  _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-64072033-1']);
-  _gaq.push(['_trackPageview']);
-  return (function() {
-    var ga, s;
-    ga = document.createElement('script');
-    ga.type = 'text/javascript';
-    ga.async = true;
-    ga.src = 'https://ssl.google-analytics.com/ga.js';
-    s = document.getElementsByTagName('script')[0];
-    return s.parentNode.insertBefore(ga, s);
-  })();
+  return document.getElementById('num-spoilers-prevented').textContent = newText;
 };

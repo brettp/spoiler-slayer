@@ -1,4 +1,4 @@
-var $document, exileTraitorousSpoiler, first_feed_elem_text, getDeathName, incrementBadgeNumber, initialize, initiateSpoilerBlocking, num_feed_elems, searchForAndBlockSpoilers, settings;
+var $document, blockElement, first_feed_elem_text, incrementBadgeNumber, initialize, initiateSpoilerBlocking, num_feed_elems, searchForAndBlockSpoilers, settings;
 
 first_feed_elem_text = null;
 
@@ -11,7 +11,8 @@ this.reddit_mode = false;
 settings = {
   show_specific_words: true,
   spoiler_words_regex: null,
-  execute_trailors: false
+  destroy_spoilers: false,
+  warn_before_reveal: false
 };
 
 $document = $(document);
@@ -23,7 +24,8 @@ $document.ready(function() {
     return function(response) {
       var extra_words_to_block;
       settings.show_specific_words = response.showSpecificWordEnabled;
-      settings.execute_trailors = response.destroySpoilers;
+      settings.destroy_spoilers = response.destroySpoilers;
+      settings.warn_before_reveal = response.warnBeforeReveal;
       extra_words_to_block = response.extraWordsToBlock.split(',').map(function(word) {
         return word.trim().escapeRegex();
       }).filter(function(word) {
@@ -41,10 +43,6 @@ incrementBadgeNumber = function() {
   return chrome.runtime.sendMessage({
     incrementBadge: true
   }, (function() {}));
-};
-
-getDeathName = function() {
-  return DEATH_NAMES[Math.floor(Math.random() * DEATH_NAMES.length)];
 };
 
 initiateSpoilerBlocking = function(selector_string, remove_parent) {
@@ -79,39 +77,52 @@ searchForAndBlockSpoilers = (function(_this) {
         }
         matchedSpoiler = this.textContent.match(settings.spoiler_words_regex);
         if (matchedSpoiler !== null) {
-          return exileTraitorousSpoiler($(this), matchedSpoiler[0]);
+          return blockElement($(this), matchedSpoiler[0]);
         }
       });
     }
   };
 })(this);
 
-exileTraitorousSpoiler = function($traitor, dark_words_of_spoilage) {
-  var $glamour, capitalized_spoiler_words, glamour_string, specific_words;
+blockElement = function($element, blocked_word) {
+  var $info, capitalized_spoiler_words, pos;
   incrementBadgeNumber();
-  if (settings.execute_trailors) {
-    $traitor.remove();
+  if (settings.destroy_spoilers) {
+    $element.remove;
     return;
   }
-  capitalized_spoiler_words = dark_words_of_spoilage.capitalizeFirstLetter();
-  cl("A bespoiling traitor in our midst! the forbidden words hath been spake: '" + capitalized_spoiler_words + "'.");
-  $traitor.addClass('glamoured');
-  specific_words = settings.show_specific_words ? ", because it dared mention the phrase '" + capitalized_spoiler_words + "'" : "";
-  glamour_string = "<div class='spoiler-glamour " + (this.smaller_font_mode ? 'small' : '') + " " + (this.reddit_mode ? 'redditized' : '') + "'> <h3 class='spoiler-obituary'>A potential spoiler here " + (getDeathName()) + specific_words + ".</h3> <h3 class='click-to-view-spoiler' >Click to view spoiler (!!!)</h3> </div>";
-  $(glamour_string).appendTo($traitor);
-  $glamour = $traitor.find('.spoiler-glamour');
-  return $glamour.on('click', function(ev) {
+  $element.addClass('glamoured');
+  $element.addClass('glamoured-active');
+  capitalized_spoiler_words = blocked_word.capitalizeFirstLetter();
+  cl("Found spoiler for: '" + capitalized_spoiler_words + "'.");
+  if (settings.show_specific_words) {
+    $info = $("<h2 class='spoiler-info " + (this.smaller_font_mode ? 'small' : '') + " " + (this.reddit_mode ? 'redditized' : '') + "'> Spoiler about \"" + capitalized_spoiler_words + "\"</h2>");
+    pos = $element.position();
+    $info.css('top', pos.top);
+    $info.css('left', pos.left);
+    $info.css('opacity', 0);
+  } else {
+    $info = $();
+  }
+  $element.before($info);
+  $info.css('opacity', '');
+  return $element.on('click', function(ev) {
     var specific_words_for_confirm;
-    ev.stopPropagation();
-    ev.preventDefault();
-    specific_words_for_confirm = settings.show_specific_words ? "mention of '" + capitalized_spoiler_words + "'" : "spoiler";
-    if (!confirm("Are you sure you want to view this potentially spoiler-ific " + specific_words_for_confirm + "?")) {
+    if ($element.hasClass('revealed')) {
+      cl("Returning from onclick");
       return;
     }
-    $glamour.addClass('revealed');
-    return setTimeout((function() {
-      return $glamour.remove();
-    }), 3500);
+    ev.stopPropagation();
+    ev.preventDefault();
+    if (settings.warn_before_reveal) {
+      specific_words_for_confirm = settings.show_specific_words ? " about '" + capitalized_spoiler_words + "'" : "";
+      if (!confirm("Show spoiler" + specific_words_for_confirm + "?")) {
+        return;
+      }
+    }
+    $element.removeClass('glamoured-active');
+    $element.addClass('revealed');
+    return $info.addClass('revealed');
   });
 };
 

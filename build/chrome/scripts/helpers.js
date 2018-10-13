@@ -46,7 +46,8 @@ loadUserPreferences = (function(_this) {
           blockingEnabled: true,
           showSpecificWordEnabled: false,
           extraWordsToBlock: '',
-          destroySpoilers: false
+          destroySpoilers: false,
+          warnBeforeReveal: true
         };
       } else {
         _this.userPreferences = JSON.parse(userPreferencesJSONString);
@@ -62,6 +63,9 @@ loadUserPreferences = (function(_this) {
         if (!_this.userPreferences.hasOwnProperty('destroySpoilers')) {
           _this.userPreferences.destroySpoilers = false;
         }
+        if (!_this.userPreferences.hasOwnProperty('warnBeforeReveal')) {
+          _this.userPreferences.warnBeforeReveal = false;
+        }
       }
       if (callback) {
         return callback();
@@ -70,7 +74,7 @@ loadUserPreferences = (function(_this) {
   };
 })(this);
 
-GAME_O_SPOILERS_DEBUG_MODE = false;
+GAME_O_SPOILERS_DEBUG_MODE = true;
 
 if (GAME_O_SPOILERS_DEBUG_MODE) {
   log_timeout = void 0;

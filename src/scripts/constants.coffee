@@ -1,5 +1,5 @@
 # Chrome storage data key
-DATA_KEY = 'game-of-spoils'
+DATA_KEY = 'game-of-spoils-lite'
 
 # jQuery selectors that specify elements to block on each supported site
 AVCLUB_FEED_ELEMENTS_SELECTOR      = '.item, article.short, article > .heading'
@@ -115,28 +115,6 @@ SPOILER_WORDS_LIST = [
 
 # Regex formed from the spoiler array for quick matching
 SPOILER_WORDS_REGEX = new RegExp(SPOILER_WORDS_LIST.join('|'), 'i')
-
-
-# Phrases to describe the grisly ways that spoilers are disposed of
-DEATH_NAMES = [
-  "got burned at the stake to appease R'hllor"
-  'contracted greyscale and was quarantined permanently'
-  'did not live through the Long Night'
-  'drank way too much Moon Tea'
-  'found itself too far north when winter came'
-  'is dark and full of terrors'
-  'lost in trial by combat'
-  'did not win the game of thrones'
-  'suffered terribly at the paws of Ser Pounce'
-  'warged into a dead cat'
-  'was grimly beheaded for desertion'
-  'was impaled by a lance at a tournament by a lowly hedge knight'
-  'was incinerated by hot dragon breath'
-  'was murdered by its very own nuncle'
-  'was slain by a shadow'
-  'was slowly poisoned over a period of many fortnights'
-  'was torn asunder by six direwolves'
-]
 
 # Subreddits that are GoT related, dont block GoT-related things there, since that'd pretty much block everything...
 GOT_RELATED_SUBREDDITS = [

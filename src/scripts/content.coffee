@@ -5,13 +5,15 @@ num_feed_elems       = null
 settings =
   show_specific_words: true
   spoiler_words_regex: null
-  execute_trailors:    false
+  destroy_spoilers:    false
+  warn_before_reveal:  false
 $document = $(document)
 
 $document.ready ->
   chrome.runtime.sendMessage { userPreferencesRequested: true }, (response) =>
     settings.show_specific_words  = response.showSpecificWordEnabled
-    settings.execute_trailors     = response.destroySpoilers
+    settings.destroy_spoilers     = response.destroySpoilers
+    settings.warn_before_reveal   = response.warnBeforeReveal
     extra_words_to_block = response.extraWordsToBlock
                                    .split(',')
                                    .map((word) -> word.trim().escapeRegex())
@@ -22,10 +24,6 @@ $document.ready ->
 
 incrementBadgeNumber = ->
   chrome.runtime.sendMessage { incrementBadge: true }, (->)
-
-
-getDeathName = ->
-  DEATH_NAMES[Math.floor(Math.random() * DEATH_NAMES.length)]
 
 
 initiateSpoilerBlocking = (selector_string, remove_parent) ->
@@ -50,31 +48,53 @@ searchForAndBlockSpoilers = (feed_elements_selector, force_update, remove_parent
       # Search textContent of the element to see if it contains any spoilers
       matchedSpoiler = @textContent.match settings.spoiler_words_regex
       if matchedSpoiler != null
-        exileTraitorousSpoiler $(this), matchedSpoiler[0]
+        blockElement $(this), matchedSpoiler[0]
 
-
-exileTraitorousSpoiler = ($traitor, dark_words_of_spoilage) ->
+blockElement = ($element, blocked_word) ->
   incrementBadgeNumber()
-  if settings.execute_trailors
-    $traitor.remove()
+  if settings.destroy_spoilers
+    $element.remove
     return
-  capitalized_spoiler_words = dark_words_of_spoilage.capitalizeFirstLetter()
-  cl "A bespoiling traitor in our midst! the forbidden words hath been spake: '#{capitalized_spoiler_words}'."
-  $traitor.addClass 'glamoured'
-  specific_words = if settings.show_specific_words then ", because it dared mention the phrase '#{capitalized_spoiler_words}'" else ""
-  glamour_string = "<div class='spoiler-glamour #{if @smaller_font_mode then 'small' else ''} #{if @reddit_mode then 'redditized' else ''}'>
-                      <h3 class='spoiler-obituary'>A potential spoiler here #{getDeathName()}#{specific_words}.</h3>
-                      <h3 class='click-to-view-spoiler' >Click to view spoiler (!!!)</h3>
-                    </div>"
-  $(glamour_string).appendTo $traitor
-  $glamour = $traitor.find '.spoiler-glamour'
-  $glamour.on 'click', (ev) ->
+
+  # track the items we already looked at
+  $element.addClass 'glamoured'
+
+  # style the items that are active
+  $element.addClass 'glamoured-active'
+
+  capitalized_spoiler_words = blocked_word.capitalizeFirstLetter()
+  cl "Found spoiler for: '#{capitalized_spoiler_words}'."
+
+  if settings.show_specific_words
+    $info = $("<h2 class='spoiler-info #{if @smaller_font_mode then 'small' else ''} #{if @reddit_mode then 'redditized' else ''}'>
+              Spoiler about \"#{capitalized_spoiler_words}\"</h2>")
+
+    pos = $element.position()
+    $info.css('top', pos.top)
+    $info.css('left', pos.left)
+    $info.css('opacity', 0)
+  else
+    $info = $()
+
+  $element.before $info
+  # $info.removeClass 'revealed'
+  $info.css('opacity', '')
+
+  $element.on 'click', (ev) ->
+    if $element.hasClass 'revealed'
+      cl "Returning from onclick"
+      return
+
     ev.stopPropagation()
     ev.preventDefault()
-    specific_words_for_confirm = if settings.show_specific_words then "mention of '#{capitalized_spoiler_words}'" else "spoiler"
-    return unless confirm "Are you sure you want to view this potentially spoiler-ific #{specific_words_for_confirm}?"
-    $glamour.addClass 'revealed'
-    setTimeout (-> $glamour.remove()), 3500
+
+    if settings.warn_before_reveal
+      specific_words_for_confirm = if settings.show_specific_words then " about '#{capitalized_spoiler_words}'" else ""
+      return unless confirm "Show spoiler#{specific_words_for_confirm}?"
+
+    $element.removeClass 'glamoured-active'
+    $element.addClass 'revealed'
+    $info.addClass 'revealed'
 
 
 

@@ -4,13 +4,14 @@ document.addEventListener 'DOMContentLoaded', =>
   @blockingEnabledToggle  = document.getElementById 'blocking-enabled-toggle'
   @showSpecificWordToggle = document.getElementById 'show-specific-word-toggle'
   @destroySpoilersToggle  = document.getElementById 'destroy-spoilers-toggle'
+  @warnBeforeReveal       = document.getElementById 'warn-before-reveal-toggle'
   @extraWordsHolder       = document.getElementById 'extra-words-to-block'
+
   @blockingEnabledToggle.addEventListener  'change', storeUserPreferences
   @showSpecificWordToggle.addEventListener 'change', storeUserPreferences
   @destroySpoilersToggle.addEventListener 'change', storeUserPreferences
+  @warnBeforeReveal.addEventListener 'change', storeUserPreferences
   @extraWordsHolder.addEventListener 'keyup', storeUserPreferences
-
-  $('.onoffswitch-switch').css 'background-image', 'url("assets/images/targaryen.png")'
 
   loadUserPreferencesAndUpdate()
 
@@ -27,6 +28,7 @@ loadUserPreferencesAndUpdate = =>
     @blockingEnabledToggle.checked  = @userPreferences.blockingEnabled
     @showSpecificWordToggle.checked = @userPreferences.showSpecificWordEnabled
     @destroySpoilersToggle.checked  = @userPreferences.destroySpoilers
+    @warnBeforeReveal.checked       = @userPreferences.warnBeforeReveal
     @extraWordsHolder.value         = @userPreferences.extraWordsToBlock
 
 storeUserPreferences = =>
@@ -35,6 +37,7 @@ storeUserPreferences = =>
     blockingEnabled: @blockingEnabledToggle.checked
     showSpecificWordEnabled: @showSpecificWordToggle.checked
     destroySpoilers: @destroySpoilersToggle.checked
+    warnBeforeReveal: @warnBeforeReveal.checked
     extraWordsToBlock: @extraWordsHolder.value
   }
   cl "Storing user preferences: #{data}"
@@ -73,17 +76,17 @@ updateSessionSpoilersBlocked = ->
 
 
   # Googly analytics
-  _gaq = _gaq or []
-  _gaq.push [
-    '_setAccount'
-    'UA-64072033-1'
-  ]
-  _gaq.push [ '_trackPageview' ]
-  do ->
-    ga = document.createElement('script')
-    ga.type = 'text/javascript'
-    ga.async = true
-    ga.src = 'https://ssl.google-analytics.com/ga.js'
-    s = document.getElementsByTagName('script')[0]
-    s.parentNode.insertBefore ga, s
+  # _gaq = _gaq or []
+  # _gaq.push [
+  #   '_setAccount'
+  #   'UA-64072033-1'
+  # ]
+  # _gaq.push [ '_trackPageview' ]
+  # do ->
+  #   ga = document.createElement('script')
+  #   ga.type = 'text/javascript'
+  #   ga.async = true
+  #   ga.src = 'https://ssl.google-analytics.com/ga.js'
+  #   s = document.getElementsByTagName('script')[0]
+  #   s.parentNode.insertBefore ga, s
 
