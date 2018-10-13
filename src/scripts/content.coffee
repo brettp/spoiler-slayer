@@ -69,6 +69,7 @@ blockElement = ($element, blocked_word) ->
     $info = $("<h2 class='spoiler-info #{if @smaller_font_mode then 'small' else ''} #{if @reddit_mode then 'redditized' else ''}'>
               Spoiler about \"#{capitalized_spoiler_words}\"</h2>")
 
+    # $wrapper =
     pos = $element.position()
     $info.css('top', pos.top)
     $info.css('left', pos.left)
@@ -76,7 +77,8 @@ blockElement = ($element, blocked_word) ->
   else
     $info = $()
 
-  $element.before $info
+
+  # $element.before $info
   # $info.removeClass 'revealed'
   $info.css('opacity', '')
 
@@ -112,7 +114,7 @@ initialize = =>
     @smaller_font_mode = true
     initiateSpoilerBlocking GOOGLE_NEWS_FEED_ELEMENTS_SELECTOR, true
 
-  else if url.indexOf('reddit.com') > -1
+  else if url.indexOf('reddit.com') > -1 || url.indexOf('127.0.0.1') > -1
     @reddit_mode = true
     if url.search(GOT_SUBREDDITS_REGEX) == -1
       initiateSpoilerBlocking REDDIT_FEED_ELEMENTS_SELECTOR

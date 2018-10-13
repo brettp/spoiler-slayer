@@ -104,7 +104,6 @@ blockElement = function($element, blocked_word) {
   } else {
     $info = $();
   }
-  $element.before($info);
   $info.css('opacity', '');
   return $element.on('click', function(ev) {
     var specific_words_for_confirm;
@@ -138,7 +137,7 @@ initialize = (function(_this) {
     } else if (url.indexOf('news.google') > -1) {
       _this.smaller_font_mode = true;
       return initiateSpoilerBlocking(GOOGLE_NEWS_FEED_ELEMENTS_SELECTOR, true);
-    } else if (url.indexOf('reddit.com') > -1) {
+    } else if (url.indexOf('reddit.com') > -1 || url.indexOf('127.0.0.1') > -1) {
       _this.reddit_mode = true;
       if (url.search(GOT_SUBREDDITS_REGEX) === -1) {
         return initiateSpoilerBlocking(REDDIT_FEED_ELEMENTS_SELECTOR);
