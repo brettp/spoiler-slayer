@@ -53,14 +53,20 @@ searchForAndBlockSpoilers = (feed_elements_selector, force_update, remove_parent
 blockElement = ($element, blocked_word) ->
   incrementBadgeNumber()
   if settings.destroy_spoilers
-    $element.remove
+    $element.remove()
     return
 
   # track the items we already looked at
   $element.addClass 'glamoured'
 
-  # style the items that are active
-  $element.addClass 'glamoured-active'
+  # move all content into a new div so we can blur
+  # but keep the info text clear without doing silly stuff
+  $contentWrapper = $('<div class="content-wrapper glamoured-active" />')
+  .append($element.children())
+  .appendTo($element)
+
+  #$($('.thing')[7]).addClass('asdf'); $('#header').append($('.asdf')); $('.asdf').css('filter'); $('.asdf').addClass('glamoured-active')
+  #h = $('#header'); c = $('.link.thing').not('.glamoured').first().addClass('glamoured'); w = $('<div>'); c.prepend(w); w.append(c.children()); w.css('blur', ''); setTimeout( function() { w.addClass('glamoured-active') });
 
   capitalized_spoiler_words = blocked_word.capitalizeFirstLetter()
   cl "Found spoiler for: '#{capitalized_spoiler_words}'."
@@ -68,25 +74,14 @@ blockElement = ($element, blocked_word) ->
   if settings.show_specific_words
     $info = $("<h2 class='spoiler-info #{if @smaller_font_mode then 'small' else ''} #{if @reddit_mode then 'redditized' else ''}'>
               Spoiler about \"#{capitalized_spoiler_words}\"</h2>")
-
-    # $wrapper =
-    pos = $element.position()
-    $info.css('top', pos.top)
-    $info.css('left', pos.left)
-    $info.css('opacity', 0)
   else
     $info = $()
 
+  # force read CSS value to make transition work
+  # $info.css('opacity');
+  $element.prepend($info)
 
-  # $element.before $info
-  # $info.removeClass 'revealed'
-  $info.css('opacity', '')
-
-  $element.on 'click', (ev) ->
-    if $element.hasClass 'revealed'
-      cl "Returning from onclick"
-      return
-
+  $contentWrapper.on 'click', (ev) ->
     ev.stopPropagation()
     ev.preventDefault()
 
@@ -94,11 +89,8 @@ blockElement = ($element, blocked_word) ->
       specific_words_for_confirm = if settings.show_specific_words then " about '#{capitalized_spoiler_words}'" else ""
       return unless confirm "Show spoiler#{specific_words_for_confirm}?"
 
-    $element.removeClass 'glamoured-active'
-    $element.addClass 'revealed'
+    $contentWrapper.removeClass 'glamoured-active'
     $info.addClass 'revealed'
-
-
 
 # Initialize page-specific spoiler-blocking, if page is supported
 initialize = =>

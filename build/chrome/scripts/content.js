@@ -85,32 +85,24 @@ searchForAndBlockSpoilers = (function(_this) {
 })(this);
 
 blockElement = function($element, blocked_word) {
-  var $info, capitalized_spoiler_words, pos;
+  var $contentWrapper, $info, capitalized_spoiler_words;
   incrementBadgeNumber();
   if (settings.destroy_spoilers) {
-    $element.remove;
+    $element.remove();
     return;
   }
   $element.addClass('glamoured');
-  $element.addClass('glamoured-active');
+  $contentWrapper = $('<div class="content-wrapper glamoured-active" />').append($element.children()).appendTo($element);
   capitalized_spoiler_words = blocked_word.capitalizeFirstLetter();
   cl("Found spoiler for: '" + capitalized_spoiler_words + "'.");
   if (settings.show_specific_words) {
     $info = $("<h2 class='spoiler-info " + (this.smaller_font_mode ? 'small' : '') + " " + (this.reddit_mode ? 'redditized' : '') + "'> Spoiler about \"" + capitalized_spoiler_words + "\"</h2>");
-    pos = $element.position();
-    $info.css('top', pos.top);
-    $info.css('left', pos.left);
-    $info.css('opacity', 0);
   } else {
     $info = $();
   }
-  $info.css('opacity', '');
-  return $element.on('click', function(ev) {
+  $element.prepend($info);
+  return $contentWrapper.on('click', function(ev) {
     var specific_words_for_confirm;
-    if ($element.hasClass('revealed')) {
-      cl("Returning from onclick");
-      return;
-    }
     ev.stopPropagation();
     ev.preventDefault();
     if (settings.warn_before_reveal) {
@@ -119,8 +111,7 @@ blockElement = function($element, blocked_word) {
         return;
       }
     }
-    $element.removeClass('glamoured-active');
-    $element.addClass('revealed');
+    $contentWrapper.removeClass('glamoured-active');
     return $info.addClass('revealed');
   });
 };
