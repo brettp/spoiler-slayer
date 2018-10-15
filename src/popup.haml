@@ -25,14 +25,18 @@
       %div.indent
         %input#show-specific-word-toggle{type: "checkbox", checked: "checked"}
         %label{for: "show-specific-word-toggle"}
-          Show the words that triggered the block
+          Show the phrase that triggered the block
 
       %div.indent
         %input#warn-before-reveal-toggle{type: "checkbox", checked: "checked"}
         %label{for: "warn-before-reveal-toggle"}
-          Warn before revealing the spoiler
+          Warn before revealing a spoiler
 
       %hr
+      %div.centered
+        %a#options-page
+          Advanced options
+
       %div.centered
         .setting-text= 'Additional words or phrases to block'
         %textarea#extra-words-to-block{placeholder: "Separate with commas like: Jon Snow, Hodor, etc. Note that it matches parts of words, and capitalization is ignored, so 'GoT' would block any word with 'got' in it, like 'gotcha'."}

@@ -54,8 +54,8 @@ gulp.task('update-static', function() {
 
 // HAML
 gulp.task('haml', function () {
-  del('build/*/popup.html');
-  gulp.src('src/popup.haml')
+  del('build/*/*.html');
+  gulp.src('src/*.haml')
     .pipe(haml())
     .pipe(gulp.dest('build/chrome'))
     .pipe(gulp.dest('build/firefox'));

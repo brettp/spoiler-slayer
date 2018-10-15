@@ -1,19 +1,34 @@
-# Chrome storage data key
-DATA_KEY = 'game-of-spoils-lite'
+# default settings
+SETTINGS = {
+  sites: [],
+  spoilers: [],
+  blockingEnabled: true,
+  showSpecificWordEnabled: true,
+  destroySpoilers: false,
+  warnBeforeReveal: false
+}
 
 # jQuery selectors that specify elements to block on each supported site
-AVCLUB_FEED_ELEMENTS_SELECTOR      = '.item, article.short, article > .heading'
-BUZZFEED_ELEMENTS_SELECTOR         = '.card--article-featured, .card--article, .card--package, .card--video, .sidebar__link, .js-now-buzzing__list > li'
-FACEBOOK_FEED_ELEMENTS_SELECTOR    = 'div[data-testid="fbfeed_story"], div[role="article"], #pagelet_trending_tags_and_topics ul > li'
-FEEDLY_ELEMENTS_SELECTOR           = '.entry'
-GIZMODO_ELEMENTS_SELECTOR          = '.featured-item, article'
-GOOGLE_NEWS_FEED_ELEMENTS_SELECTOR = 'a[target="_blank"]'
-GOOGLE_PLUS_ELEMENTS_SELECTOR      = 'div[id^="update-"], c-wiz div div c-wiz'
-REDDIT_FEED_ELEMENTS_SELECTOR      = '.sitetable > .thing.link:visible, .usertext-body'
-SLACK_FEED_ELEMENTS_SELECTOR       = 'ts-message'
-TUMBLR_ELEMENTS_SELECTOR           = '.post_container, article'
-TWITTER_FEED_ELEMENTS_SELECTOR     = "[data-item-type='tweet'], .trend-item"
-YOUTUBE_ELEMENTS_SELECTOR          = '.yt-lockup, .related-list-item, .comment-renderer-text'
+SELECTORS = [
+  {
+    url_regexp: 'avclub_feed',
+    selector: '.item, article.short, article > .heading'
+  }
+  # buzzfeed         : '.card--article-featured, .card--article, .card--package, .card--video, .sidebar__link, .js-now-buzzing__list > li'
+  # facebook_feed    : 'div[data-testid:"fbfeed_story"], div[role:"article"], #pagelet_trending_tags_and_topics ul > li'
+  # feedly           : '.entry'
+  # gizmodo          : '.featured-item, article'
+  # google_news_feed : 'a[target:"_blank"]'
+  # google_plus      : 'div[id^:"update-"], c-wiz div div c-wiz'
+  {
+    url_regexp: 'reddit.com',
+    selector: '.sitetable > .thing.link:visible, .usertext-body'
+  }
+  # slack_feed       : 'ts-message'
+  # tumblr           : '.post_container, article'
+  # twitter_feed     : "[data-item-type:'tweet'], .trend-item"
+  # youtube          : '.yt-lockup, .related-list-item, .comment-renderer-text'
+];
 
 # GoT-specific words that are potentially spoiler-ific and thus trigger a spoiler blocker
 SPOILER_WORDS_LIST = [

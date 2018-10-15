@@ -31,26 +31,22 @@ String::escapeRegex = ->
 # Loads user preferences from chrome storage, setting default values
 # if any preferences are undefined
 loadUserPreferences = (callback) =>
-   chrome.storage.sync.get DATA_KEY, (result) =>
-    userPreferencesJSONString = result[DATA_KEY]
-    if !userPreferencesJSONString
-      @userPreferences = {
-        blockingEnabled: true
-        showSpecificWordEnabled: false
-        extraWordsToBlock: ''
-        destroySpoilers: false
-        warnBeforeReveal: true
-      }
-    else
-      @userPreferences = JSON.parse userPreferencesJSONString
-      @userPreferences.blockingEnabled         = true  unless @userPreferences.hasOwnProperty 'blockingEnabled'
-      @userPreferences.showSpecificWordEnabled = false unless @userPreferences.hasOwnProperty 'showSpecificWordEnabled'
-      @userPreferences.extraWordsToBlock       = ''    unless @userPreferences.hasOwnProperty 'extraWordsToBlock'
-      @userPreferences.destroySpoilers         = false unless @userPreferences.hasOwnProperty 'destroySpoilers'
-      @userPreferences.warnBeforeReveal        = false unless @userPreferences.hasOwnProperty 'warnBeforeReveal'
+   chrome.storage.sync.get null, (result) =>
+      cl result
     callback() if callback
 
 
+storeUserPreferences = =>
+  settings = {
+    blockingEnabled: @blockingEnabledToggle.checked
+    showSpecificWordEnabled: @showSpecificWordToggle.checked
+    destroySpoilers: @destroySpoilersToggle.checked
+    warnBeforeReveal: @warnBeforeReveal.checked
+    extraWordsToBlock: @extraWordsHolder.value,
+  }
+  cl "Storing user preferences: #{settings}"
+  chrome.storage.sync.set settings, (response) ->
+    chrome.runtime.sendMessage { userPreferencesUpdated: true }, (->)
 
 # --------------------------------------- #
 # Debugging

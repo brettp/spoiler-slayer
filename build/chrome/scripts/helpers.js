@@ -1,4 +1,4 @@
-var $log, GAME_O_SPOILERS_DEBUG_MODE, addClass, cl, debounce, debounce_timeout, hasClass, loadUserPreferences, log_timeout;
+var $log, GAME_O_SPOILERS_DEBUG_MODE, addClass, cl, debounce, debounce_timeout, hasClass, loadUserPreferences, log_timeout, storeUserPreferences;
 
 debounce_timeout = null;
 
@@ -38,38 +38,30 @@ String.prototype.escapeRegex = function() {
 
 loadUserPreferences = (function(_this) {
   return function(callback) {
-    return chrome.storage.sync.get(DATA_KEY, function(result) {
-      var userPreferencesJSONString;
-      userPreferencesJSONString = result[DATA_KEY];
-      if (!userPreferencesJSONString) {
-        _this.userPreferences = {
-          blockingEnabled: true,
-          showSpecificWordEnabled: false,
-          extraWordsToBlock: '',
-          destroySpoilers: false,
-          warnBeforeReveal: true
-        };
-      } else {
-        _this.userPreferences = JSON.parse(userPreferencesJSONString);
-        if (!_this.userPreferences.hasOwnProperty('blockingEnabled')) {
-          _this.userPreferences.blockingEnabled = true;
-        }
-        if (!_this.userPreferences.hasOwnProperty('showSpecificWordEnabled')) {
-          _this.userPreferences.showSpecificWordEnabled = false;
-        }
-        if (!_this.userPreferences.hasOwnProperty('extraWordsToBlock')) {
-          _this.userPreferences.extraWordsToBlock = '';
-        }
-        if (!_this.userPreferences.hasOwnProperty('destroySpoilers')) {
-          _this.userPreferences.destroySpoilers = false;
-        }
-        if (!_this.userPreferences.hasOwnProperty('warnBeforeReveal')) {
-          _this.userPreferences.warnBeforeReveal = false;
-        }
-      }
-      if (callback) {
-        return callback();
-      }
+    chrome.storage.sync.get(null, function(result) {
+      return cl(result);
+    });
+    if (callback) {
+      return callback();
+    }
+  };
+})(this);
+
+storeUserPreferences = (function(_this) {
+  return function() {
+    var settings;
+    settings = {
+      blockingEnabled: _this.blockingEnabledToggle.checked,
+      showSpecificWordEnabled: _this.showSpecificWordToggle.checked,
+      destroySpoilers: _this.destroySpoilersToggle.checked,
+      warnBeforeReveal: _this.warnBeforeReveal.checked,
+      extraWordsToBlock: _this.extraWordsHolder.value
+    };
+    cl("Storing user preferences: " + settings);
+    return chrome.storage.sync.set(settings, function(response) {
+      return chrome.runtime.sendMessage({
+        userPreferencesUpdated: true
+      }, (function() {}));
     });
   };
 })(this);

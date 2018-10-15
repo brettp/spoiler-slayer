@@ -35,3 +35,12 @@
   width: 95%;
   min-height: 5em;
 }
+
+table#sites {
+  width: 50%;
+  text-align: center;
+}
+
+table#sites input {
+  width: 95%;
+}

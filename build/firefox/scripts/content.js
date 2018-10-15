@@ -118,8 +118,17 @@ blockElement = function($element, blocked_word) {
 
 initialize = (function(_this) {
   return function() {
-    var url;
+    var i, info, len, url;
     url = window.location.href.toLowerCase();
+    for (i = 0, len = SELECTORS.length; i < len; i++) {
+      info = SELECTORS[i];
+      cl(info);
+      if (new RegExp(info.regexp).test(url)) {
+        initiateSpoilerBlocking(info.selector);
+        return;
+      }
+    }
+    return;
     if (url.indexOf('facebook') > -1) {
       return initiateSpoilerBlocking(FACEBOOK_FEED_ELEMENTS_SELECTOR);
     } else if (url.indexOf('twitter') > -1) {

@@ -95,6 +95,15 @@ blockElement = ($element, blocked_word) ->
 # Initialize page-specific spoiler-blocking, if page is supported
 initialize = =>
   url = window.location.href.toLowerCase()
+
+  for info in SELECTORS
+    cl info
+    if new RegExp(info.regexp).test(url)
+      initiateSpoilerBlocking info.selector
+      return
+
+  return
+
   if url.indexOf('facebook') > -1
     initiateSpoilerBlocking FACEBOOK_FEED_ELEMENTS_SELECTOR
 

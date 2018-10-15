@@ -1,4 +1,4 @@
-var loadUserPreferencesAndUpdate, sessionSpoilersBlocked, storeUserPreferences, updateSessionSpoilersBlocked;
+var loadUserPreferencesAndUpdate, openOptionsPage, sessionSpoilersBlocked, updateSessionSpoilersBlocked;
 
 sessionSpoilersBlocked = 0;
 
@@ -9,11 +9,13 @@ document.addEventListener('DOMContentLoaded', (function(_this) {
     _this.destroySpoilersToggle = document.getElementById('destroy-spoilers-toggle');
     _this.warnBeforeReveal = document.getElementById('warn-before-reveal-toggle');
     _this.extraWordsHolder = document.getElementById('extra-words-to-block');
+    _this.optionsPage = document.getElementById('options-page');
     _this.blockingEnabledToggle.addEventListener('change', storeUserPreferences);
     _this.showSpecificWordToggle.addEventListener('change', storeUserPreferences);
     _this.destroySpoilersToggle.addEventListener('change', storeUserPreferences);
     _this.warnBeforeReveal.addEventListener('change', storeUserPreferences);
     _this.extraWordsHolder.addEventListener('keyup', storeUserPreferences);
+    _this.optionsPage.addEventListener('click', openOptionsPage);
     loadUserPreferencesAndUpdate();
     return setTimeout((function() {
       return chrome.runtime.sendMessage({
@@ -30,33 +32,7 @@ document.addEventListener('DOMContentLoaded', (function(_this) {
 
 loadUserPreferencesAndUpdate = (function(_this) {
   return function() {
-    return loadUserPreferences(function() {
-      _this.blockingEnabledToggle.checked = _this.userPreferences.blockingEnabled;
-      _this.showSpecificWordToggle.checked = _this.userPreferences.showSpecificWordEnabled;
-      _this.destroySpoilersToggle.checked = _this.userPreferences.destroySpoilers;
-      _this.warnBeforeReveal.checked = _this.userPreferences.warnBeforeReveal;
-      return _this.extraWordsHolder.value = _this.userPreferences.extraWordsToBlock;
-    });
-  };
-})(this);
-
-storeUserPreferences = (function(_this) {
-  return function() {
-    var data;
-    data = {};
-    data[DATA_KEY] = JSON.stringify({
-      blockingEnabled: _this.blockingEnabledToggle.checked,
-      showSpecificWordEnabled: _this.showSpecificWordToggle.checked,
-      destroySpoilers: _this.destroySpoilersToggle.checked,
-      warnBeforeReveal: _this.warnBeforeReveal.checked,
-      extraWordsToBlock: _this.extraWordsHolder.value
-    });
-    cl("Storing user preferences: " + data);
-    return chrome.storage.sync.set(data, function(response) {
-      return chrome.runtime.sendMessage({
-        userPreferencesUpdated: true
-      }, (function() {}));
-    });
+    return loadUserPreferences(function() {});
   };
 })(this);
 
@@ -71,4 +47,12 @@ updateSessionSpoilersBlocked = function() {
   var newText;
   newText = sessionSpoilersBlocked + " spoilers prevented in this session.";
   return document.getElementById('num-spoilers-prevented').textContent = newText;
+};
+
+openOptionsPage = function() {
+  if (chrome.runtime.openOptionsPage) {
+    return chrome.runtime.openOptionsPage(function() {});
+  } else {
+    return window.open(chrome.runtime.getURL('options.html'));
+  }
 };

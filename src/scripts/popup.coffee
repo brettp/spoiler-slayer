@@ -6,14 +6,18 @@ document.addEventListener 'DOMContentLoaded', =>
   @destroySpoilersToggle  = document.getElementById 'destroy-spoilers-toggle'
   @warnBeforeReveal       = document.getElementById 'warn-before-reveal-toggle'
   @extraWordsHolder       = document.getElementById 'extra-words-to-block'
+  @optionsPage            = document.getElementById 'options-page'
 
   @blockingEnabledToggle.addEventListener  'change', storeUserPreferences
   @showSpecificWordToggle.addEventListener 'change', storeUserPreferences
   @destroySpoilersToggle.addEventListener 'change', storeUserPreferences
   @warnBeforeReveal.addEventListener 'change', storeUserPreferences
   @extraWordsHolder.addEventListener 'keyup', storeUserPreferences
+  @optionsPage.addEventListener 'click', openOptionsPage
 
   loadUserPreferencesAndUpdate()
+  # openOptionsPage()
+
 
   setTimeout (->
     chrome.runtime.sendMessage { fetchPopupTotal: true }, (response) ->
@@ -22,27 +26,13 @@ document.addEventListener 'DOMContentLoaded', =>
         updateSessionSpoilersBlocked()
   ), 1
 
-
 loadUserPreferencesAndUpdate = =>
   loadUserPreferences =>
-    @blockingEnabledToggle.checked  = @userPreferences.blockingEnabled
-    @showSpecificWordToggle.checked = @userPreferences.showSpecificWordEnabled
-    @destroySpoilersToggle.checked  = @userPreferences.destroySpoilers
-    @warnBeforeReveal.checked       = @userPreferences.warnBeforeReveal
-    @extraWordsHolder.value         = @userPreferences.extraWordsToBlock
-
-storeUserPreferences = =>
-  data = {}
-  data[DATA_KEY] = JSON.stringify {
-    blockingEnabled: @blockingEnabledToggle.checked
-    showSpecificWordEnabled: @showSpecificWordToggle.checked
-    destroySpoilers: @destroySpoilersToggle.checked
-    warnBeforeReveal: @warnBeforeReveal.checked
-    extraWordsToBlock: @extraWordsHolder.value
-  }
-  cl "Storing user preferences: #{data}"
-  chrome.storage.sync.set data, (response) ->
-    chrome.runtime.sendMessage { userPreferencesUpdated: true }, (->)
+    # @blockingEnabledToggle.checked  = @userPreferences.blockingEnabled
+    # @showSpecificWordToggle.checked = @userPreferences.showSpecificWordEnabled
+    # @destroySpoilersToggle.checked  = @userPreferences.destroySpoilers
+    # @warnBeforeReveal.checked       = @userPreferences.warnBeforeReveal
+    # @extraWordsHolder.value         = @userPreferences.extraWordsToBlock
 
 chrome.runtime.onMessage.addListener (request, sender, sendResponse) ->
   if request.newSpoilerBlocked
@@ -55,7 +45,11 @@ updateSessionSpoilersBlocked = ->
   newText = "#{sessionSpoilersBlocked} spoilers prevented in this session."
   document.getElementById('num-spoilers-prevented').textContent = newText
 
-
+openOptionsPage = ->
+  if chrome.runtime.openOptionsPage
+    chrome.runtime.openOptionsPage ->
+  else
+    window.open(chrome.runtime.getURL('options.html'))
 
 # TODO: fix this
 # lifetimeSpoilersBlocked = 0

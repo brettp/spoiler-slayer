@@ -7,8 +7,9 @@
   "browser_action": {
     "default_icon": "assets/icons/icon128.png",
     "default_popup": "popup.html",
-    "default_title": "Game of Spoilers"
+    "default_title": "Game of Spoilers Lite"
   },
+  "options_page": "options.html",
   "icons": {
     "16": "assets/icons/icon16.png",
     "19": "assets/icons/icon16.png",
