@@ -1,0 +1,44 @@
+//colors
+$white: white;
+$color_twilight_blue_approx: #f3fefe;
+
+#game-of-spoilers-popup {
+    font-size: 100%;
+    min-width: 350px;
+    background-color: $white;
+    line-height: 1.75em;
+    hr {
+        border-color: $color_twilight_blue_approx;
+    }
+    .indent {
+        margin-left: 1em;
+    }
+    .centered {
+        text-align: center;
+    }
+    #title {
+        font-size: 125%;
+        text-align: center;
+        margin-bottom: 8px;
+    }
+    .settings {
+        label {
+            vertical-align: middle;
+        }
+        input {
+            vertical-align: middle;
+        }
+        textarea {
+            width: 95%;
+            min-height: 5em;
+        }
+    }
+}
+
+table#sites {
+    width: 50%;
+    text-align: center;
+    input {
+        width: 95%;
+    }
+}

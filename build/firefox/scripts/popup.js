@@ -1,58 +1,76 @@
-var loadUserPreferencesAndUpdate, openOptionsPage, sessionSpoilersBlocked, updateSessionSpoilersBlocked;
+settings.load(function(stored) {
+    console.log("Loaded settings for popup");
+    console.log(stored);
 
-sessionSpoilersBlocked = 0;
+    $('input[type=checkbox].popup-setting').each(function() {
+        var $input = $(this);
+        var name = $input.prop('name');
 
-document.addEventListener('DOMContentLoaded', (function(_this) {
-  return function() {
-    _this.blockingEnabledToggle = document.getElementById('blocking-enabled-toggle');
-    _this.showSpecificWordToggle = document.getElementById('show-specific-word-toggle');
-    _this.destroySpoilersToggle = document.getElementById('destroy-spoilers-toggle');
-    _this.warnBeforeReveal = document.getElementById('warn-before-reveal-toggle');
-    _this.extraWordsHolder = document.getElementById('extra-words-to-block');
-    _this.optionsPage = document.getElementById('options-page');
-    _this.blockingEnabledToggle.addEventListener('change', storeUserPreferences);
-    _this.showSpecificWordToggle.addEventListener('change', storeUserPreferences);
-    _this.destroySpoilersToggle.addEventListener('change', storeUserPreferences);
-    _this.warnBeforeReveal.addEventListener('change', storeUserPreferences);
-    _this.extraWordsHolder.addEventListener('keyup', storeUserPreferences);
-    _this.optionsPage.addEventListener('click', openOptionsPage);
-    loadUserPreferencesAndUpdate();
-    return setTimeout((function() {
-      return chrome.runtime.sendMessage({
-        fetchPopupTotal: true
-      }, function(response) {
-        if (response.newTotal) {
-          sessionSpoilersBlocked = response.newTotal;
-          return updateSessionSpoilersBlocked();
+        if (stored.hasOwnProperty(name)) {
+            console.log(`Settings ${name} to ${stored[name]}`);
+            $input.prop('checked', stored[name]);
         }
-      });
+    });
+
+    $('body').on('change', 'input[type=checkbox].popup-setting', function() {
+        var $input = $(this);
+        var name = $input.prop('name');
+        var checked = $input.prop('checked');
+
+        console.log("Got settings changes for");
+        console.log($input.attr('name'));
+        console.log($input.prop('checked'));
+
+        settings.set(name, checked);
+    });
+
+    // openOptionsPage();
+    $('#open-options-page').on('click', openOptionsPage);
+
+    // @todo why the timeout?
+    setTimeout((function() {
+        chrome.runtime.sendMessage({
+            cmd: 'fetch-popup-total'
+        }, function(response) {
+            if (response.newTotal) {
+                sessionSpoilersBlocked = response.newTotal;
+                updateSessionSpoilersBlocked();
+            }
+        });
     }), 1);
-  };
-})(this));
-
-loadUserPreferencesAndUpdate = (function(_this) {
-  return function() {
-    return loadUserPreferences(function() {});
-  };
-})(this);
-
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  if (request.newSpoilerBlocked) {
-    sessionSpoilersBlocked += 1;
-    return updateSessionSpoilersBlocked();
-  }
 });
 
-updateSessionSpoilersBlocked = function() {
-  var newText;
-  newText = sessionSpoilersBlocked + " spoilers prevented in this session.";
-  return document.getElementById('num-spoilers-prevented').textContent = newText;
-};
+// document.addEventListener('DOMContentLoaded', function() {
+//     blockingEnabledToggle = document.getElementById('blocking-enabled-toggle');
+//     showSpecificWordToggle = document.getElementById('show-specific-word-toggle');
+//     destroySpoilersToggle = document.getElementById('destroy-spoilers-toggle');
+//     warnBeforeReveal = document.getElementById('warn-before-reveal-toggle');
+//     extraWordsHolder = document.getElementById('extra-words-to-block');
+//     optionsPage = document.getElementById('options-page');
 
-openOptionsPage = function() {
-  if (chrome.runtime.openOptionsPage) {
-    return chrome.runtime.openOptionsPage(function() {});
-  } else {
-    return window.open(chrome.runtime.getURL('options.html'));
-  }
-};
+//     blockingEnabledToggle.addEventListener('change', storeUserPreferences);
+//     showSpecificWordToggle.addEventListener('change', storeUserPreferences);
+//     destroySpoilersToggle.addEventListener('change', storeUserPreferences);
+//     warnBeforeReveal.addEventListener('change', storeUserPreferences);
+//     extraWordsHolder.addEventListener('keyup', storeUserPreferences);
+//     optionsPage.addEventListener('click', openOptionsPage);
+//     loadUserPreferencesAndUpdate();
+// });
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    if (request.cmd && request.cmd == newSpoilerBlocked) {
+        updateSessionSpoilersBlocked();
+    }
+});
+
+function updateSessionSpoilersBlocked() {
+    $('#num-spoilers-prevented').html(`${sessionSpoilersBlocked} spoilers prevented in this session.`);
+}
+
+function openOptionsPage() {
+    if (chrome.runtime.openOptionsPage) {
+        return chrome.runtime.openOptionsPage(helpers.nullFunc);
+    } else {
+        return window.open(chrome.runtime.getURL('options.html'));
+    }
+}

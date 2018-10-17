@@ -1,0 +1,190 @@
+settings = (function() {
+    var defaultSettings = {
+        blockingEnabled: true,
+        destroySpoilers: false,
+        showSpecificWord: true,
+        warnBeforeReveal: false,
+        sites: [],
+        spoilers: []
+    };
+
+    function load(cb) {
+        chrome.storage.sync.get(defaultSettings, function(result) {
+            if (cb) {
+                return cb(result);
+            }
+        });
+    }
+
+    function get(k, cb) {
+        chrome.storage.sync.get(k, cb || helpers.nullFunc);
+    }
+
+    function set(k, v, cb) {
+        var setting = {};
+        setting[k] = v;
+        chrome.storage.sync.set(setting, cb || helpers.nullFunc);
+    }
+
+    function save(settings, cb) {
+        chrome.storage.sync.set(settings, cb || helpers.nullFunc);
+    }
+
+    /* default and original settings */
+    var ogSites = [{
+            url_regexp: 'avclub.com',
+            selector: '.item, article.short, article > .heading'
+        },
+        {
+            url_regexp: 'buzzfeed.com',
+            selector: '.card--article-featured, .card--article, .card--package, .card--video, .sidebar__link, .js-now-buzzing__list > li'
+        },
+        {
+            url_regexp: 'facebook.com',
+            selector: 'div[data-testid="fbfeed_story"], div[role="article"], #pagelet_trending_tags_and_topics ul > li'
+        },
+        {
+            url_regexp: 'feedly.com',
+            selector: '.entry'
+        },
+        {
+            url_regexp: 'gizmodo.com',
+            selector: '.featured-item, article'
+        },
+        {
+            url_regexp: 'news.google.com',
+            selector: 'a[target="_blank"]'
+        },
+        {
+            url_regexp: 'plus.google.com',
+            selector: 'div[id^="update-"], c-wiz div div c-wiz'
+        },
+        {
+            url_regexp: 'reddit.com',
+            selector: '.sitetable > .thing.link:visible, .usertext-body'
+        },
+        {
+            url_regexp: 'slack.com',
+            selector: 'ts-message'
+        },
+        {
+            url_regexp: 'tumblr.com',
+            selector: '.post_container, article'
+        },
+        {
+            url_regexp: 'twitter.com',
+            selector: "[data-item-type='tweet'], .trend-item"
+        },
+        {
+            url_regexp: 'youtube.com',
+            selector: '.yt-lockup, .related-list-item, .comment-renderer-text'
+        },
+    ];
+
+    var ogSpoilers = [
+        '#got',
+        'ady stonehea',
+        'aidan gillen',
+        'alfie allen',
+        'arya stark',
+        'asoiaf',
+        'azor ahai',
+        'baelish',
+        'baratheon',
+        'ben crompton',
+        'bloodraven',
+        'braavos',
+        'bran stark',
+        'briene of tarth',
+        'brienne of tarth',
+        'carice van houten',
+        'casterly rock',
+        'cersei ',
+        'conleth hill',
+        'd.b. weiss',
+        'daenerys',
+        'daniel portman',
+        'david benioff',
+        'davos seaworth',
+        'dornish',
+        'dothraki',
+        'dreadfort',
+        'emilia clarke',
+        'game of thrones',
+        'gameofthrone',
+        'gameofthone',
+        'gamesofthrone',
+        'greyjoy',
+        'gwendoline christie',
+        'highgarden',
+        'hodor',
+        'house bolton',
+        'house stark',
+        'house tyrell',
+        'howland reed',
+        'iain glen',
+        'ian mcelhinney',
+        'iron throne',
+        'isaac hempstead wright',
+        'jerome flynn',
+        'john bradley',
+        'jojen reed',
+        'jon snow',
+        'julian glover',
+        'khaleesi',
+        "king's landing",
+        'kit harington',
+        'kit harrington',
+        'kristian nairn',
+        'lanister',
+        'lannisport',
+        'lannister',
+        'lena headey',
+        'liam cunningham',
+        'littlefinger',
+        'maisie williams',
+        'meereen',
+        'melisandre',
+        'michele fairley',
+        'michelle fairley',
+        'myrcella',
+        'natalie dormer',
+        'nathalie emmanue',
+        'ned stark',
+        'nikolaj coster-waldau',
+        'olenna tyrell',
+        'peter dinklage',
+        'podrick payne',
+        'queen of thorns',
+        'ramsay bolton',
+        'roose bolton',
+        'rory mccann',
+        'sandor clegane',
+        'sansa stark',
+        'sophie turner',
+        'sothoryos',
+        'stephen dillane',
+        'targaryen',
+        'three eyed raven',
+        'tower of joy',
+        'tyrion',
+        'vaes dothrak',
+        'viserys',
+        'walder frey',
+        'westeros',
+        'white walker',
+        'whitewalker',
+        'wildling',
+        'winterfell'
+    ];
+
+    return {
+        defaultSettings: defaultSettings,
+        load: load,
+        get: get,
+        set: set,
+        save: save,
+        ogSites: ogSites,
+        ogSpoilers: ogSpoilers
+    };
+})();

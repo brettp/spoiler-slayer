@@ -1,0 +1,184 @@
+$transition_duration: .5s;
+$blur_heavy: blur(8px);
+$blur_light: blur(3px);
+
+.content-wrapper {
+    transition-duration: $transition_duration;
+}
+
+.glamoured-active {
+    cursor: no-drop !important;
+    animation: blur-out $transition_duration ease-in-out;
+    filter: $blur_heavy;
+
+    &:hover {
+        filter: $blur_light;
+        transition-duration: $transition_duration
+    }
+
+    >* {
+        pointer-events: none;
+    }
+
+    &.revealed {
+        filter: none !important;
+    }
+}
+
+.revealed {
+    transition-duration: $transition_duration;
+}
+
+.spoiler-info {
+    // transition-property: opacity;
+
+    transition-duration: $transition_duration;
+    position: absolute;
+    font-size: 14pt;
+    color: black;
+    // filter: drop-shadow(0 0 0.5em rgba(255, 255, 255, 255));
+    color: white;
+    filter: drop-shadow(0 0 4px rgba(0, 0, 0, 1));
+    padding: 12pt;
+    text-align: center;
+    margin: auto;
+    z-index: 1000;
+    opacity: 1;
+    animation: fade-in $transition_duration ease-in-out;
+
+    &.revealed {
+        // need to double the duration because we fade the opacity to 0
+        // at 50% to prevent a pop when we change the z-index
+        // animation: fade-out calc(2 * #{$transition_duration});
+        animation: fade-out $transition_duration;
+        opacity: 0 !important;
+        z-index: -5 !important;
+    }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+}
+
+@keyframes fade-out {
+    0% {
+        opacity: 1;
+        z-index: 1000;
+    }
+
+    50% {
+        opacity: 0 !important;
+        z-index: 1000;
+    }
+
+    90% {
+        z-index: 1000;
+    }
+
+    100% {
+        z-index: -5 !important;
+    }
+}
+
+@keyframes blur-out {
+    from {
+        filter: blur(0);
+    }
+}
+
+article {
+    &.item {
+        &.graphical .spoiler-glamour h3 {
+            font-size: 24px !important;
+            line-height: 24px !important;
+            padding: 0;
+            margin: 0;
+        }
+
+        &.tabular .spoiler-glamour h3 {
+            font-size: 24px !important;
+            line-height: 24px !important;
+            padding: 0;
+            margin: 0;
+        }
+    }
+
+    &.short .spoiler-glamour.small h3 {
+        margin: 0;
+        font-size: 18px !important;
+        line-height: 18px !important;
+    }
+}
+
+.trend-item {
+    .spoiler-glamour {
+        width: 95%;
+        padding: 3px 6px 1px;
+
+        h3 {
+            font-size: 11px !important;
+            line-height: 11px !important;
+            margin-top: 4px !important;
+        }
+    }
+
+    .click-to-view-spoiler {
+        font-size: 11px !important;
+        line-height: 11px !important;
+        margin-top: 4px !important;
+    }
+}
+
+.comment-renderer-text {
+    .spoiler-glamour {
+        width: 95%;
+        padding: 3px 6px 1px;
+
+        h3 {
+            font-size: 11px !important;
+            line-height: 11px !important;
+            margin-top: 4px !important;
+        }
+    }
+
+    .click-to-view-spoiler {
+        font-size: 11px !important;
+        line-height: 11px !important;
+        margin-top: 4px !important;
+    }
+}
+
+.u0Entry.glamoured .spoiler-glamour {
+    padding: 4px;
+
+    .spoiler-obituary {
+        vertical-align: top;
+    }
+}
+
+#pagelet_trending_tags_and_topics ul>li {
+    .spoiler-glamour {
+        width: 95%;
+        padding: 3px 6px 1px;
+
+        h3 {
+            font-size: 11px !important;
+            line-height: 11px !important;
+            margin-top: 4px !important;
+        }
+    }
+
+    .click-to-view-spoiler {
+        font-size: 11px !important;
+        line-height: 11px !important;
+        margin-top: 4px !important;
+    }
+}
+
+#spoiler-console {
+    position: absolute;
+    top: 0;
+    left: 0;
+}

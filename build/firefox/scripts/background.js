@@ -1,44 +1,47 @@
-var numSpoilersBlocked;
+var numSpoilersBlocked = 0;
 
-numSpoilersBlocked = 0;
+chrome.runtime.onMessage.addListener(function(request, sender, cb) {
+    console.log("Got req", request);
 
-this.userPreferences = {};
+    switch (request.cmd) {
+        case 'increment-badge':
+            numSpoilersBlocked += 1;
+            chrome.browserAction.setBadgeText({
+                text: "" + numSpoilersBlocked
+            });
+            chrome.runtime.sendMessage({
+                newSpoilerBlocked: true
+            }, function() {
+                return cb({
+                    result: "successfully updated"
+                });
+            });
+        break;
 
-loadUserPreferences();
+        case 'fetch-popup-total':
+            cb({
+                newTotal: numSpoilersBlocked
+            });
+        break;
 
-chrome.runtime.onMessage.addListener((function(_this) {
-  return function(request, sender, sendResponse) {
-    if (request.incrementBadge) {
-      numSpoilersBlocked += 1;
-      chrome.browserAction.setBadgeText({
-        text: "" + numSpoilersBlocked
-      });
-      chrome.runtime.sendMessage({
-        newSpoilerBlocked: true
-      }, function() {
-        return sendResponse({
-          result: "successfully updated"
-        });
-      });
-      return true;
-    } else if (request.fetchPopupTotal) {
-      sendResponse({
-        newTotal: numSpoilersBlocked
-      });
-      return false;
-    } else if (request.userPreferencesUpdated) {
-      loadUserPreferences();
-      return false;
-    } else if (request.userPreferencesRequested) {
-      loadUserPreferences(function() {
-        return sendResponse(_this.userPreferences);
-      });
-      return true;
-    } else {
-      sendResponse({
-        result: "failed to update"
-      });
-      return false;
+        // @todo use listeners
+        case 'user-prefs-updated':
+            loadUserPreferences();
+        break;
+
+        // @todo remove
+        case 'user-prefs-requested':
+            loadUserPreferences(function() {
+                return cb(userPreferences);
+            });
+        break;
+
+        default:
+            cb({
+                result: "failed to update"
+            });
+            return false;
     }
-  };
-})(this));
+
+    return true;
+});

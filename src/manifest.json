@@ -12,8 +12,6 @@
     "default_title": "Game of Spoilers Lite"
   },
 
-  "options_page": "options.html",
-
   "icons": {
     "16":  "assets/icons/icon16.png",
     "19":  "assets/icons/icon16.png",
@@ -21,13 +19,15 @@
     "128": "assets/icons/icon128.png"
   },
 
+  "options_page": "options.html",
   "background": {
-    "scripts": ["scripts/constants.js", "scripts/vendor/jquery.min.js", "scripts/helpers.js", "scripts/background.js"]
+    "scripts": ["scripts/lib/helpers.js", "scripts/lib/settings.js", "scripts/background.js"]
   },
 
   "content_scripts": [
     {
       "matches": [
+        "*://asdf.com/*",
         "*://feedly.com/*",
         "*://gizmodo.co.uk/*",
         "*://gizmodo.com/*",
@@ -44,7 +44,7 @@
         "*://www.youtube.com/*"
       ],
       "css": ["styles/content.css"],
-      "js":  ["scripts/vendor/jquery.min.js", "scripts/constants.js", "scripts/helpers.js", "scripts/content.js"]
+      "js":  ["scripts/vendor/jquery.min.js", "scripts/lib/helpers.js", "scripts/lib/settings.js", "scripts/content.js"]
     }
   ],
   "permissions": [

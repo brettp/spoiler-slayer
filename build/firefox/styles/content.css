@@ -5,11 +5,11 @@
 .glamoured-active {
   cursor: no-drop !important;
   animation: blur-out 0.5s ease-in-out;
-  filter: blur(1.5em);
+  filter: blur(8px);
 }
 
 .glamoured-active:hover {
-  filter: blur(0.5em);
+  filter: blur(3px);
   transition-duration: 0.5s;
 }
 
@@ -26,23 +26,46 @@
 }
 
 .spoiler-info {
-  transition-property: opacity;
   transition-duration: 0.5s;
   position: absolute;
-  font-size: 1.5em;
+  font-size: 14pt;
   color: black;
-  filter: drop-shadow(0 0 0.5em #ffffff00);
-  padding: 1em;
+  color: white;
+  filter: drop-shadow(0 0 4px black);
+  padding: 12pt;
   text-align: center;
   margin: auto;
-  z-index: 999999;
+  z-index: 1000;
   opacity: 1;
   animation: fade-in 0.5s ease-in-out;
+}
+
+.spoiler-info.revealed {
+  animation: fade-out 0.5s;
+  opacity: 0 !important;
+  z-index: -5 !important;
 }
 
 @keyframes fade-in {
   from {
     opacity: 0;
+  }
+}
+
+@keyframes fade-out {
+  0% {
+    opacity: 1;
+    z-index: 1000;
+  }
+  50% {
+    opacity: 0 !important;
+    z-index: 1000;
+  }
+  90% {
+    z-index: 1000;
+  }
+  100% {
+    z-index: -5 !important;
   }
 }
 
@@ -52,8 +75,18 @@
   }
 }
 
-.spoiler-info.revealed {
-  opacity: 0 !important;
+article.item.graphical .spoiler-glamour h3 {
+  font-size: 24px !important;
+  line-height: 24px !important;
+  padding: 0;
+  margin: 0;
+}
+
+article.item.tabular .spoiler-glamour h3 {
+  font-size: 24px !important;
+  line-height: 24px !important;
+  padding: 0;
+  margin: 0;
 }
 
 article.short .spoiler-glamour.small h3 {
@@ -62,24 +95,38 @@ article.short .spoiler-glamour.small h3 {
   line-height: 18px !important;
 }
 
-article.item.graphical .spoiler-glamour h3, article.item.tabular .spoiler-glamour h3 {
-  font-size: 24px !important;
-  line-height: 24px !important;
-  padding: 0;
-  margin: 0;
+.trend-item .spoiler-glamour {
+  width: 95%;
+  padding: 3px 6px 1px;
 }
 
-.debug-floaty-thingy {
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
-  font-size: 14px;
-  font-family: monospace;
-  opacity: 0;
+.trend-item .spoiler-glamour h3 {
+  font-size: 11px !important;
+  line-height: 11px !important;
+  margin-top: 4px !important;
 }
 
-.debug-floaty-thingy.show {
-  opacity: 1;
+.trend-item .click-to-view-spoiler {
+  font-size: 11px !important;
+  line-height: 11px !important;
+  margin-top: 4px !important;
+}
+
+.comment-renderer-text .spoiler-glamour {
+  width: 95%;
+  padding: 3px 6px 1px;
+}
+
+.comment-renderer-text .spoiler-glamour h3 {
+  font-size: 11px !important;
+  line-height: 11px !important;
+  margin-top: 4px !important;
+}
+
+.comment-renderer-text .click-to-view-spoiler {
+  font-size: 11px !important;
+  line-height: 11px !important;
+  margin-top: 4px !important;
 }
 
 .u0Entry.glamoured .spoiler-glamour {
@@ -90,13 +137,25 @@ article.item.graphical .spoiler-glamour h3, article.item.tabular .spoiler-glamou
   vertical-align: top;
 }
 
-#pagelet_trending_tags_and_topics ul > li .spoiler-glamour, .trend-item .spoiler-glamour, .comment-renderer-text .spoiler-glamour {
+#pagelet_trending_tags_and_topics ul > li .spoiler-glamour {
   width: 95%;
-  padding: 3px 6px 1px 6px;
+  padding: 3px 6px 1px;
 }
 
-#pagelet_trending_tags_and_topics ul > li .spoiler-glamour h3, #pagelet_trending_tags_and_topics ul > li .click-to-view-spoiler, .trend-item .spoiler-glamour h3, .trend-item .click-to-view-spoiler, .comment-renderer-text .spoiler-glamour h3, .comment-renderer-text .click-to-view-spoiler {
+#pagelet_trending_tags_and_topics ul > li .spoiler-glamour h3 {
   font-size: 11px !important;
   line-height: 11px !important;
   margin-top: 4px !important;
+}
+
+#pagelet_trending_tags_and_topics ul > li .click-to-view-spoiler {
+  font-size: 11px !important;
+  line-height: 11px !important;
+  margin-top: 4px !important;
+}
+
+#spoiler-console {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
