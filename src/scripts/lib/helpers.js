@@ -4,6 +4,7 @@ helpers = (function() {
     // thanks, lodash
     function debounce(func, wait, immediate) {
         var timeout;
+        wait = wait || 150;
 
         return function() {
             var context = this,

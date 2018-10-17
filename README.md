@@ -6,7 +6,7 @@
 
 
 ### Todo
-- [ ] Dom change events instead of tracking element content
+- [X] Dom change events instead of tracking element content
 - [ ] Slider for opacity and to disable animations
 - [ ] Less awful advanced settings interface
 - - [ ] Better text explaining what to do

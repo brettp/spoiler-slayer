@@ -24,37 +24,44 @@ function incrementBadgeNumber() {
 function initiateSpoilerBlocking(selector_string, regexp, remove_parent) {
     searchForAndBlockSpoilers(selector_string, true, regexp, remove_parent);
 
-    // @todo use change events
-    $document.mousemove(
-        helpers.debounce(function() {
-            searchForAndBlockSpoilers(selector_string, false, regexp, remove_parent);
-        })
-    );
+    var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+
+    var observer = new MutationObserver(helpers.debounce(function(muts, obs) {
+        searchForAndBlockSpoilers(selector_string, false, regexp, remove_parent);
+    }, 300));
+
+    const opts = {
+        attributes: true,
+        attributeOldValue: false,
+        characterData: true,
+        characterDataOldValue: false,
+        childList: true,
+        subtree: true
+    };
+
+    // @todo Can we do better than body?
+    observer.observe(document.querySelector('body'), opts);
 }
 
 function searchForAndBlockSpoilers(feed_elements_selector, force_update, regexp, remove_parent) {
-    var $new_feed_elems, last_feed_elem_text, new_last_text, new_length;
-    $new_feed_elems = $(feed_elements_selector);
+    var items = $(feed_elements_selector).not('.glamoured');
+    console.log("Looking at new times: " + items.length);
+
     if (remove_parent) {
-        $new_feed_elems = $new_feed_elems.parent();
+        items = items.parent();
     }
-    if ($new_feed_elems.length === 0) {
+
+    if (items.length === 0) {
         return;
     }
-    new_length = $new_feed_elems.length;
-    new_last_text = $new_feed_elems.last()[0].textContent;
 
-    if (force_update || (new_length !== num_feed_elems) || (new_last_text !== last_feed_elem_text)) {
-        last_feed_elem_text = new_last_text;
-        num_feed_elems = new_length;
-
-        $new_feed_elems.each(function() {
+    if (force_update || items.length > 0) {
+        items.each(function() {
             var matchedSpoiler;
             var $this = $(this);
-            // Ignore elements that are already glamoured or already designated safe
-            if ($this.hasClass('glamoured')) {
-                return;
-            }
+
+            // track the items we already looked at
+            $this.addClass('glamoured');
 
             // Search textContent of the element to see if it contains any spoilers
             matchedSpoiler = this.textContent.match(regexp);
@@ -74,9 +81,6 @@ function blockElement($element, blocked_word) {
         return;
     }
 
-    // track the items we already looked at
-    $element.addClass('glamoured');
-
     // move all content into a new div so we can blur
     // but keep the info text clear without doing silly stuff
     $contentWrapper = $('<div class="content-wrapper glamoured-active" />')
@@ -84,7 +88,7 @@ function blockElement($element, blocked_word) {
         .appendTo($element);
 
     capitalized_spoiler_words = helpers.ucWords(blocked_word);
-    console.log(`Found spoiler for: "${capitalized_spoiler_words}" in`, $element);
+    // console.log(`Found spoiler for: "${capitalized_spoiler_words}" in`, $element);
 
     if (getSetting('showSpecificWord')) {
         $info = $("<h2 class='spoiler-info'>Spoiler about \"" + capitalized_spoiler_words + "\"</h2>");
