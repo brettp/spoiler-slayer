@@ -7,7 +7,9 @@
     <script src="scripts/vendor/jquery.min.js" type="text/javascript"></script>
     <script src="scripts/lib/helpers.js" type="text/javascript"></script>
     <script src="scripts/lib/settings.js" type="text/javascript"></script>
+    <script src="scripts/content.js" type="text/javascript"></script>
     <link rel="stylesheet" type="text/css" href="styles/popup.css" />
+    <link rel="stylesheet" type="text/css" href="styles/content.css" />
 </head>
 
 <body id="game-of-spoilers-popup">
@@ -23,12 +25,12 @@
         <div>
             <label>
                 <input class="popup-setting" type="checkbox" checked="checked" name="destroySpoilers" />
-                Remove spoilers completely instead of showing a censor bar
+                Remove spoilers instead of censoring
             </label>
         </div>
         <div class="indent">
             <label>
-                <input class="popup-setting" type="checkbox" checked="checked" name="showSpecificWord" />
+                <input class="popup-setting" type="checkbox" checked="checked" name="showSpecificSpoiler" />
                 Show the phrase that triggered the block
             </label>
         </div>
@@ -40,6 +42,24 @@
         </div>
 
         <hr />
+
+        <div class="row">
+            <div class="col">
+                <div class="col">
+                    <label for="heavyBlur">Spoiler blur</label><br />
+                    <input type="checkbox" name="blurSpoilers"><input type="range" name="heavyBlur" min="0" max="20" />
+                </div>
+                <div class="col">
+                    <label for="hoverBlur">Hover blur</label><br />
+                    <input type="checkbox" class="hidden"><input type="range" name="hoverBlur" min="0" max="20" />
+                </div>
+            </div>
+            <div class="content-template">
+                <div>Ron is Dumbledore!</div>
+                <img src="assets/images/blind_stark.png" />
+            </div>
+            <div class="col example"></div>
+        </div>
 
         <div>
             <a id="open-options-page">Advanced options</a>

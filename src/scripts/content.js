@@ -2,18 +2,53 @@ var num_feed_elems = null;
 var smaller_font_mode = false;
 var reddit_mode = false;
 
+// add style tag that we can adjust for user customizable styles
+// and when the settings change
+let styleSettings = {
+    heavyBlur: '.glamoured-active',
+    hoverBlur: '.glamoured-active:hover'
+};
+
+chrome.storage.onChanged.addListener(function(changes, namespace) {
+    for (let name in styleSettings) {
+        if (name in changes) {
+            let newVal = changes[name].newValue;
+            updateStyles(name, newVal);
+        }
+    }
+});
+
+function updateStyles(name, value) {
+    if (!styleSettings[name]) {
+        return;
+    }
+
+    let $style = $(`#spoiler-${name}`);
+
+    if ($style.length < 1) {
+        $style = $(`<style id="spoiler-${name}"></style>`);
+        $('head').append($style);
+    }
+
+    $style.text(`${styleSettings[name]} { filter: blur(${value}px); }`);
+}
+
 $document = $(document);
 
 $document.ready(function() {
-    settings.load(function(settings) {
-        if (!settings.blockingEnabled || settings.spoilers.length < 1 || settings.sites.length < 1) {
+    settings.load(function() {
+        if (!settings.get('blockingEnabled') || settings.get('spoilers').length < 1 || settings.get('sites').length < 1) {
             console.log("Disabled, no sites defined, or no spoilers defined. Not activating...");
             return;
         }
 
+        // load initial customizable styles
+        for (let name in styleSettings) {
+            updateStyles(name, settings.get(name));
+        }
         initialize(settings);
     });
-})
+});
 
 function incrementBadgeNumber() {
     return chrome.runtime.sendMessage({
@@ -28,7 +63,7 @@ function initiateSpoilerBlocking(selector_string, regexp, remove_parent) {
 
     var observer = new MutationObserver(helpers.debounce(function(muts, obs) {
         searchForAndBlockSpoilers(selector_string, false, regexp, remove_parent);
-    }, 300));
+    }, 150));
 
     const opts = {
         attributes: true,
@@ -45,7 +80,7 @@ function initiateSpoilerBlocking(selector_string, regexp, remove_parent) {
 
 function searchForAndBlockSpoilers(feed_elements_selector, force_update, regexp, remove_parent) {
     var items = $(feed_elements_selector).not('.glamoured');
-    console.log("Looking at new times: " + items.length);
+    // console.log("Looking at new times: " + items.length);
 
     if (remove_parent) {
         items = items.parent();
@@ -76,7 +111,7 @@ function blockElement($element, blocked_word) {
     var $contentWrapper, $info, capitalized_spoiler_words;
     incrementBadgeNumber();
 
-    if (getSetting('destroySpoilers')) {
+    if (settings.get('destroySpoilers')) {
         $element.remove();
         return;
     }
@@ -87,11 +122,18 @@ function blockElement($element, blocked_word) {
         .append($element.children())
         .appendTo($element);
 
+    if (!settings.get('blurSpoilers')) {
+        $contentWrapper.addClass('no-blur');
+    }
+
     capitalized_spoiler_words = helpers.ucWords(blocked_word);
     // console.log(`Found spoiler for: "${capitalized_spoiler_words}" in`, $element);
 
-    if (getSetting('showSpecificWord')) {
+    if (settings.get('showSpecificSpoiler')) {
         $info = $("<h2 class='spoiler-info'>Spoiler about \"" + capitalized_spoiler_words + "\"</h2>");
+        if (!settings.get('blurSpoilers')) {
+            $info.addClass('no-blur');
+        }
         if (smaller_font_mode) {
             $info.addClass('small');
         }
@@ -108,13 +150,12 @@ function blockElement($element, blocked_word) {
             return;
         }
 
-        console.log('content wrapper click');
         var specific_words_for_confirm;
         ev.stopPropagation();
         ev.preventDefault();
 
-        if (getSetting('warnBeforeReveal')) {
-            specific_words_for_confirm = settings.show_specific_words ? " about '" + capitalized_spoiler_words + "'" : "";
+        if (settings.get('warnBeforeReveal')) {
+            specific_words_for_confirm = settings.get('showSpecificSpoiler') ? " about '" + capitalized_spoiler_words + "'" : "";
             if (!confirm("Show spoiler" + specific_words_for_confirm + "?")) {
                 return;
             }
@@ -126,7 +167,6 @@ function blockElement($element, blocked_word) {
 
 // Initialize page-specific spoiler-blocking, if page is supported
 function initialize(settings) {
-
     getSetting = function(name) {
         return settings[name];
     };
@@ -134,7 +174,7 @@ function initialize(settings) {
     var url = window.location.href.toLowerCase();
     var spoiler_strs = [];
 
-    for (var spoiler_info of settings.spoilers) {
+    for (var spoiler_info of settings.get('spoilers')) {
         var spoiler = helpers.escapeRegexp(spoiler_info.spoiler.trim());
         if (spoiler) {
             spoiler_strs.push(spoiler);
@@ -143,10 +183,10 @@ function initialize(settings) {
 
     var spoilersRegexp = new RegExp(spoiler_strs.join('|'), 'i');
 
-    for (var info of settings.sites) {
+    for (var info of settings.get('sites')) {
         if (new RegExp(info.url_regexp).test(url)) {
             console.log(`Matched site ${info.url_regexp}`);
-            initiateSpoilerBlocking(info.selector, spoilersRegexp, settings.destro1ySpoilers);
+            initiateSpoilerBlocking(info.selector, spoilersRegexp, settings.get('destroySpoilers'));
 
             // @todo don't return and allow it to fall through for more blocking?
             return;

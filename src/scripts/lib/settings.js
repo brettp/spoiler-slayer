@@ -2,31 +2,56 @@ settings = (function() {
     var defaultSettings = {
         blockingEnabled: true,
         destroySpoilers: false,
-        showSpecificWord: true,
+        showSpecificSpoiler: true,
         warnBeforeReveal: false,
+        // out of 0 - 100, which gets converted to a range from 0-20pt
+        // 100 means completely black, no animations
+        heavyBlur: 10,
+        hoverBlur: 2,
+        blurSpoilers: true,
+        blurHover: true,
         sites: [],
         spoilers: []
     };
 
+    var cachedSettings = {};
+
+    // update cached settings
+    // this doesn't fire soon enough for immediate calls after,
+    // so we also manually update the cached setting for each save
+    chrome.storage.onChanged.addListener(function(changes, namespace) {
+        for (let name in changes) {
+            console.log(`Updating cached settings for ${name} to ${changes[name].newValue}`);
+            cachedSettings[name] = changes[name].newValue;
+        }
+    });
+
     function load(cb) {
         chrome.storage.sync.get(defaultSettings, function(result) {
+            cachedSettings = result;
+
+            console.log("Saved cached settings", cachedSettings);
             if (cb) {
                 return cb(result);
             }
         });
     }
 
-    function get(k, cb) {
-        chrome.storage.sync.get(k, cb || helpers.nullFunc);
+    function get(k) {
+        return cachedSettings[k];
     }
 
     function set(k, v, cb) {
+        console.log(`Saving setting ${k} to ${v}`);
         var setting = {};
         setting[k] = v;
+        cachedSettings[k] = v;
+
         chrome.storage.sync.set(setting, cb || helpers.nullFunc);
     }
 
     function save(settings, cb) {
+        cachedSettings = settings;
         chrome.storage.sync.set(settings, cb || helpers.nullFunc);
     }
 

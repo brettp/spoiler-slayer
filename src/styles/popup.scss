@@ -8,7 +8,7 @@ a {
 
 #game-of-spoilers-popup {
     font-size: 100%;
-    min-width: 350px;
+    min-width: 375px;
     background-color: $white;
     line-height: 1.75em;
     hr {
@@ -37,6 +37,34 @@ a {
             min-height: 5em;
         }
     }
+    .row {
+        display: flex;
+        text-align: center;
+
+        .col {
+            flex: 5 0 0px;
+
+            &.example {
+                border-left: 1px solid grey;
+                flex: 4 0 0px;
+                border: 1px dashed #cecece;
+                transition-duration: 2s;
+                min-height: 164px;
+            }
+        }
+
+        input[type=checkbox] {
+            margin-left: -1em;
+
+            &.hidden {
+                visibility: hidden;
+            }
+        }
+    }
+
+    input[type=range] {
+        width: 80%;
+    }
 }
 
 table#sites {
@@ -45,4 +73,8 @@ table#sites {
     input {
         width: 95%;
     }
+}
+
+.content-template {
+    display: none;
 }

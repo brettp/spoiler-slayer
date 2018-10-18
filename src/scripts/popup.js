@@ -1,27 +1,39 @@
 settings.load(function(stored) {
-    console.log("Loaded settings for popup");
-    console.log(stored);
-
-    $('input[type=checkbox].popup-setting').each(function() {
+    // load settings
+    $('input').each(function() {
         var $input = $(this);
         var name = $input.prop('name');
 
         if (stored.hasOwnProperty(name)) {
-            console.log(`Settings ${name} to ${stored[name]}`);
-            $input.prop('checked', stored[name]);
+            if ($input.attr('type') == 'checkbox') {
+                $input.prop('checked', stored[name]);
+            } else {
+                $input.val(stored[name]);
+            }
         }
     });
 
-    $('body').on('change', 'input[type=checkbox].popup-setting', function() {
+    // disable if needed
+    let $destroySpoilers = $('[name=destroySpoilers]');
+    $('[name=showSpecificSpoiler], [name=warnBeforeReveal], ' +
+            '[name=heavyBlur], [name=hoverBlur], [name=blurSpoilers]')
+        .attr('disabled', $destroySpoilers.prop('checked'));
+
+    console.log("it checked is", $('[name=blurSpoilers]').prop('checked'));
+    let $blurSpoilers = $('[name=blurSpoilers]');
+    $('[name=heavyBlur], [name=hoverBlur]').attr('disabled', ($destroySpoilers.prop('checked') || !$blurSpoilers.prop('checked')));
+
+    updateExample();
+
+    // save settings
+    $('body').on('input', 'input', function() {
         var $input = $(this);
         var name = $input.prop('name');
-        var checked = $input.prop('checked');
+        var val = ($input.attr('type') == 'checkbox') ? $input.prop('checked') : $input.val();
 
-        console.log("Got settings changes for");
-        console.log($input.attr('name'));
-        console.log($input.prop('checked'));
+        settings.set(name, val);
 
-        settings.set(name, checked);
+        updateExample();
     });
 
     // openOptionsPage();
@@ -38,24 +50,30 @@ settings.load(function(stored) {
             }
         });
     }), 1);
+
+    // disable options when needed
+    $('body').on('input', '[name=destroySpoilers]', function() {
+        $('[name=showSpecificSpoiler], [name=warnBeforeReveal], ' +
+                '[name=heavyBlur], [name=hoverBlur], [name=blurSpoilers]')
+            .attr('disabled', $(this).prop('checked'));
+    });
+
+    $('body').on('input', '[name=blurSpoilers]', function() {
+        $('[name=heavyBlur], [name=hoverBlur]').attr('disabled', !$(this).prop('checked'));
+    });
 });
 
-// document.addEventListener('DOMContentLoaded', function() {
-//     blockingEnabledToggle = document.getElementById('blocking-enabled-toggle');
-//     showSpecificWordToggle = document.getElementById('show-specific-word-toggle');
-//     destroySpoilersToggle = document.getElementById('destroy-spoilers-toggle');
-//     warnBeforeReveal = document.getElementById('warn-before-reveal-toggle');
-//     extraWordsHolder = document.getElementById('extra-words-to-block');
-//     optionsPage = document.getElementById('options-page');
+function updateExample() {
+    var $exTpl = $('.content-template');
+    var $ex = $exTpl.clone().removeClass('content-template');
 
-//     blockingEnabledToggle.addEventListener('change', storeUserPreferences);
-//     showSpecificWordToggle.addEventListener('change', storeUserPreferences);
-//     destroySpoilersToggle.addEventListener('change', storeUserPreferences);
-//     warnBeforeReveal.addEventListener('change', storeUserPreferences);
-//     extraWordsHolder.addEventListener('keyup', storeUserPreferences);
-//     optionsPage.addEventListener('click', openOptionsPage);
-//     loadUserPreferencesAndUpdate();
-// });
+    console.log("Updating example");
+    $('.example').html($ex);
+
+    if (settings.get('blockingEnabled')) {
+        blockElement($ex, 'Dumbledore');
+    }
+}
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.cmd && request.cmd == newSpoilerBlocked) {

@@ -23,10 +23,39 @@ $blur_light: blur(3px);
     &.revealed {
         filter: none !important;
     }
+
+    // no blur
+    &.no-blur {
+        transition: none;
+        animation: none;
+        filter: none;
+        position: relative;
+
+        &:after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            display: block;
+            background-color: black;
+        }
+
+        &:hover {
+            filter: none !important;
+            animation: none !important;
+            transition: none !important;
+        }
+    }
 }
 
 .revealed {
     transition-duration: $transition_duration;
+
+    &.no-blur {
+        transition: none;
+    }
 }
 
 .spoiler-info {
@@ -36,8 +65,8 @@ $blur_light: blur(3px);
     position: absolute;
     font-size: 14pt;
     color: white;
-    text-shadow: 0 0 3px #000;
-    padding: 12pt;
+    text-shadow: 0 0 10px #000;
+    padding: 6pt 12pt;
     text-align: center;
     margin: auto;
     z-index: 1000;
@@ -51,6 +80,12 @@ $blur_light: blur(3px);
         animation: fade-out $transition_duration;
         opacity: 0 !important;
         z-index: -5 !important;
+    }
+
+    &.no-blur {
+        transition: none;
+        animation: none;
+        filter: none;
     }
 }
 
