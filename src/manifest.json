@@ -5,11 +5,13 @@
   "short_name": "GameOfSpoilsLite",
   "description": "A lighter version of the Game of Thrones spoiler blocking plugin for your Facebook, Twitter, Reddit, and Google News feeds.",
   "version": "1.0.0",
+  "author": "Brett Profitt",
+  "homepage_url": "https://www.github.com/brettp/game-of-spoils",
 
   "browser_action": {
     "default_icon": "assets/icons/icon128.png",
     "default_popup": "popup.html",
-    "default_title": "Game of Spoilers Lite"
+    "default_title": "Game of Spoils Lite"
   },
 
   "icons": {

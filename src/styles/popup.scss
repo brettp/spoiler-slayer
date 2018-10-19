@@ -49,6 +49,14 @@ a {
                 border: 1px dashed #cecece;
                 transition-duration: 2s;
                 min-height: 164px;
+
+                img {
+                    -khtml-user-select: none;
+                    -o-user-select: none;
+                    -moz-user-select: none;
+                    -webkit-user-select: none;
+                    user-select: none;
+                }
             }
         }
 
