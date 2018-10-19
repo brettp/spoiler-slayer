@@ -30,7 +30,7 @@ function updateStyles(name, value) {
         $('head').append($style);
     }
 
-    $style.text(`${styleSettings[name]} { filter: blur(${value}px); }`);
+    $style.text(`${styleSettings[name]} { filter: blur(${value}px) !important; }`);
 }
 
 $document = $(document);
