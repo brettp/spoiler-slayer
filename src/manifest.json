@@ -19,7 +19,9 @@
     "128": "assets/icons/icon128.png"
   },
 
-  "options_page": "options.html",
+  "options_ui": {
+    "page": "options.html"
+  },
   "background": {
     "scripts": ["scripts/lib/helpers.js", "scripts/lib/settings.js", "scripts/background.js"]
   },
@@ -27,6 +29,7 @@
   "content_scripts": [
     {
       "matches": [
+        "*://*.mozilla.org/*",
         "*://asdf.com/*",
         "*://feedly.com/*",
         "*://gizmodo.co.uk/*",
@@ -39,7 +42,7 @@
         "*://www.avclub.com/*",
         "*://www.buzzfeed.com/*",
         "*://www.facebook.com/*",
-        "*://www.reddit.com/*",
+        "*://*.reddit.com/*",
         "*://www.tumblr.com/*",
         "*://www.youtube.com/*"
       ],

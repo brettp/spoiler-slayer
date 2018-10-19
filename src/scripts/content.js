@@ -80,8 +80,6 @@ function initiateSpoilerBlocking(selector_string, regexp, remove_parent) {
 
 function searchForAndBlockSpoilers(feed_elements_selector, force_update, regexp, remove_parent) {
     var items = $(feed_elements_selector).not('.glamoured');
-    // console.log("Looking at new times: " + items.length);
-
     if (remove_parent) {
         items = items.parent();
     }
@@ -185,8 +183,8 @@ function initialize(settings) {
 
     for (var info of settings.get('sites')) {
         if (new RegExp(info.url_regexp).test(url)) {
-            console.log(`Matched site ${info.url_regexp}`);
-            initiateSpoilerBlocking(info.selector, spoilersRegexp, settings.get('destroySpoilers'));
+            // console.log(`Matched site ${info.url_regexp}`);
+            initiateSpoilerBlocking(info.selector, spoilersRegexp, false);
 
             // @todo don't return and allow it to fall through for more blocking?
             return;
