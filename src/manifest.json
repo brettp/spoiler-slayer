@@ -4,7 +4,7 @@
   "name": "GameofSpoils: Lite",
   "short_name": "GameOfSpoilsLite",
   "description": "A lighter version of the Game of Thrones spoiler blocking plugin for your Facebook, Twitter, Reddit, and Google News feeds.",
-  "version": "1.3.3",
+  "version": "1.0.0",
 
   "browser_action": {
     "default_icon": "assets/icons/icon128.png",
@@ -20,7 +20,8 @@
   },
 
   "options_ui": {
-    "page": "options.html"
+    "page": "options.html",
+    "open_in_tab": true
   },
   "background": {
     "scripts": ["scripts/lib/helpers.js", "scripts/lib/settings.js", "scripts/background.js"]

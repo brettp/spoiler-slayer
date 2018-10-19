@@ -60,13 +60,15 @@ $blur_light: blur(3px);
 
 .spoiler-info {
     // transition-property: opacity;
-
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 18pt;
+    font-weight: 700;
     transition-duration: $transition_duration;
     position: absolute;
     font-size: 14pt;
     color: white;
     text-shadow: 0 0 10px #000;
-    padding: 6pt 12pt;
+    padding: 12pt;
     text-align: center;
     margin: auto;
     z-index: 1000;

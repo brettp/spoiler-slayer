@@ -8,7 +8,7 @@ a {
 
 #game-of-spoilers-popup {
     font-size: 100%;
-    min-width: 375px;
+    min-width: 400px;
     background-color: $white;
     line-height: 1.75em;
     hr {
@@ -45,7 +45,6 @@ a {
             flex: 5 0 0px;
 
             &.example {
-                border-left: 1px solid grey;
                 flex: 4 0 0px;
                 border: 1px dashed #cecece;
                 transition-duration: 2s;
@@ -77,4 +76,11 @@ table#sites {
 
 .content-template {
     display: none;
+}
+
+#open-options-page {
+    float: right;
+    font-size: small;
+    padding-top: 1em;
+    color: #000088;
 }
