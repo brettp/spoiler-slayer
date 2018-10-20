@@ -69,6 +69,8 @@ $hover_blur: blur(3px);
         font-size: 14pt;
         color: white;
         text-shadow: 0 0 10px #000;
+        text-stroke: .25px black;
+        -webkit-text-stroke: .25px black;
         padding: 12pt;
         text-align: center;
         margin: auto;
