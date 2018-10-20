@@ -86,7 +86,7 @@ settings = (function() {
         },
         {
             url_regexp: 'reddit.com',
-            selector: '.sitetable > .thing.link:visible, .usertext-body'
+            selector: '.sitetable > .thing.link:visible, .usertext-body, .scrollerItem'
         },
         {
             url_regexp: 'slack.com',
