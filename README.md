@@ -1,7 +1,16 @@
 # Spoiler Slayer
-## The Game of Thrones Spoiler Blocker -- an open-source Chrome extension
+An open-source browser extension to block spoilers.
 
-### Get the current version
+Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils).
+
+## Differences from Game of Spoils
+* Removed superfluous fonts and long-winded block notifications (but you can still enable them if you want).
+* Simplified and improved UI
+* Improved code readability and maintainability
+* Switched to modern ES6 and SCSS
+
+
+## Installation
 @TODO Upload to stores
 
 
@@ -10,6 +19,7 @@
 - [X] Slider for opacity
 - - [X] Disable animations checkbox
 - [ ] Quick add spoiler phrase on popup
+- [ ] New example image
 - [ ] Less awful advanced settings interface
 - - [ ] Better text explaining what to do
 - - [ ] Checkbox to mark spoilers as regexp
@@ -28,14 +38,14 @@
 - [ ] Disable right click on popup
 
 
-### Bugs
+### Known Bugs
 - [X] Example text in popup is slightly off centered
 - [X] Hovering over the spoiler text doesn't de-blur the spoiler
 - - [X] Neither does clicking on it
 - [ ] Retweeted content has the retweeted username bleed through the no-fx censor
 - [ ] Sometimes there can be embedded blocked elements
 
-### How to get setup
+### How to build from source
 1. Clone the repo.
 2. Run `npm install` to install dependencies.
 3. Run `gulp` to setup watches that will automatically compile any changes you make from the `src` dir to the `build` directory.
