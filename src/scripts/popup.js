@@ -65,7 +65,7 @@ settings.load(function(stored) {
 
 function updateExample() {
     var $exTpl = $('.content-template');
-    var $ex = $exTpl.clone().removeClass('content-template');
+    var $ex = $exTpl.clone().removeClass('content-template').addClass('glamoured');
 
     console.log("Updating example");
     $('.example').html($ex);

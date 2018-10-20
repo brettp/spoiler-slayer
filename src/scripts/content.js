@@ -10,6 +10,17 @@ let styleSettings = {
 };
 
 chrome.storage.onChanged.addListener(function(changes, namespace) {
+    // if blur spoilers is changed, remove all injected styles and add/remove no-fx
+    if (changes.blurSpoilers) {
+        $('.spoiler-injected-style').remove();
+        if (changes.blurSpoilers.newValue) {
+            $('.content-wrapper.glamoured-active').removeClass('no-fx');
+        } else {
+            $('.content-wrapper.glamoured-active').addClass('no-fx');
+        }
+        setupStyles();
+    }
+
     for (let name in styleSettings) {
         if (name in changes) {
             let newVal = changes[name].newValue;
@@ -18,15 +29,22 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
     }
 });
 
+// load initial customizable styles
+function setupStyles() {
+    for (let name in styleSettings) {
+        updateStyles(name, settings.get(name));
+    }
+}
+
 function updateStyles(name, value) {
+    let $style = $(`#spoiler-${name}`);
+
     if (!styleSettings[name]) {
         return;
     }
 
-    let $style = $(`#spoiler-${name}`);
-
     if ($style.length < 1) {
-        $style = $(`<style id="spoiler-${name}"></style>`);
+        $style = $(`<style id="spoiler-${name}" class="spoiler-injected-style"></style>`);
         $('head').append($style);
     }
 
@@ -42,10 +60,7 @@ $document.ready(function() {
             return;
         }
 
-        // load initial customizable styles
-        for (let name in styleSettings) {
-            updateStyles(name, settings.get(name));
-        }
+        setupStyles();
         initialize(settings);
     });
 });
@@ -121,7 +136,7 @@ function blockElement($element, blocked_word) {
         .appendTo($element);
 
     if (!settings.get('blurSpoilers')) {
-        $contentWrapper.addClass('no-blur');
+        $contentWrapper.addClass('no-fx');
     }
 
     capitalized_spoiler_words = helpers.ucWords(blocked_word);
@@ -130,7 +145,7 @@ function blockElement($element, blocked_word) {
     if (settings.get('showSpecificSpoiler')) {
         $info = $("<h2 class='spoiler-info'>Spoiler about \"" + capitalized_spoiler_words + "\"</h2>");
         if (!settings.get('blurSpoilers')) {
-            $info.addClass('no-blur');
+            $info.addClass('no-fx');
         }
         if (smaller_font_mode) {
             $info.addClass('small');

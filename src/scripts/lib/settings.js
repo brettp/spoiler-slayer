@@ -203,6 +203,24 @@ settings = (function() {
         'winterfell'
     ];
 
+
+
+    // SPOILER_WORDS_REGEX = new RegExp(SPOILER_WORDS_LIST.join('|'), 'i');
+
+    var ogIgnoredSubreddits = [
+        'gameofthrones',
+        'asoiaf',
+        'iceandfire',
+        'agotboardgame',
+        'gamesofthrones',
+        'westeros',
+        'thronescomics',
+        'asongofmemesandrage',
+        'earthoficeandfire'
+    ];
+
+    // GOT_SUBREDDITS_REGEX = new RegExp('(\/r\/)' + GOT_RELATED_SUBREDDITS.join('|'), 'i');
+
     return {
         defaultSettings: defaultSettings,
         load: load,
@@ -210,6 +228,7 @@ settings = (function() {
         set: set,
         save: save,
         ogSites: ogSites,
-        ogSpoilers: ogSpoilers
+        ogSpoilers: ogSpoilers,
+        ogIgnoredSubreddits: ogIgnoredSubreddits
     };
 })();

@@ -1,6 +1,6 @@
 $transition_duration: .5s;
-$blur_heavy: blur(8px);
-$blur_light: blur(3px);
+$heavy_blur: blur(8px);
+$hover_blur: blur(3px);
 
 .content-wrapper {
     transition-duration: $transition_duration;
@@ -9,10 +9,10 @@ $blur_light: blur(3px);
 .glamoured-active {
     cursor: no-drop !important;
     animation: blur-out $transition_duration ease-in-out;
-    filter: $blur_heavy;
+    filter: $heavy_blur;
 
     &:hover {
-        filter: $blur_light;
+        filter: $hover_blur;
         transition-duration: $transition_duration
     }
 
@@ -24,11 +24,8 @@ $blur_light: blur(3px);
         filter: none !important;
     }
 
-    // no blur
-    &.no-blur {
-        transition: none;
-        animation: none;
-        filter: none;
+    // black censor bar without animations
+    &.no-fx {
         position: relative;
 
         &:after {
@@ -50,44 +47,50 @@ $blur_light: blur(3px);
     }
 }
 
-.revealed {
-    transition-duration: $transition_duration;
-
-    &.no-blur {
-        transition: none;
-    }
+.glamoured .no-fx {
+    transition: none !important;
+    animation: none !important;
+    filter: none !important;
 }
 
-.spoiler-info {
-    // transition-property: opacity;
-    font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 18pt;
-    font-weight: 700;
+.revealed {
     transition-duration: $transition_duration;
-    position: absolute;
-    font-size: 14pt;
-    color: white;
-    text-shadow: 0 0 10px #000;
-    padding: 12pt;
-    text-align: center;
-    margin: auto;
-    z-index: 1000;
-    opacity: 1;
-    animation: fade-in $transition_duration ease-in-out;
+}
 
-    &.revealed {
-        // need to double the duration because we fade the opacity to 0
-        // at 50% to prevent a pop when we change the z-index
-        // animation: fade-out calc(2 * #{$transition_duration});
-        animation: fade-out $transition_duration;
-        opacity: 0 !important;
-        z-index: -5 !important;
-    }
+.glamoured {
+    .spoiler-info {
+        // transition-property: opacity;
+        pointer-events: none;
+        font-family: verdana, arial, helvetica, sans-serif;
+        font-size: 18pt;
+        font-weight: 700;
+        transition-duration: $transition_duration;
+        position: absolute;
+        font-size: 14pt;
+        color: white;
+        text-shadow: 0 0 10px #000;
+        padding: 12pt;
+        text-align: center;
+        margin: auto;
+        z-index: 1000;
+        opacity: 1;
+        animation: fade-in $transition_duration ease-in-out;
 
-    &.no-blur {
-        transition: none;
-        animation: none;
-        filter: none;
+        &.revealed {
+            // need to double the duration because we fade the opacity to 0
+            // at 50% to prevent a pop when we change the z-index
+            // animation: fade-out calc(2 * #{$transition_duration});
+            animation: fade-out $transition_duration;
+            opacity: 0 !important;
+            z-index: -5 !important;
+        }
+
+        // unblur on info hover
+        &:hover {
+            +.content-wrapper {
+                filter: $hover_blur;
+            }
+        }
     }
 }
 

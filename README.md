@@ -9,24 +9,29 @@
 - [X] Dom change events instead of tracking element content
 - [X] Slider for opacity
 - - [X] Disable animations checkbox
-- - [ ] Fix slightly off centered example text
 - [ ] Quick add spoiler phrase on popup
 - [ ] Less awful advanced settings interface
 - - [ ] Better text explaining what to do
 - - [ ] Checkbox to mark spoilers as regexp expressions
-- [ ] Opt-in analytics?
+- [ ] On install tutorial
+- [ ] Disable on certain sites
 - [ ] Badge / popup counter for session and lifetime blocks
 - [X] Live update for settings changes (use on change event)
-- - [ ] Live updates for no-blur changes
+- - [X] Live updates for no-fx changes
 - [ ] Settings import and export
 - [ ] Settings import from gists
-- [ ] Better way to add new sites (tables are too slow for some reason)
+- [ ] Better way to add new sites in settings (tables are too slow for some reason)
+- [ ] Opt-in analytics?
 - [ ] Remove jQuery req?
+- [ ] Add one-click legacy mode
+- [ ] FF mobile?
 
 
 ### Bugs
-- [ ] Hovering over the spoiler text doesn't de-blur the spoiler
-- [ ] Retweeted content has the retweeted username bleed through the no-blur censor
+- [ ] Example text in popup is slightly off centered
+- [X] Hovering over the spoiler text doesn't de-blur the spoiler
+- - [X] Neither does clicking on it
+- [ ] Retweeted content has the retweeted username bleed through the no-fx censor
 - [ ] Sometimes there can be embedded blocked elements
 
 ### How to get setup
