@@ -33,7 +33,9 @@ settings.load(function(stored) {
 
         settings.set(name, val);
 
-        updateExample();
+        if ($('.spoiler-info').hasClass('revealed') || ($input.attr('type') != 'range' && name != 'blurSpoilers')) {
+            updateExample();
+        }
     });
 
     // openOptionsPage();
