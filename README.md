@@ -12,7 +12,7 @@
 - [ ] Quick add spoiler phrase on popup
 - [ ] Less awful advanced settings interface
 - - [ ] Better text explaining what to do
-- - [ ] Checkbox to mark spoilers as regexp expressions
+- - [ ] Checkbox to mark spoilers as regexp
 - [ ] On install tutorial
 - [ ] Disable on certain sites
 - [ ] Badge / popup counter for session and lifetime blocks
@@ -25,10 +25,11 @@
 - [ ] Remove jQuery req?
 - [ ] Add one-click legacy mode
 - [ ] FF mobile?
+- [ ] Disable right click on popup
 
 
 ### Bugs
-- [ ] Example text in popup is slightly off centered
+- [X] Example text in popup is slightly off centered
 - [X] Hovering over the spoiler text doesn't de-blur the spoiler
 - - [X] Neither does clicking on it
 - [ ] Retweeted content has the retweeted username bleed through the no-fx censor
