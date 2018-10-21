@@ -28,20 +28,10 @@ helpers = (function() {
         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
     }
 
-    function debug(msg) {
-        var $console = $('#spoiler-console');
-        if ($console.length < 1) {
-            $console = $('<div id="spoiler-console" />').appendTo($('body'));
-        }
-        $console.append(`<p>${msg}</p>`);
-        console.log(msg);
-    }
-
 	return {
 		nullFunc: nullFunc,
 		debounce: debounce,
 		ucWords: ucWords,
         escapeRegexp: escapeRegexp,
-        debug: debug
 	};
 })();
