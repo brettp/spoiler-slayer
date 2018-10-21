@@ -11,6 +11,7 @@
     <link rel="stylesheet" type="text/css" href="styles/popup.css" />
     <link rel="stylesheet" type="text/css" href="styles/content.css" />
     <style>
+        /* Force centered spoiler info in the example */
         .glamoured {
             position: relative;
         }
@@ -25,7 +26,7 @@
 </head>
 
 <body id="game-of-spoilers-popup">
-    <div id="title">Game of Spoils Lite</div>
+    <h2 id="title">Game of Spoils Lite</h2>
     <hr />
     <div class="settings">
         <div>
@@ -54,27 +55,90 @@
         </div>
 
         <hr />
+
         <div class="content-template">
             <div>Ron is Dumbledore!</div>
             <img src="assets/images/blind_stark.png" />
         </div>
 
-        <div class="row">
-            <div class="col">
+        <div class="quick-toggles">
+            <div class="sliders row">
                 <div class="col">
-                    <label for="heavyBlur">Spoiler blur</label><br />
-                    <input type="checkbox" name="blurSpoilers"><input type="range" name="heavyBlur" min="0" max="20" />
+                    <div class="col">
+                        <label for="heavyBlur">Spoiler blur</label><br />
+                        <input type="checkbox" name="blurSpoilers"><input type="range" name="heavyBlur" min="0" max="20" />
+                    </div>
+                    <div class="col">
+                        <label for="hoverBlur">Hover blur</label><br />
+                        <input type="checkbox" class="hidden"><input type="range" name="hoverBlur" min="0" max="20" />
+                    </div>
                 </div>
-                <div class="col">
-                    <label for="hoverBlur">Hover blur</label><br />
-                    <input type="checkbox" class="hidden"><input type="range" name="hoverBlur" min="0" max="20" />
+                <div class="col example"></div>
+            </div>
+            <div id="quick-add-site-content" class="none">
+                <hr />
+                <div class="row">
+                    <div class="col">
+                        <label>
+                            Site
+                            <br />
+                            <div class="help">
+                                <i class="icon">?</i>
+                                <span class="help-text">
+                                    <i class="icon">?</i>
+                                    This is info.
+                                </span>
+                            </div>
+                            <input class="no-auto-save" type="text" name="name" />
+                        </label>
+                    </div>
+                    <div class="col">
+                        <label>
+                            Selector
+                            <br />
+                            <div class="help">
+                                <i class="icon">?</i>
+                                <span class="help-text">
+                                    <i class="icon">?</i>
+                                    This is info.
+                                </span>
+                            </div>
+                            <input class="no-auto-save" type="text" name="selector" />
+                        </label>
+                    </div>
                 </div>
             </div>
-            <div class="col example"></div>
+            <div id="quick-add-spoiler-content" class="none">
+                <hr />
+                <div class="row">
+                    <div class="col">
+                        <label>
+                            <div class="help">
+                                <i class="icon">?</i>
+                                <span class="help-text">
+                                    <i class="icon">?</i>
+                                    Add plain words or phrases that you want to block, separated by commas,
+                                    and push enter to save.
+                                    <br />Use the advanced options to edit, remove, or create complex regexp entries.
+                                </span>
+                            </div>
+                            Add Spoilers
+                            <form id="quick-add-spoiler-form">
+                                <input autocomplete="off" type="text" class="no-auto-save" type="text" name="spoiler" placeholder="doctor who, westworld, maisie williams" />
+                            </form>
+                        </label>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div>
-            <a id="open-options-page">Advanced options</a>
+        <div class="left">
+            <a href="#quick-add-spoiler-content" id="quick-add-spoiler">Add Spoiler</a>
+            <!-- | <a href="#quick-add-site-content" id="quick-add-site">Add Site</a> -->
+        </div>
+
+        <div class="right">
+            <a href="#" id="open-options-page">Advanced options</a>
         </div>
     </div>
     <div id="num-spoilers-prevented"></div>

@@ -178,31 +178,55 @@ function blockElement($element, blocked_word) {
     });
 }
 
-// Initialize page-specific spoiler-blocking, if page is supported
-function initialize(settings) {
-    getSetting = function(name) {
-        return settings[name];
-    };
-
-    var url = window.location.href.toLowerCase();
+function getSpoilersRegexp() {
     var spoiler_strs = [];
 
     for (var spoiler_info of settings.get('spoilers')) {
+        helpers.escapeRegexp(spoiler_info.spoiler.trim())
+
         var spoiler = helpers.escapeRegexp(spoiler_info.spoiler.trim());
         if (spoiler) {
             spoiler_strs.push(spoiler);
         }
     }
+    return new RegExp(spoiler_strs.join('|'), 'i');
+}
 
-    var spoilersRegexp = new RegExp(spoiler_strs.join('|'), 'i');
+function getSitesInfo(url) {
+    var url_regexps = [];
+    var selectors = [];
 
     for (var info of settings.get('sites')) {
-        if (new RegExp(info.url_regexp).test(url)) {
-            // console.log(`Matched site ${info.url_regexp}`);
-            initiateSpoilerBlocking(info.selector, spoilersRegexp, false);
+        url_regexps.push(info.url_regexp);
+    }
 
-            // @todo don't return and allow it to fall through for more blocking?
-            return;
+    var url_regexp = new RegExp(url_regexps.join('|'), 'i');
+    // put most matched sites at top of list
+    if (url_regexp.test(url)) {
+        for (var info of settings.get('sites')) {
+            if ((new RegExp(info.url_regexp)).test(url)) {
+                selectors.push(info.selector);
+            }
         }
+    }
+
+    // is this faster?
+    // match the url first then re-iterate to find the selectors
+    return {
+        regexp: url_regexp,
+        selector: selectors.join(',')
+    }
+}
+
+// Initialize page-specific spoiler-blocking, if page is supported
+function initialize(settings) {
+    var url = window.location.href.toLowerCase();
+    var spoilersRegexp = getSpoilersRegexp();
+    var sites = getSitesInfo(url);
+
+    if (sites.regexp.test(url)) {
+        console.log(`Starting blocking for ${url} because of ${sites.regexp}`);
+        console.log(`Looking for elements ${sites.selector} matching ${spoilersRegexp}`);
+        initiateSpoilerBlocking(sites.selector, spoilersRegexp, false);
     }
 }

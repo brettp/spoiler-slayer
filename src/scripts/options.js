@@ -1,10 +1,10 @@
 $siteRow = $("<tr>" +
-    "<td><a class='remove-row'>X</a> <td><input type='text' name='url_regexp' /></td>" +
+    "<td><a class='remove-row icon solid'>X</a> <td><input type='text' name='url_regexp' /></td>" +
     "<td><input type='text' name='selector' /></td> </tr>"
 );
 
 $spoilerRow = $("<tr>" +
-    "<td><a class='remove-row'>X</a> <td><input type='text' name='spoiler' /></td></tr>"
+    "<td><a class='remove-row icon solid'>X</a> <td><input type='text' name='spoiler' /></td></tr>"
 );
 
 settings.load(function(prefs) {

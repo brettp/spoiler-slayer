@@ -18,7 +18,8 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - [X] Dom change events instead of tracking element content
 - [X] Slider for opacity
 - - [X] Disable animations checkbox
-- [ ] Quick add spoiler phrase on popup
+- [X] Quick add spoiler phrase on popup
+- [ ] Quick add site on popup?
 - [ ] New example image
 - [ ] Less awful advanced settings interface
 - - [ ] Better text explaining what to do

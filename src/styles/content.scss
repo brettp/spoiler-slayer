@@ -16,6 +16,7 @@ $hover_blur: blur(3px);
         transition-duration: $transition_duration
     }
 
+    // don't allow mouse events on obscured content
     >* {
         pointer-events: none;
     }
@@ -75,7 +76,7 @@ $hover_blur: blur(3px);
         text-stroke: .25px black;
         -webkit-text-stroke: .25px black;
 
-        pointer-events: none;
+        // pointer-events: none;
 
         &.revealed {
             // need to double the duration because we fade the opacity to 0

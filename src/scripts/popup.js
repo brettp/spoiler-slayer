@@ -28,6 +28,11 @@ settings.load(function(stored) {
     // save settings
     $('body').on('input', 'input', function() {
         var $input = $(this);
+
+        if ($input.hasClass('no-auto-save')) {
+            return;
+        }
+
         var name = $input.prop('name');
         var val = ($input.attr('type') == 'checkbox') ? $input.prop('checked') : $input.val();
 
@@ -62,6 +67,50 @@ settings.load(function(stored) {
 
     $('body').on('input', '[name=blurSpoilers]', function() {
         $('[name=heavyBlur], [name=hoverBlur]').attr('disabled', !$(this).prop('checked'));
+    });
+
+    // register quick adds
+    $('body').on('click', '#quick-add-site, #quick-add-spoiler', function() {
+        $($(this).attr('href')).toggleClass('none');
+    });
+
+    $('body').on('submit', '#quick-add-spoiler-form', function(e) {
+        e.preventDefault();
+        var $this = $(this);
+        var $input = $(this).find('input');
+        var spoilers = $input.val().trim().split(',');
+        var cleaned = [];
+
+        for (let str of spoilers) {
+            if (str.trim()) {
+                cleaned.push(str.trim());
+            }
+        }
+
+        if (cleaned.length > 0) {
+            var cur = settings.get('spoilers');
+
+            for (let spoiler of cleaned) {
+                cur.unshift({
+                    'spoiler': spoiler
+                });
+            }
+
+            settings.set('spoilers', cur);
+            $input.addClass('saved-success');
+
+            $this[0].reset();
+        } else {
+            $input.addClass('saved-fail');
+        }
+
+        // remove the class so we can add again if needed
+        setTimeout(function() {
+            $input.removeClass('saved-fail').removeClass('saved-success');
+        }, 1000);
+
+        return false;
+
     });
 });
 
