@@ -37,6 +37,7 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - [ ] Add one-click legacy mode
 - [ ] FF mobile?
 - [ ] Disable right click on popup
+- [ ] Categorize / tag sites and spoilers to allow export of single collection settings like Harry Potter
 
 
 ### Known Bugs
@@ -45,6 +46,7 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - - [X] Neither does clicking on it
 - [ ] Retweeted content has the retweeted username bleed through the no-fx censor
 - [ ] Sometimes there can be embedded blocked elements
+- [ ] Reddit's up and down arrows don't change color for glamoured content. Probably need to move all the content back to its real parent on reveal.
 
 ### How to build from source
 1. Clone the repo.

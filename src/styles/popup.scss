@@ -151,7 +151,8 @@ table#sites {
     position: absolute;
     line-height: 1.25em;
     font-size: 10pt;
-    transform: translateY(calc(100% * -1 - 1em));
+    // move it up by its height with a bit of a room
+    transform: translateY(calc(-100% - 3em));
     left: 20px;
     width: 350px;
     border-radius: 8px;

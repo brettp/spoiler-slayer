@@ -28,10 +28,60 @@ helpers = (function() {
         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
     }
 
-	return {
-		nullFunc: nullFunc,
-		debounce: debounce,
-		ucWords: ucWords,
+    function getSpoilersRegexp(spoilers) {
+        var spoiler_strs = [];
+        if (!spoilers) {
+            return false;
+        }
+
+        for (let spoiler_info of spoilers) {
+            helpers.escapeRegexp(spoiler_info.spoiler.trim())
+
+            var spoiler = helpers.escapeRegexp(spoiler_info.spoiler.trim());
+            if (spoiler) {
+                spoiler_strs.push(spoiler);
+            }
+        }
+
+        if (!spoilers.length > 0) {
+            return false;
+        }
+
+        return new RegExp(spoiler_strs.join('|'), 'i');
+    }
+
+    return {
+        nullFunc: nullFunc,
+        debounce: debounce,
+        ucWords: ucWords,
         escapeRegexp: escapeRegexp,
-	};
+        getSpoilersRegexp: getSpoilersRegexp
+    };
 })();
+
+
+async function getSetting(name) {
+    return cmd('getSetting', name);
+}
+
+async function setSetting(name, val) {
+    return cmd('setSetting', {
+        name: name,
+        value: val
+    })
+}
+
+async function cmd(cmd, data) {
+    return msg({
+        cmd: cmd,
+        data: data
+    });
+}
+
+async function msg(msg) {
+    return new Promise(res => {
+        chrome.runtime.sendMessage(msg, (ret) => {
+            res(ret);
+        });
+    });
+}

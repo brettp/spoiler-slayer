@@ -1,6 +1,8 @@
 var num_feed_elems = null;
 var smaller_font_mode = false;
 var reddit_mode = false;
+var $document = $(document);
+var hostname = window.location.hostname.replace(/\./g, '-');
 
 // add style tag that we can adjust for user customizable styles
 // and when the settings change
@@ -9,7 +11,27 @@ let styleSettings = {
     hoverBlur: '.glamoured-active:hover'
 };
 
-chrome.storage.onChanged.addListener(function(changes, namespace) {
+async function init() {
+    let url = window.location.href.toLowerCase();
+    let shouldBlock = await cmd('shouldBlock', url);
+
+    if (!shouldBlock) {
+        console.log("Disabled, no sites, or not spoilers defined.");
+        return;
+    }
+
+    console.log("Starting spoiler blocker");
+    setupStyles();
+
+    var selector = await cmd('getSelectors', url);
+    initiateSpoilerBlocking(selector, false);
+}
+
+// wait until onload
+// @todo can get rid of this since using mutations observers?
+$(() => { init(); });
+
+chrome.storage.onChanged.addListener((changes, namespace) => {
     // if blur spoilers is changed, remove all injected styles and add/remove no-fx
     if (changes.blurSpoilers) {
         $('.spoiler-injected-style').remove();
@@ -30,9 +52,10 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 });
 
 // load initial customizable styles
-function setupStyles() {
+async function setupStyles() {
     for (let name in styleSettings) {
-        updateStyles(name, settings.get(name));
+        let val = await getSetting(name);
+        updateStyles(name, val);
     }
 }
 
@@ -51,33 +74,18 @@ function updateStyles(name, value) {
     $style.text(`${styleSettings[name]} { filter: blur(${value}px) !important; }`);
 }
 
-$document = $(document);
-
-$document.ready(function() {
-    settings.load(function() {
-        if (!settings.get('blockingEnabled') || settings.get('spoilers').length < 1 || settings.get('sites').length < 1) {
-            console.log("Disabled, no sites defined, or no spoilers defined. Not activating...");
-            return;
-        }
-
-        setupStyles();
-        initialize(settings);
-    });
-});
-
 function incrementBadgeNumber() {
     return chrome.runtime.sendMessage({
         incrementBadge: true
     }, helpers.nullFunc);
 }
 
-function initiateSpoilerBlocking(selector_string, regexp, remove_parent) {
-    searchForAndBlockSpoilers(selector_string, true, regexp, remove_parent);
-
+function initiateSpoilerBlocking(selector_string, remove_parent) {
+    searchForAndBlockSpoilers(selector_string, true, remove_parent);
     var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
     var observer = new MutationObserver(helpers.debounce(function(muts, obs) {
-        searchForAndBlockSpoilers(selector_string, false, regexp, remove_parent);
+        searchForAndBlockSpoilers(selector_string, false, remove_parent);
     }, 150));
 
     const opts = {
@@ -93,58 +101,55 @@ function initiateSpoilerBlocking(selector_string, regexp, remove_parent) {
     observer.observe(document.querySelector('body'), opts);
 }
 
-function searchForAndBlockSpoilers(feed_elements_selector, force_update, regexp, remove_parent) {
-    var items = $(feed_elements_selector).not('.glamoured');
+async function searchForAndBlockSpoilers(selector, force_update, remove_parent) {
+    var items = $(selector).not('.glamoured');
     if (remove_parent) {
         items = items.parent();
     }
 
-    if (items.length === 0) {
-        return;
-    }
-
     if (force_update || items.length > 0) {
-        items.each(function() {
-            var matchedSpoiler;
-            var $this = $(this);
-
-            // track the items we already looked at
-            $this.addClass('glamoured');
-
-            // Search textContent of the element to see if it contains any spoilers
-            matchedSpoiler = this.textContent.match(regexp);
-            if (matchedSpoiler !== null) {
-                blockElement($this, matchedSpoiler[0]);
-            }
-        });
+        items.each(blockOrNot);
     }
 }
 
-function blockElement($element, blocked_word) {
+async function blockOrNot(i, el) {
+    // track the items we already looked at
+    var $el = $(el);
+    $el.addClass(`glamoured ${hostname}`);
+
+    // check for spoilers
+    let spoilers = await cmd('hasSpoilers', el.textContent);
+
+    if (spoilers) {
+        let settings = await cmd('getSettings');
+        blockElement($el, spoilers[0], settings);
+    }
+}
+
+function blockElement($element, blocked_word, settings) {
     var $contentWrapper, $info, capitalized_spoiler_words;
     incrementBadgeNumber();
 
-    if (settings.get('destroySpoilers')) {
+    if (settings.destroySpoilers) {
         $element.remove();
         return;
     }
 
     // move all content into a new div so we can blur
     // but keep the info text clear without doing silly stuff
-    $contentWrapper = $('<div class="content-wrapper glamoured-active" />')
+    $contentWrapper = $(`<div class="content-wrapper glamoured-active" />`)
         .append($element.children())
         .appendTo($element);
 
-    if (!settings.get('blurSpoilers')) {
+    if (!settings.blurSpoilers) {
         $contentWrapper.addClass('no-fx');
     }
 
     capitalized_spoiler_words = helpers.ucWords(blocked_word);
-    // console.log(`Found spoiler for: "${capitalized_spoiler_words}" in`, $element);
 
-    if (settings.get('showSpecificSpoiler')) {
+    if (settings.showSpecificSpoiler) {
         $info = $("<h2 class='spoiler-info'>Spoiler about \"" + capitalized_spoiler_words + "\"</h2>");
-        if (!settings.get('blurSpoilers')) {
+        if (!settings.blurSpoilers) {
             $info.addClass('no-fx');
         }
         if (smaller_font_mode) {
@@ -167,8 +172,8 @@ function blockElement($element, blocked_word) {
         ev.stopPropagation();
         ev.preventDefault();
 
-        if (settings.get('warnBeforeReveal')) {
-            specific_words_for_confirm = settings.get('showSpecificSpoiler') ? " about '" + capitalized_spoiler_words + "'" : "";
+        if (settings.warnBeforeReveal) {
+            specific_words_for_confirm = settings.showSpecificSpoiler ? " about '" + capitalized_spoiler_words + "'" : "";
             if (!confirm("Show spoiler" + specific_words_for_confirm + "?")) {
                 return;
             }
@@ -176,57 +181,4 @@ function blockElement($element, blocked_word) {
         $contentWrapper.removeClass('glamoured-active').addClass('revealed');
         $info.addClass('revealed');
     });
-}
-
-function getSpoilersRegexp() {
-    var spoiler_strs = [];
-
-    for (var spoiler_info of settings.get('spoilers')) {
-        helpers.escapeRegexp(spoiler_info.spoiler.trim())
-
-        var spoiler = helpers.escapeRegexp(spoiler_info.spoiler.trim());
-        if (spoiler) {
-            spoiler_strs.push(spoiler);
-        }
-    }
-    return new RegExp(spoiler_strs.join('|'), 'i');
-}
-
-function getSitesInfo(url) {
-    var url_regexps = [];
-    var selectors = [];
-
-    for (var info of settings.get('sites')) {
-        url_regexps.push(info.url_regexp);
-    }
-
-    var url_regexp = new RegExp(url_regexps.join('|'), 'i');
-    // put most matched sites at top of list
-    if (url_regexp.test(url)) {
-        for (var info of settings.get('sites')) {
-            if ((new RegExp(info.url_regexp)).test(url)) {
-                selectors.push(info.selector);
-            }
-        }
-    }
-
-    // is this faster?
-    // match the url first then re-iterate to find the selectors
-    return {
-        regexp: url_regexp,
-        selector: selectors.join(',')
-    }
-}
-
-// Initialize page-specific spoiler-blocking, if page is supported
-function initialize(settings) {
-    var url = window.location.href.toLowerCase();
-    var spoilersRegexp = getSpoilersRegexp();
-    var sites = getSitesInfo(url);
-
-    if (sites.regexp.test(url)) {
-        console.log(`Starting blocking for ${url} because of ${sites.regexp}`);
-        console.log(`Looking for elements ${sites.selector} matching ${spoilersRegexp}`);
-        initiateSpoilerBlocking(sites.selector, spoilersRegexp, false);
-    }
 }

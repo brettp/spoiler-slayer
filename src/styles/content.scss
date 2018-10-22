@@ -65,7 +65,7 @@ $hover_blur: blur(3px);
         animation: fade-in $transition_duration ease-in-out;
 
         padding: 6pt 12pt;
-        margin: auto;
+        // margin: auto;
         z-index: 1000;
 
         color: white;
@@ -127,6 +127,8 @@ $hover_blur: blur(3px);
         filter: blur(0);
     }
 }
+
+// specific site changes
 
 article {
     &.item {

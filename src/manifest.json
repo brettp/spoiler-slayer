@@ -50,7 +50,7 @@
         "*://www.youtube.com/*"
       ],
       "css": ["styles/content.css"],
-      "js":  ["scripts/vendor/jquery.min.js", "scripts/lib/helpers.js", "scripts/lib/settings.js", "scripts/content.js"]
+      "js":  ["scripts/vendor/jquery.min.js", "scripts/lib/helpers.js", "scripts/content.js"]
     }
   ],
   "permissions": [
