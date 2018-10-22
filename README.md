@@ -46,7 +46,8 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - - [X] Neither does clicking on it
 - [ ] Retweeted content has the retweeted username bleed through the no-fx censor
 - [ ] Sometimes there can be embedded blocked elements
-- [ ] Reddit's up and down arrows don't change color for glamoured content. Probably need to move all the content back to its real parent on reveal.
+- [X] Reddit's up and down arrows don't change color for glamoured content. Probably need to move all the content back to its real parent on reveal.
+- [ ] The spoiler info pops out instead of fades on reveal in FF
 
 ### How to build from source
 1. Clone the repo.

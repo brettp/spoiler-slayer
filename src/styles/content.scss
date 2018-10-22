@@ -60,6 +60,7 @@ $hover_blur: blur(3px);
 
 .glamoured {
     .spoiler-info {
+        pointer-events: none;
         position: absolute;
         transition-duration: $transition_duration;
         animation: fade-in $transition_duration ease-in-out;

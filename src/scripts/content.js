@@ -29,7 +29,9 @@ async function init() {
 
 // wait until onload
 // @todo can get rid of this since using mutations observers?
-$(() => { init(); });
+$(() => {
+    init();
+});
 
 chrome.storage.onChanged.addListener((changes, namespace) => {
     // if blur spoilers is changed, remove all injected styles and add/remove no-fx
@@ -163,21 +165,32 @@ function blockElement($element, blocked_word, settings) {
     }
 
     $element.prepend($info);
+
     $contentWrapper.on('click', function(ev) {
-        if ($(this).hasClass('revealed')) {
+        var $this = $(this);
+        if ($this.hasClass('revealed')) {
             return;
         }
 
-        var specific_words_for_confirm;
         ev.stopPropagation();
         ev.preventDefault();
 
+        // move everything back to its original parent and remove the info
+        // because it confuses some sites
+        // for some reason the animation end event is only fired for the info tag
+        $info.on('animationend webkitAnimationEnd', function(e) {
+            $element.append($this.children());
+            $info.remove();
+            $contentWrapper.remove();
+        });
+
         if (settings.warnBeforeReveal) {
-            specific_words_for_confirm = settings.showSpecificSpoiler ? " about '" + capitalized_spoiler_words + "'" : "";
+            let specific_words_for_confirm = settings.showSpecificSpoiler ? " about '" + capitalized_spoiler_words + "'" : "";
             if (!confirm("Show spoiler" + specific_words_for_confirm + "?")) {
                 return;
             }
         }
+
         $contentWrapper.removeClass('glamoured-active').addClass('revealed');
         $info.addClass('revealed');
     });
