@@ -24,7 +24,8 @@ async function init() {
     setupStyles();
 
     var selector = await cmd('getSelectors', url);
-    initiateSpoilerBlocking(selector, false);
+    var settings = await cmd('getSettings');
+    initiateSpoilerBlocking(selector, false, settings);
 }
 
 // wait until onload
@@ -82,12 +83,12 @@ function incrementBadgeNumber() {
     }, helpers.nullFunc);
 }
 
-function initiateSpoilerBlocking(selector_string, remove_parent) {
-    searchForAndBlockSpoilers(selector_string, true, remove_parent);
+function initiateSpoilerBlocking(selector_string, remove_parent, settings) {
+    searchForAndBlockSpoilers(selector_string, true, remove_parent, settings);
     var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
     var observer = new MutationObserver(helpers.debounce(function(muts, obs) {
-        searchForAndBlockSpoilers(selector_string, false, remove_parent);
+        searchForAndBlockSpoilers(selector_string, false, remove_parent, settings);
     }, 150));
 
     const opts = {
@@ -103,28 +104,27 @@ function initiateSpoilerBlocking(selector_string, remove_parent) {
     observer.observe(document.querySelector('body'), opts);
 }
 
-async function searchForAndBlockSpoilers(selector, force_update, remove_parent) {
-    var items = $(selector).not('.glamoured');
+async function searchForAndBlockSpoilers(selector, force_update, remove_parent, settings) {
+    var $items = $(selector).not('.glamoured');
     if (remove_parent) {
-        items = items.parent();
+        $items = items.parent();
     }
 
-    if (force_update || items.length > 0) {
-        items.each(blockOrNot);
-    }
-}
+    if (force_update || $items.length > 0) {
+        // don't use jquery to loop because it causes
+        // too many requests to the messages
+        for (let i=0; i < $items.length; i++) {
+            let el = $items.get(i);
+            let $el = $(el);
 
-async function blockOrNot(i, el) {
-    // track the items we already looked at
-    var $el = $(el);
-    $el.addClass(`glamoured ${hostname}`);
+            $el.addClass(`glamoured ${hostname}`);
 
-    // check for spoilers
-    let spoilers = await cmd('hasSpoilers', el.textContent);
-
-    if (spoilers) {
-        let settings = await cmd('getSettings');
-        blockElement($el, spoilers[0], settings);
+            // check for spoilers adn block if found
+            let spoilers = await cmd('hasSpoilers', el.textContent);
+            if (spoilers) {
+                blockElement($el, spoilers[0], settings);
+            }
+        }
     }
 }
 

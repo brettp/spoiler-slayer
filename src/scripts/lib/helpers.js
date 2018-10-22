@@ -78,7 +78,21 @@ async function cmd(cmd, data) {
     });
 }
 
+var debug = true;
+
 async function msg(msg) {
+    if (debug) {
+        let stack = (new Error()).stack.split("\n");
+        let newStack = [];
+        stack[0] = "msg debug:";
+
+        for (let line of stack) {
+            if (!/helpers.js/.test(line)) {
+                newStack.push(line);
+            }
+        }
+        msg.stack = newStack;
+    }
     return new Promise(res => {
         chrome.runtime.sendMessage(msg, (ret) => {
             res(ret);

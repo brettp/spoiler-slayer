@@ -36,6 +36,10 @@ class CmdHandler {
         this.settings[data.name] = data.value;
     }
 
+    saveSettings(data) {
+        this.settings.saveSettings(data);
+    }
+
     getDefaultSettings() {
         return this.settings.defaultSettings;
     }
@@ -54,7 +58,7 @@ async function init() {
     let cmdHandler = new CmdHandler(settings);
 
     chrome.runtime.onMessage.addListener(function(request, sender, cb) {
-        console.log("<--", request);
+        let res = '';
 
         switch (request.cmd) {
             case 'validUrl':
@@ -66,73 +70,61 @@ async function init() {
             case 'hasSpoilers':
             case 'getSelectors':
                 if (!request.cmd in cmdHandler) {
-                    console.log(`--- no handler for ${request.cmd}`);
+                    console.log(`No handler for ${request.cmd}`);
                 }
-                let res = cmdHandler[request.cmd].call(cmdHandler, request.data);
-                console.log("-->", res);
-                cb(res);
+                res = cmdHandler[request.cmd].call(cmdHandler, request.data);
                 break;
 
 
             case 'increment-badge':
-                sessionSpoilersBlocked += 1;
+                // sessionSpoilersBlocked += 1;
 
-                chrome.browserAction.setBadgeText({
-                    text: "" + sessionSpoilersBlocked
+                // chrome.browserAction.setBadgeText({
+                //     text: "" + sessionSpoilersBlocked
 
-                });
-                chrome.runtime.sendMessage({
-                    newSpoilerBlocked: true
-                }, function() {
-                    return cb({
-                        result: "successfully updated"
-                    });
-                });
-            break;
-
-            case 'fetch-popup-total':
-                cb({
-                    newTotal: sessionSpoilersBlocked
-                });
-            break;
-
-            // probably shouldn't use ever
-            case 'get-settings':
-                cb(settings.cached);
-            break;
-
-            case 'get-setting':
-                cb(settings[request.name]);
-
-            case 'set-setting':
-                settings.set(request.name, request.value, cb);
-            break;
-
-            case 'save-settings':
-                settings.save(request.settings, cb);
-            break;
-
-            case 'valid-url':
-
+                // });
+                // chrome.runtime.sendMessage({
+                //     newSpoilerBlocked: true
+                // }, function() {
+                //     return cb({
+                //         result: "successfully updated"
+                //     });
+                // });
                 break;
 
-            case 'ready-to-block':
-                // is enabled?
-                // has sites?
-                // has spoilers?
-
-
-            case 'has-spoilers':
-
+            case 'fetch-popup-total':
+                // cb({
+                //     newTotal: sessionSpoilersBlocked
+                // });
                 break;
 
             default:
-                cb({
-                    result: "failed to update"
-                });
-                return false;
+                res = 'unknown message';
         }
 
+        cb(res);
+        let msg = `<-- msg ${request.cmd}`;
+        if (typeof request.data != 'object') {
+            if (request.data === undefined) {
+                let shortData = "undefined";
+            } else {
+                let shortData = request.data.toString();
+
+                if (request.data.length > 28) {
+                    shortData = shortData.substr(0, 28) + '...';
+                }
+                msg += `(${shortData})`;
+            }
+        }
+        console.groupCollapsed(msg, '|', `${res} -->`);
+
+        if (request.stack) {
+            console.log('Stack', request.stack);
+            delete request.stack;
+        }
+        console.log(request);
+        console.log(res);
+        console.groupEnd();
         return true;
     });
 }

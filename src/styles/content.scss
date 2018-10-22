@@ -59,7 +59,7 @@ $hover_blur: blur(3px);
 }
 
 .glamoured {
-    .spoiler-info {
+    h2.spoiler-info {
         pointer-events: none;
         position: absolute;
         transition-duration: $transition_duration;
@@ -72,7 +72,7 @@ $hover_blur: blur(3px);
         color: white;
         opacity: 1;
 
-        font: 700 14pt verdana, arial, helvetica, sans-serif;
+        font: 700 14pt verdana, arial, helvetica, sans-serif !important;
         text-shadow: 0 0 10px #000;
         text-stroke: .25px black;
         -webkit-text-stroke: .25px black;
