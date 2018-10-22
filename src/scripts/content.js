@@ -20,6 +20,8 @@ async function init() {
         return;
     }
 
+    cmd('resetPageCount');
+
     console.log("Starting spoiler blocker");
     setupStyles();
 
@@ -77,12 +79,6 @@ function updateStyles(name, value) {
     $style.text(`${styleSettings[name]} { filter: blur(${value}px) !important; }`);
 }
 
-function incrementBadgeNumber() {
-    return chrome.runtime.sendMessage({
-        incrementBadge: true
-    }, helpers.nullFunc);
-}
-
 function initiateSpoilerBlocking(selector_string, remove_parent, settings) {
     searchForAndBlockSpoilers(selector_string, true, remove_parent, settings);
     var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
@@ -130,7 +126,9 @@ async function searchForAndBlockSpoilers(selector, force_update, remove_parent, 
 
 function blockElement($element, blocked_word, settings) {
     var $contentWrapper, $info, capitalized_spoiler_words;
-    incrementBadgeNumber();
+    cmd('incPageCount');
+    cmd('incSessionCount');
+    cmd('showSessionCount');
 
     if (settings.destroySpoilers) {
         $element.remove();

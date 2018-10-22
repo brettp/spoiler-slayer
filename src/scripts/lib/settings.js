@@ -11,6 +11,7 @@ class Settings {
             hoverBlur: 2,
             blurSpoilers: true,
             blurHover: true,
+            debug: false,
             sites: [],
             spoilers: []
         };

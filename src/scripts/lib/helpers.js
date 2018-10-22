@@ -1,3 +1,15 @@
+// call this manually first to set early.
+var debug = false;
+chrome.storage.sync.get({debug: false}, res => {
+    debug = res;
+});
+
+chrome.storage.onChanged.addListener(changes => {
+    if (changes.name == 'debug') {
+        debug = changes.debug.newValue;
+    }
+});
+
 helpers = (function() {
     var nullFunc = function() {};
 
@@ -77,8 +89,6 @@ async function cmd(cmd, data) {
         data: data
     });
 }
-
-var debug = true;
 
 async function msg(msg) {
     if (debug) {

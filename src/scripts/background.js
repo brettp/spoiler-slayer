@@ -1,4 +1,6 @@
 var sessionSpoilersBlocked = 0;
+var pageSpoilersBlocked = {};
+
 class CmdHandler {
     constructor(settings) {
         this.settings = settings;
@@ -48,6 +50,38 @@ class CmdHandler {
         var regexp = this.settings.spoilersRegexp
         return text.match(regexp);
     }
+
+    incSessionCount() {
+        sessionSpoilersBlocked++;
+        return sessionSpoilersBlocked;
+    }
+
+    showSessionCount() {
+        this.updateBadge(sessionSpoilersBlocked);
+    }
+
+    resetPageCount(host) {
+        pageSpoilersBlocked[host] = 0;
+    }
+
+    incPageCount(host) {
+        if (!pageSpoilersBlocked[host]) {
+            pageSpoilersBlocked[host] = 0;
+        }
+        pageSpoilersBlocked[host]++;
+        return pageSpoilersBlocked[host];
+    }
+
+    showPageCount(host) {
+        this.updateBadge(pageSpoilersBlocked[host]);
+    }
+
+    updateBadge(text) {
+        text = text.toString();
+        chrome.browserAction.setBadgeText({
+            text: text
+        });
+    }
 }
 
 // manage settings object here to avoid reloading on every page
@@ -60,71 +94,39 @@ async function init() {
     chrome.runtime.onMessage.addListener(function(request, sender, cb) {
         let res = '';
 
-        switch (request.cmd) {
-            case 'validUrl':
-            case 'getSetting':
-            case 'getSettings':
-            case 'setSetting':
-            case 'saveSettings':
-            case 'shouldBlock':
-            case 'hasSpoilers':
-            case 'getSelectors':
-                if (!request.cmd in cmdHandler) {
-                    console.log(`No handler for ${request.cmd}`);
-                }
-                res = cmdHandler[request.cmd].call(cmdHandler, request.data);
-                break;
-
-
-            case 'increment-badge':
-                // sessionSpoilersBlocked += 1;
-
-                // chrome.browserAction.setBadgeText({
-                //     text: "" + sessionSpoilersBlocked
-
-                // });
-                // chrome.runtime.sendMessage({
-                //     newSpoilerBlocked: true
-                // }, function() {
-                //     return cb({
-                //         result: "successfully updated"
-                //     });
-                // });
-                break;
-
-            case 'fetch-popup-total':
-                // cb({
-                //     newTotal: sessionSpoilersBlocked
-                // });
-                break;
-
-            default:
-                res = 'unknown message';
+        if (request.cmd in cmdHandler) {
+            res = cmdHandler[request.cmd].call(cmdHandler, request.data);
+        } else {
+            console.log(`No handler for ${request.cmd}`);
+            res = false;
         }
 
-        cb(res);
-        let msg = `<-- msg ${request.cmd}`;
-        if (typeof request.data != 'object') {
-            if (request.data === undefined) {
-                let shortData = "undefined";
-            } else {
-                let shortData = request.data.toString();
+        if (settings.debug) {
+            let msg = `<-- msg ${request.cmd}`;
+            if (typeof request.data != 'object') {
+                if (request.data === undefined) {
+                    let shortData = "undefined";
+                } else {
+                    let shortData = request.data.toString();
 
-                if (request.data.length > 28) {
-                    shortData = shortData.substr(0, 28) + '...';
+                    if (request.data.length > 28) {
+                        shortData = shortData.substr(0, 28) + '...';
+                    }
+                    msg += `(${shortData})`;
                 }
-                msg += `(${shortData})`;
             }
-        }
-        console.groupCollapsed(msg, '|', `${res} -->`);
 
-        if (request.stack) {
-            console.log('Stack', request.stack);
-            delete request.stack;
+            console.groupCollapsed(msg, '|', `${res} -->`);
+
+            if (request.stack) {
+                console.log('Stack', request.stack);
+                delete request.stack;
+            }
+            console.log(request);
+            console.log(res);
+            console.groupEnd();
         }
-        console.log(request);
-        console.log(res);
-        console.groupEnd();
+        cb(res);
         return true;
     });
 }

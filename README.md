@@ -27,6 +27,11 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - [ ] On install tutorial
 - [ ] Disable on certain sites
 - [ ] Badge / popup counter for session and lifetime blocks
+- - [X] Session badge
+- - [X] Page badge
+- - - [ ] Add upper limit
+- - [ ] Lifetime badge
+- - [ ] Add config option
 - [X] Live update for settings changes (use on change event)
 - - [X] Live updates for no-fx changes
 - [ ] Settings import and export
