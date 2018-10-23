@@ -1,5 +1,9 @@
+// since the browser was open
 var sessionSpoilersBlocked = 0;
-var pageSpoilersBlocked = {};
+// on this page load
+var pageSpoilersBlocked = 0;
+// for each page since the browser was opened
+var siteSessionSpoilersBlocked = {};
 
 class CmdHandler {
     constructor(settings) {
@@ -51,32 +55,52 @@ class CmdHandler {
         return text.match(regexp);
     }
 
-    incSessionCount() {
+    incBlockCount(host) {
         sessionSpoilersBlocked++;
-        return sessionSpoilersBlocked;
+        pageSpoilersBlocked++;
+        if (!siteSessionSpoilersBlocked[host]) {
+            siteSessionSpoilersBlocked[host] = 0;
+        }
+        siteSessionSpoilersBlocked[host]++;
     }
 
     showSessionCount() {
         this.updateBadge(sessionSpoilersBlocked);
     }
 
-    resetPageCount(host) {
-        pageSpoilersBlocked[host] = 0;
+    resetPageCount() {
+        pageSpoilersBlocked = 0;
     }
 
-    incPageCount(host) {
-        if (!pageSpoilersBlocked[host]) {
-            pageSpoilersBlocked[host] = 0;
+    showPageCount() {
+        this.updateBadge(pageSpoilersBlocked);
+    }
+
+    // @todo this isn't the right way to get the active tabs
+    // when switching tabs, update the badge
+    async showSiteSessionCount() {
+        let tabs = await this.getActiveTabInfo();
+        if (!tabs.length > 0 || !tabs[0].url) {
+            return;
         }
-        pageSpoilersBlocked[host]++;
-        return pageSpoilersBlocked[host];
+        let url = new URL(tabs[0].url);
+        this.updateBadge(siteSessionSpoilersBlocked[url.hostname]);
+        return siteSessionSpoilersBlocked[url.hostname];
     }
 
-    showPageCount(host) {
-        this.updateBadge(pageSpoilersBlocked[host]);
+    async getActiveTabInfo() {
+        return new Promise(res => {
+            chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+                res(tabs);
+            });
+        });
+
     }
 
     updateBadge(text) {
+        if (!text) {
+            text = '';
+        }
         text = text.toString();
         chrome.browserAction.setBadgeText({
             text: text
@@ -84,13 +108,13 @@ class CmdHandler {
     }
 }
 
-
 function debugMsg(req, res) {
     let max = 50;
 
     let open = `<-- ${req.cmd}`;
     if (req.data) {
-        let param = helpers.excerpt(req.data, max - open.length - 2);
+        let desc = helpers.describe(req.data).replace(/\s\s+/g, ' ');
+        let param = helpers.excerpt(desc, max - open.length - 2);
         open += `(${param})`;
     }
 

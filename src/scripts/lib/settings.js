@@ -12,6 +12,7 @@ class Settings {
             blurSpoilers: true,
             blurHover: true,
             debug: false,
+            badgeDisplay: 'page',
             sites: [],
             spoilers: []
         };
@@ -143,7 +144,7 @@ class Settings {
     }
 
     set(k, v, cb) {
-        console.log(`Saving setting ${k} to ${v}`);
+        console.log(`Saving setting ${helpers.describe(k)} to`, v);
         this.cached[k] = v;
 
         var setting = {};

@@ -64,7 +64,7 @@ helpers = (function() {
         return new RegExp(spoiler_strs.join('|'), 'i');
     }
 
-    function describe(obj) {
+    function describe(obj, limit) {
         let txt;
         let tmp = [];
 
@@ -96,7 +96,7 @@ helpers = (function() {
                 break;
         }
 
-        return txt;
+        return limit ? excerpt(txt, limit) : txt;
     }
 
     function excerpt(obj, limit, elsp) {

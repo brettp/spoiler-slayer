@@ -5,7 +5,7 @@
     }
 
     loadSettings(settings);
-    $('body').on('input', 'input', saveSetting);
+    $('body').on('input change', 'input, select', saveSetting);
 
     // openOptionsPage();
     $('#open-options-page').on('click', openOptionsPage);
@@ -31,7 +31,7 @@
 })();
 
 function loadSettings(settings) {
-    $('input').each(function() {
+    $('input,select').each(function() {
         var $input = $(this);
         var name = $input.prop('name');
 

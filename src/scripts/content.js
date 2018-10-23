@@ -2,7 +2,8 @@ var num_feed_elems = null;
 var smaller_font_mode = false;
 var reddit_mode = false;
 var $document = $(document);
-var hostname = window.location.hostname.replace(/\./g, '-');
+var hostname = window.location.hostname;
+var hostname_dotless = hostname.replace(/\./g, '-');
 
 // add style tag that we can adjust for user customizable styles
 // and when the settings change
@@ -113,7 +114,7 @@ async function searchForAndBlockSpoilers(selector, force_update, remove_parent, 
             let el = $items.get(i);
             let $el = $(el);
 
-            $el.addClass(`glamoured ${hostname}`);
+            $el.addClass(`glamoured ${hostname_dotless}`);
 
             // check for spoilers adn block if found
             let spoilers = await cmd('hasSpoilers', el.textContent);
@@ -126,9 +127,22 @@ async function searchForAndBlockSpoilers(selector, force_update, remove_parent, 
 
 function blockElement($element, blocked_word, settings) {
     var $contentWrapper, $info, capitalized_spoiler_words;
-    cmd('incPageCount');
-    cmd('incSessionCount');
-    cmd('showSessionCount');
+    cmd('incBlockCount', hostname);
+
+    switch (settings.badgeDisplay) {
+        case 'session':
+            cmd('showSessionCount');
+            break;
+
+        case 'siteSession':
+            cmd('showSiteSessionCount', hostname);
+            break;
+
+        case 'page':
+            cmd('showPageCount');
+            break;
+    }
+
 
     if (settings.destroySpoilers) {
         $element.remove();

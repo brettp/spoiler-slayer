@@ -28,6 +28,12 @@ h2 {
 }
 
 .settings {
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
     label {
         vertical-align: middle;
     }
@@ -39,6 +45,31 @@ h2 {
     textarea {
         width: 95%;
         min-height: 5em;
+    }
+
+    label.badge-counter {
+        // font: initial;
+
+        div {
+            display: inline-block;
+            border-top: 1px dashed #cecece;
+            border-bottom: 1px dashed #cecece;
+        }
+    }
+
+    select {
+        // margin-left: -1ch;
+        background: transparent;
+        border: none;
+        padding: 0;
+        font: inherit;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+
+        &:focus, &:hover, &:active {
+            outline: none;
+        }
+
     }
 }
 
@@ -198,10 +229,34 @@ label:focus {
 
 .saved-success {
     animation: pulse-green .25s alternate 2;
+
+    &:after {
+        content: 'SAVED';
+        color: green;
+        animation: flash-fade 1s;
+    }
 }
 
 .saved-fail {
-    animation: pulse-red .25s alternate 4;
+    animation: pulse-red .12s alternate 6;
+
+    &:before {
+        content: '✓';
+        color: green;
+        // animation: flash-fade 1s;
+    }
+
+    &:after {
+        content: 'FAILED';
+        color: red;
+        // animation: flash-fade 1s;
+    }
+}
+
+@keyframes flash-fade {
+    to {
+        opacity: 0;
+    }
 }
 
 @keyframes pulse-green {

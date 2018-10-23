@@ -29,30 +29,45 @@
     <h2 id="title">Game of Spoils Lite</h2>
     <hr />
     <div class="settings">
-        <div>
-            <label>
-                <input class="popup-setting" type="checkbox" checked="checked" name="blockingEnabled" />
-                Enable spoiler blocking
-            </label>
-        </div>
-        <div>
-            <label>
-                <input class="popup-setting" type="checkbox" checked="checked" name="destroySpoilers" />
-                Remove spoilers instead of censoring
-            </label>
-        </div>
-        <div class="indent">
-            <label>
-                <input class="popup-setting" type="checkbox" checked="checked" name="showSpecificSpoiler" />
-                Show the phrase that triggered the block
-            </label>
-        </div>
-        <div class="indent">
-            <label>
-                <input class="popup-setting" type="checkbox" checked="checked" name="warnBeforeReveal" />
-                Warn before revealing a spoiler
-            </label>
-        </div>
+        <ul>
+            <li>
+                <label>
+                    <input class="popup-setting" type="checkbox" checked="checked" name="blockingEnabled" />
+                    Enable spoiler blocking
+                </label>
+            </li>
+            <li>
+                <label>
+                    <input class="popup-setting" type="checkbox" checked="checked" name="destroySpoilers" />
+                    Remove spoilers instead of censoring
+                </label>
+            </li>
+            <li class="indent">
+                <label>
+                    <input class="popup-setting" type="checkbox" checked="checked" name="showSpecificSpoiler" />
+                    Show the phrase that triggered the block
+                </label>
+            </li>
+            <li class="indent">
+                <label>
+                    <input class="popup-setting" type="checkbox" checked="checked" name="warnBeforeReveal" />
+                    Warn before revealing a spoiler
+                </label>
+            </li>
+            <li>
+                <label class="badge-counter">
+                    The badge shows
+                    <div>
+                        <select name="badgeDisplay">
+                            <option value="session">spoilers blocked in this session.</option>
+                            <option value="siteSession">spoilers blocked on the current site.</option>
+                            <option value="page">spoilers blocked on this page load.</option>
+                            <option value="none">nothing.</option>
+                        </select>
+                    </div>
+                </label>
+            </li>
+        </ul>
 
         <hr />
 

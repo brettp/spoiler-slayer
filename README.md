@@ -53,6 +53,7 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - [ ] Sometimes there can be embedded blocked elements
 - [X] Reddit's up and down arrows don't change color for glamoured content. Probably need to move all the content back to its real parent on reveal.
 - [ ] The spoiler info pops out instead of fades on reveal in FF
+- [ ] position: static elements don't work great
 
 ### How to build from source
 1. Clone the repo.
