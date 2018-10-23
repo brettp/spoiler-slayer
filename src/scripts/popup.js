@@ -50,7 +50,6 @@ function loadSettings(settings) {
             '[name=heavyBlur], [name=hoverBlur], [name=blurSpoilers]')
         .attr('disabled', $destroySpoilers.prop('checked'));
 
-    console.log("it checked is", $('[name=blurSpoilers]').prop('checked'));
     let $blurSpoilers = $('[name=blurSpoilers]');
     $('[name=heavyBlur], [name=hoverBlur]').attr('disabled', ($destroySpoilers.prop('checked') || !$blurSpoilers.prop('checked')));
 

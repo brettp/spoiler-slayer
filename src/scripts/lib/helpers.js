@@ -1,6 +1,8 @@
 // call this manually first to set early.
 var debug = false;
-chrome.storage.sync.get({debug: false}, res => {
+chrome.storage.sync.get({
+    debug: false
+}, res => {
     debug = res;
 });
 
@@ -62,12 +64,62 @@ helpers = (function() {
         return new RegExp(spoiler_strs.join('|'), 'i');
     }
 
+    function describe(obj) {
+        let txt;
+        let tmp = [];
+
+        switch (true) {
+            case obj === undefined:
+                txt = 'undefined';
+                break;
+            case obj === null:
+                txt = 'null';
+                break;
+            case Array.isArray(obj):
+                for (let info of obj) {
+                    tmp.push(`${describe(info)}`);
+                }
+                txt = `[${tmp.join(', ')}]`;
+                break;
+            case typeof obj === 'object':
+                for (let name in obj) {
+                    let val = describe(obj[name]);
+                    tmp.push(`${name}: ${val}`);
+                }
+                txt = `{${tmp.join(", ")}}`;
+                break;
+            case typeof obj.toString === 'function':
+                txt = obj.toString();
+                break;
+            default:
+                txt = '[unknown]';
+                break;
+        }
+
+        return txt;
+    }
+
+    function excerpt(obj, limit, elsp) {
+        elsp = elsp || '…';
+
+        let text = describe(obj);
+
+        if (text.length <= limit) {
+            return text;
+        } else {
+            text = text.substr(0, limit - elsp.length) + elsp;
+        }
+        return text;
+    }
+
     return {
         nullFunc: nullFunc,
         debounce: debounce,
         ucWords: ucWords,
         escapeRegexp: escapeRegexp,
-        getSpoilersRegexp: getSpoilersRegexp
+        getSpoilersRegexp: getSpoilersRegexp,
+        describe: describe,
+        excerpt: excerpt,
     };
 })();
 
@@ -94,11 +146,11 @@ async function msg(msg) {
     if (debug) {
         let stack = (new Error()).stack.split("\n");
         let newStack = [];
-        stack[0] = "msg debug:";
+        stack.shift();
 
         for (let line of stack) {
             if (!/helpers.js/.test(line)) {
-                newStack.push(line);
+                newStack.push(line.trim());
             }
         }
         msg.stack = newStack;

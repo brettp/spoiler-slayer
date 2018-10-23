@@ -84,52 +84,60 @@ class CmdHandler {
     }
 }
 
+
+function debugMsg(req, res) {
+    let max = 50;
+
+    let open = `<-- ${req.cmd}`;
+    if (req.data) {
+        let param = helpers.excerpt(req.data, max - open.length - 2);
+        open += `(${param})`;
+    }
+
+    open = open.padEnd(max, " ");
+
+    let end = " -->";
+    end = helpers.excerpt(res, max - end.length) + end;
+    end = end.padStart(max, " ");
+
+    console.groupCollapsed(open, "|", end);
+
+    console.log("Request", req);
+    console.log("Response", res);
+    if (req.stack) {
+        console.log("Stack", req.stack);
+        delete req.stack;
+    }
+    console.groupEnd();
+}
+
 // manage settings object here to avoid reloading on every page
 // and so we can pre-compile the regexp
 async function init() {
-    let settings = await Settings.factory();
-    console.log("Settings", settings);
+    settings = await Settings.factory();
     let cmdHandler = new CmdHandler(settings);
+    console.log("Settings", settings);
 
-    chrome.runtime.onMessage.addListener(function(request, sender, cb) {
+    chrome.runtime.onMessage.addListener(function(req, sender, cb) {
         let res = '';
 
-        if (request.cmd in cmdHandler) {
-            res = cmdHandler[request.cmd].call(cmdHandler, request.data);
+        if (req.cmd in cmdHandler) {
+            res = cmdHandler[req.cmd].call(cmdHandler, req.data);
         } else {
-            console.log(`No handler for ${request.cmd}`);
+            console.log(`No handler for ${req.cmd}`);
             res = false;
         }
 
         if (settings.debug) {
-            let msg = `<-- msg ${request.cmd}`;
-            if (typeof request.data != 'object') {
-                if (request.data === undefined) {
-                    let shortData = "undefined";
-                } else {
-                    let shortData = request.data.toString();
-
-                    if (request.data.length > 28) {
-                        shortData = shortData.substr(0, 28) + '...';
-                    }
-                    msg += `(${shortData})`;
-                }
-            }
-
-            console.groupCollapsed(msg, '|', `${res} -->`);
-
-            if (request.stack) {
-                console.log('Stack', request.stack);
-                delete request.stack;
-            }
-            console.log(request);
-            console.log(res);
-            console.groupEnd();
+            debugMsg(req, res);
         }
         cb(res);
         return true;
     });
+
+    return settings;
 }
 
-
+// so it's accessible on the background page console
+var settings;
 init();

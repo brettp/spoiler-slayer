@@ -19,7 +19,7 @@ class Settings {
 
     get compiledSettingsInfo() {
         return {
-            'sites': ['sitesRegexp', 'sitesInfo'],
+            'sites': ['allSitesRegexp', 'sitesInfo', 'compiledSitesAndSelectors'],
             'spoilers': ['spoilersRegexp']
         };
     }
@@ -44,6 +44,18 @@ class Settings {
             });
         }
 
+        this.setUpCompiledProps();
+    }
+
+    setUpCompiledProps() {
+        for (let settingName in this.compiledSettingsInfo) {
+            let props = this.compiledSettingsInfo[settingName];
+
+            for (let propName of props) {
+                this.addCompiledProp(propName);
+            }
+        }
+
         // update cached and compiled settings
         // this doesn't fire soon enough for immediate calls after,
         // so we also manually update the cached setting for each save
@@ -58,41 +70,66 @@ class Settings {
         });
     }
 
-    // compiled settings
-    get spoilersRegexp() {
-        console.log("Compiling spoilers regexp...");
-        let spoilersRegexp = helpers.getSpoilersRegexp(this.spoilers);
+    addCompiledProp(propName) {
+        let compiler = propName + 'Compiler';
 
-        Object.defineProperty(this, 'spoilersRegexp', {
-            value: spoilersRegexp,
-            writable: false,
-            configurable: true
+        if (!this[compiler]) {
+            return;
+        }
+
+        // define lazy loading and caching props
+        // these will be compiled on first access, then cached,
+        // but removed if their settings change, causing them
+        // to be re-compiled and cached on the first call after
+        Object.defineProperty(this.constructor.prototype, propName, {
+            // define a getter the prop with a getter that compiles
+            get() {
+                let val = this.compileProp(propName);
+
+                // re-define the prop with a real value
+                // if the prop is deleted (e.g., when settings change), the above getter takes back over
+                // to recompile and define the real value again
+                Object.defineProperty(this, propName, {
+                    value: val,
+                    configurable: true,
+                    writeable: false
+                });
+
+                return val;
+            },
+            configurable: true,
+            writeable: false
         });
-
-        return this.spoilersRegexp;
     }
 
-    get allSitesRegexp() {
-        console.log("Compiling all sites regexp...");
+    compileProp(name, compiler) {
+        if (compiler) {
+            console.log(`Compiling setting ${name} using ${helpers.describe(compiler)}`);
+            compiler.call(this, name);
+        } else if (this[name + 'Compiler']) {
+            console.log(`Compiling setting ${name} using ${this.constructor.name}.${name}Compiler()`);
+            return this[name + 'Compiler'].call(this);
+        }
+    }
+
+    // compiled settings
+    spoilersRegexpCompiler() {
+        let spoilersRegexp = helpers.getSpoilersRegexp(this.spoilers);
+        return spoilersRegexp;
+    }
+
+    allSitesRegexpCompiler() {
         let urls = [];
 
-        for (var info of this.sites) {
+        for (let info of this.sites) {
             urls.push(info.url_regexp);
         }
 
-        var urlRegexp = new RegExp(urls.join('|'), 'i');
-
-        Object.defineProperty(this, 'sitesRegexp', {
-            value: urlRegexp,
-            writable: false,
-            configurable: true
-        });
-
-        return this.sitesRegexp;
+        let urlRegexp = new RegExp(urls.join('|'), 'i');
+        return urlRegexp;
     }
 
-    get compiledSitesAndSelectors() {
-        console.log("Compiling individual site regexp");
+    compiledSitesAndSelectorsCompiler() {
         let val = [];
 
         for (let info of this.sites) {
@@ -102,13 +139,7 @@ class Settings {
             });
         }
 
-        Object.defineProperty(this, 'compiledSitesAndSelectors', {
-            value: val,
-            writable: false,
-            configurable: true
-        });
-
-        return this.compiledSitesAndSelectors;
+        return val;
     }
 
     set(k, v, cb) {
@@ -139,6 +170,7 @@ class Settings {
     clearCompiledValues(changed) {
         if (changed in this.compiledSettingsInfo) {
             for (let name of this.compiledSettingsInfo[changed]) {
+                console.log(`Clearing compiled value ${name} because ${changed} changed`);
                 delete this[name];
             }
         }
