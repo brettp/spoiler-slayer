@@ -46,87 +46,93 @@ h2 {
     }
 }
 
-.settings {
-    ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
 
-        li {
-            padding: .25em 0;
-        }
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+        padding: .25em 0;
+    }
+}
+
+label,
+input {
+    vertical-align: middle;
+}
+
+label.checkbox {
+    // required for FF to correctly render align-items: center;
+    font-family: Arial; // my name is HELVETICA
+    display: flex;
+    align-items: center;
+}
+
+input[type=checkbox] {
+    padding: 0.1em;
+    border: 0.1em dashed $grey;
+
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    font-size: inherit;
+    height: 1em;
+    width: 1em;
+    background-clip: content-box;
+
+    &:checked {
+        background-image: linear-gradient(black, black);
+        border-color: black;
     }
 
-    label {
-        vertical-align: middle;
+    &:active,
+    &:focus {
+        outline: none;
     }
 
-    label.checkbox {
-        display: flex;
-        align-items: center;
-        // required for FF to v align text correctly
-        // can be any font
-        font-family: Arial; // my name is HELVETICA.
+    &:disabled {
+        opacity: 0.25;
     }
+}
 
-    input[type="checkbox"] {
-        font-size: inherit;
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        border: .1em dotted $grey;
-        width: 1em;
-        height: 1em;
-
-        &:focus,
-        &:active {
-            border-color: none;
-            outline: none;
-        }
-
-        &:checked {
-            background-color: black;
-            border-style: solid;
-            border-color: black;
-            box-shadow: inset 0 0 0 .15em white;
-        }
-
-        &:disabled {
-            opacity: 0.25;
-        }
+.keyboard-user input,
+.keyboard-user select {
+    &:active,
+    &:focus {
+        outline-color: rgb(0, 103, 244) !important;
+        outline-offset: 0px !important;
+        outline-style: auto !important;
+        outline-width: 5px !important;
     }
+}
 
-    input {
-        vertical-align: middle;
-    }
+textarea {
+    width: 95%;
+    min-height: 5em;
+}
 
-    textarea {
-        width: 95%;
-        min-height: 5em;
-    }
+label.badge-counter {
+    div {
+        display: inline-block;
+        border-top: 1px dashed $grey;
+        border-bottom: 1px dashed $grey;
 
-    label.badge-counter {
-        div {
-            display: inline-block;
-            border-top: 1px dashed $grey;
-            border-bottom: 1px dashed $grey;
+        select {
+            background: transparent;
+            border: none;
+            padding: 0;
+            font: inherit;
+            font-weight: 700;
+            -webkit-appearance: none;
+            -moz-appearance: none;
 
-            select {
-                background: transparent;
+            &:focus,
+            &:hover,
+            &:active {
+                outline: none;
                 border: none;
-                padding: 0;
-                font: inherit;
-                font-weight: 700;
-                -webkit-appearance: none;
-                -moz-appearance: none;
-
-                &:focus,
-                &:hover,
-                &:active {
-                    outline: none;
-                    border: none;
-                }
-
             }
+
         }
     }
 }

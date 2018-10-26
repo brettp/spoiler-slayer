@@ -7,6 +7,9 @@ document.addEventListener('keydown', (event) => {
 document.addEventListener('keyup', (event) => {
     if (event.key && event.key.toLowerCase() == 'alt') {
         $('body').removeClass('debug');
+    } else {
+        // someone wants to use the keyboard, so make sure outlines show up
+        $('body').addClass('keyboard-user');
     }
 });
 
