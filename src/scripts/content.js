@@ -12,7 +12,7 @@ let styleSettings = {
     hoverBlur: '.glamoured-active:hover'
 };
 
-async function init() {
+async function init(settings) {
     let url = window.location.href.toLowerCase();
     let shouldBlock = await cmd('shouldBlock', url);
 
@@ -21,21 +21,28 @@ async function init() {
         return;
     }
 
-    cmd('resetPageCount');
+    if (settings.badgeDisplay == 'pageload') {
+        // cmd('resetPageCount');
+    }
 
     console.log("Starting spoiler blocker");
     setupStyles();
 
-    var selector = await cmd('getSelectors', url);
-    var settings = await cmd('getSettings');
+    let selector = await cmd('getSelectors', url);
     initiateSpoilerBlocking(selector, false, settings);
 }
 
-// wait until onload
-// @todo can get rid of this since using mutations observers?
-$(() => {
-    init();
-});
+// run what we need to ASAP, then register a doc ready event for actual blocking
+(async () => {
+    let settings = await cmd('getSettings');
+
+    // wait until onload
+    // @todo can get rid of this since using mutations observers?
+    // Probably no. Some sites update formatting on doc ready
+    $(() => {
+        init(settings);
+    });
+})();
 
 chrome.storage.onChanged.addListener((changes, namespace) => {
     // if blur spoilers is changed, remove all injected styles and add/remove no-fx
@@ -102,7 +109,9 @@ function initiateSpoilerBlocking(selector_string, remove_parent, settings) {
 }
 
 async function searchForAndBlockSpoilers(selector, force_update, remove_parent, settings) {
-    var $items = $(selector).not('.glamoured');
+    let $items = $(selector).not('.glamoured');
+    let blockedCount = 0;
+
     if (remove_parent) {
         $items = items.parent();
     }
@@ -110,7 +119,7 @@ async function searchForAndBlockSpoilers(selector, force_update, remove_parent, 
     if (force_update || $items.length > 0) {
         // don't use jquery to loop because it causes
         // too many requests to the messages
-        for (let i=0; i < $items.length; i++) {
+        for (let i = 0; i < $items.length; i++) {
             let el = $items.get(i);
             let $el = $(el);
 
@@ -119,30 +128,20 @@ async function searchForAndBlockSpoilers(selector, force_update, remove_parent, 
             // check for spoilers adn block if found
             let spoilers = await cmd('hasSpoilers', el.textContent);
             if (spoilers) {
+                blockedCount++;
                 blockElement($el, spoilers[0], settings);
             }
         }
     }
+
+    if (blockedCount) {
+        await cmd('incBlockCount', blockedCount);
+        cmd('showCorrectBadgeCount');
+    }
 }
 
-function blockElement($element, blocked_word, settings) {
+async function blockElement($element, blocked_word, settings) {
     var $contentWrapper, $info, capitalized_spoiler_words;
-    cmd('incBlockCount', hostname);
-
-    switch (settings.badgeDisplay) {
-        case 'session':
-            cmd('showSessionCount');
-            break;
-
-        case 'siteSession':
-            cmd('showSiteSessionCount', hostname);
-            break;
-
-        case 'page':
-            cmd('showPageCount');
-            break;
-    }
-
 
     if (settings.destroySpoilers) {
         $element.remove();

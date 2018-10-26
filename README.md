@@ -26,23 +26,26 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - - [ ] Checkbox to mark spoilers as regexp
 - [ ] On install tutorial
 - [ ] Disable on certain sites
-- [ ] Badge / popup counter for session and lifetime blocks
+- [X] Badge / popup counter for session and lifetime blocks
 - - [X] Session badge
 - - [X] Page badge
-- - - [ ] Add upper limit
-- - [ ] Lifetime badge
-- - [ ] Add config option
+- - - [X] Add upper limit
+- - [X] Lifetime badge
+- - [X] Add config option
+- - [ ] Make not flash when loading a site on the same domain
 - [X] Live update for settings changes (use on change event)
 - - [X] Live updates for no-fx changes
 - [ ] Settings import and export
 - [ ] Settings import from gists
-- [ ] Better way to add new sites in settings (tables are too slow for some reason)
+- [ ] Better way to add new site input in settings (tables are too slow for some reason)
 - [ ] Opt-in analytics?
 - [ ] Remove jQuery req?
 - [ ] Add one-click legacy mode
 - [ ] FF mobile?
 - [ ] Disable right click on popup
 - [ ] Categorize / tag sites and spoilers to allow export of single collection settings like Harry Potter
+- [ ] Don't update the badge while searching elements. Update it once at the end.
+- [ ] Don't register onTabChange event unless badge count is site / page based
 
 
 ### Known Bugs

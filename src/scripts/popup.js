@@ -1,14 +1,45 @@
+document.addEventListener('keydown', (event) => {
+    if (event.key && event.key.toLowerCase() == 'alt') {
+        $('body').addClass('debug');
+    }
+});
+
+document.addEventListener('keyup', (event) => {
+    if (event.key && event.key.toLowerCase() == 'alt') {
+        $('body').removeClass('debug');
+    }
+});
+
+async function getActiveTabInfoReal() {
+    return new Promise(res => {
+        chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+            let tab = tabs.pop();
+            res(tab);
+        });
+    });
+}
+
 (async function init() {
+    // let tab = await cmd('getActiveTabInfo');
+    let tab = await getActiveTabInfoReal();
+    cmd('debug', tab);
+
     let settings = await cmd('getSettings');
     if (!settings) {
         settings = await cmd('getDefaultSettings');
     }
 
     loadSettings(settings);
-    $('body').on('input change', 'input, select', saveSetting);
+    $('body').on('change', 'input, select', saveSetting);
 
     // openOptionsPage();
     $('#open-options-page').on('click', openOptionsPage);
+    $('.open-page').on('click', (e) => {
+        let page = $(e.target).attr('href');
+        if (page) {
+            openPage(page);
+        }
+    });
 
     // disable options when needed
     $('body').on('input', '[name=destroySpoilers]', function() {
@@ -23,8 +54,12 @@
 
     // register quick adds
     $('body').on('click', '#quick-add-site, #quick-add-spoiler', function() {
-        console.log('clicked?', $(this).attr('href'));
         $($(this).attr('href')).toggleClass('none');
+    });
+
+    // remove warning classes on quick adds
+    $('body').on('animationend', '.save-flasher', (e) => {
+        $(e.currentTarget).removeClass('save-fail').removeClass('save-success');
     });
 
     $('body').on('submit', '#quick-add-spoiler-form', saveQuickAdd);
@@ -58,21 +93,43 @@ function loadSettings(settings) {
     updateExample();
 }
 
-function saveSetting() {
-    var $input = $(this);
+async function saveSetting(e) {
+    let $input = $(this);
 
     if ($input.hasClass('no-auto-save')) {
         return;
     }
 
-    var name = $input.prop('name');
-    var val = ($input.attr('type') == 'checkbox') ? $input.prop('checked') : $input.val();
+    let name = $input.prop('name');
+    let val = ($input.attr('type') == 'checkbox') ? $input.prop('checked') : $input.val();
+    let tab;
 
     setSetting(name, val);
 
-    if ($('.spoiler-info').hasClass('revealed') || ($input.attr('type') != 'range' && name != 'blurSpoilers')) {
+    if (name == 'badgeDisplay') {
+        if (val == 'none') {
+            tab = await getActiveTab();
+            cmd('setBadgeText', {'text': '', tabId: tab.id});
+        } else {
+            // update badge with current ACTIVE tab (not THIS tab, because this tab is an internal one)
+            // for some reason this returns nothing if run through the normal cmd
+            tab = await getActiveTab();
+            cmd('showCorrectBadgeCount', {tab: tab});
+        }
+    }
+
+    if ($('.spoiler-info').hasClass('revealed') || $input.attr('type') != 'range') {
         updateExample();
     }
+}
+
+async function getActiveTab() {
+    return new Promise(res => {
+        chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+            let tab = tabs.pop();
+            res(tab);
+        });
+    });
 }
 
 async function saveQuickAdd(e) {
@@ -98,61 +155,36 @@ async function saveQuickAdd(e) {
         }
 
         setSetting('spoilers', cur);
-        $input.addClass('saved-success');
+        $input.addClass('save-success');
         $this[0].reset();
     } else {
-        $input.addClass('saved-fail');
+        $input.addClass('save-fail');
     }
 
-    // remove the class so we can add again if needed
-    setTimeout(function() {
-        $input.removeClass('saved-fail').removeClass('saved-success');
-    }, 1000);
-
     return false;
-
 }
 
-// settingsx.load(function(stored) {
-//     // @todo why the timeout?
-//     setTimeout((function() {
-//         chrome.runtime.sendMessage({
-//             cmd: 'fetch-popup-total'
-//         }, function(response) {
-//             if (response.newTotal) {
-//                 sessionSpoilersBlocked = response.newTotal;
-//                 updateSessionSpoilersBlocked();
-//             }
-//         });
-//     }), 1);
-// });
-
 async function updateExample() {
-    var $exTpl = $('.content-template');
-    var $ex = $exTpl.clone().removeClass('content-template').addClass('glamoured');
+    let $exTpl = $('.content-template');
+    let $ex = $exTpl.clone().removeClass('content-template').addClass('glamoured');
 
     console.log("Updating example");
     $('.example').html($ex);
 
     if (await getSetting('blockingEnabled')) {
-        blockElement($ex, 'Dumbledore', await cmd('getSettings'));
+        let settings = await cmd('getSettings');
+        blockElement($ex, 'Dumbledore', settings, false);
     }
-}
-
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    if (request.cmd && request.cmd == newSpoilerBlocked) {
-        updateSessionSpoilersBlocked();
-    }
-});
-
-function updateSessionSpoilersBlocked() {
-    $('#num-spoilers-prevented').html(`${sessionSpoilersBlocked} spoilers prevented in this session.`);
 }
 
 function openOptionsPage() {
     if (chrome.runtime.openOptionsPage) {
         return chrome.runtime.openOptionsPage(helpers.nullFunc);
     } else {
-        return window.open(chrome.runtime.getURL('options.html'));
+        return openPage('options.html');
     }
+}
+
+function openPage(page) {
+    return window.open(chrome.runtime.getURL(page));
 }

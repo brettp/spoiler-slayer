@@ -26,42 +26,45 @@
 </head>
 
 <body id="game-of-spoilers-popup">
-    <h2 id="title">Game of Spoils Lite</h2>
+    <!-- <img class="badge-example" src="assets/icons/icon48.png" /> -->
+    <h2>Game of Spoils Lite</h2>
     <hr />
     <div class="settings">
         <ul>
             <li>
-                <label>
+                <label class="checkbox">
                     <input class="popup-setting" type="checkbox" checked="checked" name="blockingEnabled" />
                     Enable spoiler blocking
                 </label>
             </li>
             <li>
-                <label>
+                    <label class="checkbox">
                     <input class="popup-setting" type="checkbox" checked="checked" name="destroySpoilers" />
                     Remove spoilers instead of censoring
                 </label>
             </li>
             <li class="indent">
-                <label>
+                    <label class="checkbox">
                     <input class="popup-setting" type="checkbox" checked="checked" name="showSpecificSpoiler" />
                     Show the phrase that triggered the block
                 </label>
             </li>
             <li class="indent">
-                <label>
+                    <label class="checkbox">
                     <input class="popup-setting" type="checkbox" checked="checked" name="warnBeforeReveal" />
                     Warn before revealing a spoiler
                 </label>
             </li>
             <li>
                 <label class="badge-counter">
-                    The badge shows
+                    The badge counts
                     <div>
                         <select name="badgeDisplay">
-                            <option value="session">spoilers blocked in this session.</option>
-                            <option value="siteSession">spoilers blocked on the current site.</option>
-                            <option value="page">spoilers blocked on this page load.</option>
+                            <option value="life">all lifetime blocks.</option>
+                            <option value="lifeSite">all lifetime blocks for site.</option>
+                            <option value="session">blocks during this session.</option>
+                            <option value="sessionSite">blocks during session for site.</option>
+                            <option value="pageload">blocks on this page load.</option>
                             <option value="none">nothing.</option>
                         </select>
                     </div>
@@ -132,14 +135,14 @@
                                 <i class="icon">?</i>
                                 <span class="help-text">
                                     <i class="icon">?</i>
-                                    Add plain words or phrases that you want to block, separated by commas,
-                                    and push enter to save.
+                                    Add words or phrases separated by commas, then push enter to save to your block list.
                                     <br />Use the advanced options to edit, remove, or create complex regexp entries.
                                 </span>
                             </div>
-                            Add Spoilers
+                            Quick Add Spoilers
                             <form id="quick-add-spoiler-form">
-                                <input autocomplete="off" type="text" class="no-auto-save" type="text" name="spoiler" placeholder="doctor who, westworld, maisie williams" />
+                                <input class="no-auto-save save-flasher" autocomplete="off" type="text" type="text" name="spoiler"
+                                    placeholder="doctor who, maisie williams, dumbledore, westworld" />
                             </form>
                         </label>
                     </div>
@@ -148,13 +151,15 @@
         </div>
 
         <div class="left">
-            <a href="#quick-add-spoiler-content" id="quick-add-spoiler">Add Spoiler</a>
-            <!-- | <a href="#quick-add-site-content" id="quick-add-site">Add Site</a> -->
+            <!-- <a href="#quick-add-site-content" id="quick-add-site">Add site</a> -->
         </div>
 
         <div class="right">
-            <a href="#" id="open-options-page">Advanced options</a> |
-            <label><input type="checkbox" name="debug" />Debug</label>
+            <a href="#" id="open-options-page">Advanced options</a>
+            <span class="debug">|
+                <a href="popup.html" class="open-page">Popup</a> |
+                <label><input type="checkbox" name="debug" />Log msgs</label>
+            </span>
         </div>
     </div>
     <div id="num-spoilers-prevented"></div>

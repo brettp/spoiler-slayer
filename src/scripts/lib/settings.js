@@ -12,9 +12,13 @@ class Settings {
             blurSpoilers: true,
             blurHover: true,
             debug: false,
-            badgeDisplay: 'page',
+            badgeDisplay: 'pageload',
             sites: [],
-            spoilers: []
+            spoilers: [],
+            lifetimeBlockedCount: {
+                total: 0,
+                hosts: {}
+            }
         };
     }
 
@@ -39,7 +43,6 @@ class Settings {
                     return this.cached[k];
                 },
                 set(v) {
-                    console.log("got set for " + k);
                     this.set(k, v);
                 }
             });
@@ -63,7 +66,7 @@ class Settings {
         var self = this;
         chrome.storage.onChanged.addListener(function(changes, namespace) {
             for (let name in changes) {
-                console.log(`Updating cached settings for ${name} to ${changes[name].newValue}`);
+                console.log(`Updating cached settings for ${name} to`, changes[name].newValue);
                 self.cached[name] = changes[name].newValue;
 
                 self.clearCompiledValues(name);
@@ -143,7 +146,14 @@ class Settings {
         return val;
     }
 
-    set(k, v, cb) {
+    // @todo this doesn't work...the cmd never hits the listener
+    // async badgeDisplayOnChange(changes) {
+    //     console.log("Need to update badge");
+    //     await cmd('debug', 'wtf');
+    //     console.log('sent cmd');
+    // }
+
+    set(k, v) {
         console.log(`Saving setting ${helpers.describe(k)} to`, v);
         this.cached[k] = v;
 
@@ -153,7 +163,12 @@ class Settings {
 
         // only save if this is a known value
         if (k in Settings.defaultSettings) {
-            chrome.storage.sync.set(setting, cb || helpers.nullFunc);
+            // @todo use a Setting class that knows when it changed
+            let cb = helpers.nullFunc;
+            if (typeof this[k + 'OnChange'] === 'function') {
+                cb = this[k + 'OnChange'];
+            }
+            chrome.storage.sync.set(setting, cb);
         }
     }
 
