@@ -1,10 +1,10 @@
 $siteRow = $("<tr>" +
-    "<td><a class='remove-row icon solid'>X</a> <td><input type='text' name='url_regexp' /></td>" +
+    "<td><a class='remove-row'><i class='fa fa-trash'></i></a> <td><input autocomplete='off' type='text' name='url_regexp' /></td>" +
     "<td><input type='text' name='selector' /></td> </tr>"
 );
 
 $spoilerRow = $("<tr>" +
-    "<td><a class='remove-row icon solid'>X</a> <td><input type='text' name='spoiler' /></td></tr>"
+    "<td><a class='remove-row'><i class='fa fa-trash'></i></a> <td><input autocomplete='off' type='text' name='spoiler' /></td></tr>"
 );
 
 
@@ -26,7 +26,8 @@ async function init() {
         $row.find('input').focus();
     });
 
-    $('.remove-row').on('click', function(e) {
+    $('body').on('click', '.remove-row', function(e) {
+        console.log('removing', this);
         $(this).parents('tr').first().remove();
         saveSettings();
     });

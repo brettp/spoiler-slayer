@@ -4,6 +4,7 @@
   "description": "",
   "main": "gulpfile.js",
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.4.2",
     "node-sass": "^3.4.2"
   },
   "devDependencies": {

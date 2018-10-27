@@ -24,6 +24,15 @@ gulp.task('update-static', function() {
         .pipe(gulp.dest('build/chrome/scripts/vendor'))
         .pipe(gulp.dest('build/firefox/scripts/vendor'));
 
+    gulp.src('node_modules/@fortawesome/fontawesome-free/css/*')
+        .pipe(gulp.dest('build/chrome/styles/vendor/css'))
+        .pipe(gulp.dest('build/firefox/styles/vendor/css'));
+
+    gulp.src('node_modules/@fortawesome/fontawesome-free/webfonts/*')
+        .pipe(gulp.dest('build/chrome/styles/vendor/webfonts/'))
+        .pipe(gulp.dest('build/firefox/styles/vendor/webfonts/'));
+
+
     del('build/*/manifest.json');
     return gulp.src('src/manifest.json')
         .pipe(gulp.dest('build/chrome'))

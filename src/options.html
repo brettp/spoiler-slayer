@@ -8,36 +8,55 @@
     <script src="scripts/lib/helpers.js" type="text/javascript"></script>
     <script src="scripts/lib/settings.js" type="text/javascript"></script>
     <link rel="stylesheet" type="text/css" href="styles/popup.css" />
+    <link rel="stylesheet" type="text/css" href="styles/vendor/css/all.css" />
 </head>
 
-<body>
-    <h2 id="title">Game of Spoils Lite</h2>
-    <hr />
+<body id="options">
+    <div class="col-left">
+        <h2 id="title">Game of Spoils Lite</h2>
+        <hr />
 
-    <div id="spoilers-blurb">
-        <h2>Add words to block. Can be RegExp if you know how!</h2>
-        <a href="#" id="reset-to-default-spoilers">Reset to default Game of Thrones spoilers list</a>
-        <table id="spoilers" data-settings-name="spoilers">
-            <tr>
-                <th><a class="new-row icon solid" data-row-type="spoiler">+</a></th>
-                <th>Phrase to block</th>
-            </tr>
-        </table>
+        <section>
+            <div id="spoilers-blurb">
+                <h2>Spoilers</h2>
+                <p>Add words to block. Can be RegExp if you know how!</p>
+                <table id="spoilers" data-settings-name="spoilers">
+                    <tr>
+                        <th><a class="new-row icon solid" data-row-type="spoiler"><i class="fa fa-plus"></i></a></th>
+                        <th>Phrase to block</th>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <section>
+            <div id="sites-blurb">
+                <h2>Sites & Selectors</h2>
+                <p>Add sites to block (regexp supported) and a selector for that site</p>
+                <a href="#" id="reset-to-default-sites">Reset to default sites</a>
+                <table id="sites" data-settings-name="sites">
+                    <tr>
+                        <th><a class="new-row icon solid" data-row-type="site"><i class="fa fa-plus"></i></th>
+                        <th>Site or RegExp</th>
+                        <th>Element selector</th>
+                    </tr>
+                </table>
+            </div>
+        </section>
     </div>
 
-    <div id="sites-blurb">
-        <h2> Add sites to block (regexp supported) and a selector for that site</h2>
-        <a href="#" id="reset-to-default-sites">Reset to default sites</a>
-        <table id="sites" data-settings-name="sites">
-            <tr>
-                <th><a class="new-row icon solid" data-row-type="site">+</a></th>
-                <th>Site or RegExp</th>
-                <th>Element selector</th>
-            </tr>
-        </table>
-    </div>
+    <footer>
+        <!-- <div class="left">
+                <a href="#import" id="import">Import</a> |
+                <a href="#import" id="import">Export</a>
+        </div>
+
+        <div class="right">
+            <a href="#clear-settings" id="clear-settings">Clear settings</a>
+        </div> -->
+        <div class="debug">debug</div>
+    </footer>
 
     <script src="scripts/options.js" type="text/javascript"></script>
 </body>
-
 </html>

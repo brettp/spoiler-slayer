@@ -46,6 +46,7 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - [ ] Categorize / tag sites and spoilers to allow export of single collection settings like Harry Potter
 - [ ] Don't update the badge while searching elements. Update it once at the end.
 - [ ] Don't register onTabChange event unless badge count is site / page based
+- [ ] Sort sites alphabetically
 
 
 ### Known Bugs

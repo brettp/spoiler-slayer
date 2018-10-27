@@ -2,6 +2,7 @@ $grey: #cecece;
 
 body {
     font-family: Arial;
+    font-size: 100%;
 }
 
 body.debug {
@@ -20,11 +21,17 @@ a {
     cursor: pointer;
 }
 
-#game-of-spoilers-popup {
-    font-size: 100%;
+#popup {
     width: 400px;
     background-color: #fff;
     line-height: 1.75em;
+
+
+    input[type=range],
+    input[type=text] {
+        width: 80%;
+    }
+
 }
 
 .indent {
@@ -38,7 +45,8 @@ a {
 h2 {
     font-size: 125%;
     text-align: center;
-    margin-bottom: 8px;
+    margin-bottom: 1em;
+    margin-top: .5em;
 
     img.badge-example {
         margin-right: .25em;
@@ -59,6 +67,7 @@ ul {
 
 label,
 input {
+    font-size: inherit;
     vertical-align: middle;
 }
 
@@ -97,6 +106,7 @@ input[type=checkbox] {
 
 .keyboard-user input,
 .keyboard-user select {
+
     &:active,
     &:focus {
         outline-color: rgb(0, 103, 244) !important;
@@ -173,17 +183,51 @@ label.badge-counter {
     display: none;
 }
 
-input[type=range],
-input[type=text] {
-    width: 80%;
+
+// options page
+#options {
+    margin: auto;
+    text-align: center;
+    width: 50%;
+    // display: grid;
+    // grid-template-columns: 50% 50%;
+    // grid-template-rows: 50% 50%;
+
+    // .left-col {
+    // width: 50%;
+    // // grid: 1;
+    // border: 1px dashed $grey;
+    // }
+
+
+    // .right-col {
+    //     position: static;
+    //     // grid: 1;
+    //     border: 1px solid black;
+    // }
 }
 
-table#sites {
-    width: 50%;
+table {
+    width: 100%;
     text-align: center;
+
+    tr td:first-of-type,
+    tr th:first-of-type {
+        width: 1em;
+    }
+
+    tr td {
+        padding: .5em;
+    }
 
     input {
         width: 95%;
+    }
+}
+
+#sites {
+    tr td:nth-of-type(2) {
+        width: 15em;
     }
 }
 
@@ -206,7 +250,7 @@ table#sites {
     font-weight: 500;
     font-size: 1em;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif;
-    transition: border .5s, color .5s;
+    transition: border .25s, color .25s;
     text-align: center;
 
     &.solid {
@@ -324,6 +368,11 @@ label:focus {
     }
 }
 
+section {
+    border: 1px dashed $grey;
+    margin: 2em 0;
+}
+
 @keyframes flash-fade {
     to {
         opacity: 0;
@@ -332,12 +381,12 @@ label:focus {
 
 @keyframes pulse-green {
     to {
-        box-shadow: 0 0 15px green;
+        box-shadow: 0 0 25px green;
     }
 }
 
 @keyframes pulse-red {
     to {
-        box-shadow: 0 0 15px red;
+        box-shadow: 0 0 25px red;
     }
 }
