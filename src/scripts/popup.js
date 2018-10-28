@@ -23,6 +23,7 @@ async function getActiveTabInfoReal() {
 }
 
 (async function init() {
+    openOptionsPage();
     // let tab = await cmd('getActiveTabInfo');
     let tab = await getActiveTabInfoReal();
     cmd('debug', tab);
@@ -62,7 +63,7 @@ async function getActiveTabInfoReal() {
 
     // remove warning classes on quick adds
     $('body').on('animationend', '.save-flasher', (e) => {
-        $(e.currentTarget).removeClass('save-fail').removeClass('save-success');
+        $(e.currentTarget).removeClass('save-fail save-success');
     });
 
     $('body').on('submit', '#quick-add-spoiler-form', saveQuickAdd);

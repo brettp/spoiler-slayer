@@ -19,18 +19,18 @@ class CmdHandler {
     }
 
     validUrl(url) {
-        return this.settings.allSitesRegexp.test(url);
+        return this.settings.allSitesRegex.test(url);
     }
 
     shouldBlock(url) {
-        return this.settings.blockingEnabled && this.validUrl(url) && this.settings.spoilersRegexp !== false;
+        return this.settings.blockingEnabled && this.validUrl(url) && this.settings.spoilersRegex !== false;
     }
 
     getSelectors(url) {
         let selectors = [];
 
         for (var info of this.settings.compiledSitesAndSelectors) {
-            if (info.url_regexp.test(url)) {
+            if (info.url_regex.test(url)) {
                 selectors.push(info.selector);
             }
         }
@@ -59,8 +59,8 @@ class CmdHandler {
     }
 
     hasSpoilers(text) {
-        var regexp = this.settings.spoilersRegexp
-        return text.match(regexp);
+        var regex = this.settings.spoilersRegex
+        return text.match(regex);
     }
 
     incBlockCount(count, sender) {
@@ -212,7 +212,7 @@ function debugMsg(req, res) {
 }
 
 // manage settings object here to avoid reloading on every page
-// and so we can pre-compile the regexp
+// and so we can pre-compile the regex
 async function init() {
     settings = await Settings.factory();
     let cmdHandler = new CmdHandler(settings);

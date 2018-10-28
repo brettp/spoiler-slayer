@@ -38,20 +38,20 @@ helpers = (function() {
         return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
-    function escapeRegexp(str) {
+    function escapeRegex(str) {
         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
     }
 
-    function getSpoilersRegexp(spoilers) {
+    function getSpoilersRegex(spoilers) {
         var spoiler_strs = [];
         if (!spoilers) {
             return false;
         }
 
         for (let spoiler_info of spoilers) {
-            helpers.escapeRegexp(spoiler_info.spoiler.trim())
+            helpers.escapeRegex(spoiler_info.spoiler.trim())
 
-            var spoiler = helpers.escapeRegexp(spoiler_info.spoiler.trim());
+            var spoiler = helpers.escapeRegex(spoiler_info.spoiler.trim());
             if (spoiler) {
                 spoiler_strs.push(spoiler);
             }
@@ -160,8 +160,8 @@ helpers = (function() {
         nullFunc: nullFunc,
         debounce: debounce,
         ucWords: ucWords,
-        escapeRegexp: escapeRegexp,
-        getSpoilersRegexp: getSpoilersRegexp,
+        escapeRegex: escapeRegex,
+        getSpoilersRegex: getSpoilersRegex,
         describe: describe,
         excerpt: excerpt,
         friendlyNum: friendlyNum

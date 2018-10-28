@@ -24,8 +24,8 @@ class Settings {
 
     get compiledSettingsInfo() {
         return {
-            'sites': ['allSitesRegexp', 'sitesInfo', 'compiledSitesAndSelectors'],
-            'spoilers': ['spoilersRegexp']
+            'sites': ['allSitesRegex', 'sitesInfo', 'compiledSitesAndSelectors'],
+            'spoilers': ['spoilersRegex']
         };
     }
 
@@ -117,20 +117,20 @@ class Settings {
     }
 
     // compiled settings
-    spoilersRegexpCompiler() {
-        let spoilersRegexp = helpers.getSpoilersRegexp(this.spoilers);
-        return spoilersRegexp;
+    spoilersRegexCompiler() {
+        let spoilersRegex = helpers.getSpoilersRegex(this.spoilers);
+        return spoilersRegex;
     }
 
-    allSitesRegexpCompiler() {
+    allSitesRegexCompiler() {
         let urls = [];
 
         for (let info of this.sites) {
-            urls.push(info.url_regexp);
+            urls.push(info.url_regex);
         }
 
-        let urlRegexp = new RegExp(urls.join('|'), 'i');
-        return urlRegexp;
+        let urlRegex = new RegExp(urls.join('|'), 'i');
+        return urlRegex;
     }
 
     compiledSitesAndSelectorsCompiler() {
@@ -138,7 +138,7 @@ class Settings {
 
         for (let info of this.sites) {
             val.push({
-                url_regexp: new RegExp(info.url_regexp, 'i'),
+                url_regex: new RegExp(info.url_regex, 'i'),
                 selector: info.selector
             });
         }
