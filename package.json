@@ -1,11 +1,14 @@
 {
   "name": "gameofspoilerslite",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:brettp/game-of-spoils.git"
+  },
   "version": "0.3.0",
   "description": "",
   "main": "gulpfile.js",
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.4.2",
-    "node-sass": "^3.4.2"
+    "@fortawesome/fontawesome-free": "^5.4.2"
   },
   "devDependencies": {
     "del": "^2.2.0",
@@ -22,11 +25,25 @@
     "gulp-util": "^3.0.7",
     "gulp-zip": "^3.1.0",
     "jshint": "^2.9.6",
+    "node-sass": "^4.0.0",
+    "preact-cli": "^2.2.1",
+    "sass-loader": "^7.1.0",
     "tiny-lr": "^0.2.1"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "options-dev": "preact watch src/options",
+    "options-build": "preact build --src src/options --dest build/options -p"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "Brett Profitt",
+  "license": "MIT",
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 4,
+    "semi": true,
+    "singleQuote": true,
+    "bracketSpacing": false,
+    "arrowFunctionParentheses": "always",
+    "printWidth": 100
+  }
 }

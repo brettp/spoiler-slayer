@@ -22,7 +22,7 @@
   },
 
   "options_ui": {
-    "page": "options.html",
+    "page": "options/index.html",
     "open_in_tab": true
   },
   "background": {

@@ -297,14 +297,6 @@ function saveSettings() {
     }
 }
 
-
-
-
-
-
-
-// @todo update to just a normal json file to import
-/* default and original settings */
 var ogSites = [{
         url_regex: 'avclub.com',
         selector: '.item, article.short, article > .heading'
@@ -451,8 +443,6 @@ var ogSpoilers = [
     'wildling',
     'winterfell'
 ];
-
-// SPOILER_WORDS_REGEX = new RegExp(SPOILER_WORDS_LIST.join('|'), 'i');
 
 var ogIgnoredSubreddits = [
     'gameofthrones',

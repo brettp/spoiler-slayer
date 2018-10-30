@@ -1,0 +1,482 @@
+$grey: #cecece;
+
+body {
+    font-family: Arial;
+    font-size: 100%;
+}
+
+body.debug {
+    display: inherit;
+
+    .debug {
+        display: initial;
+    }
+}
+
+.debug {
+    display: none;
+}
+
+a {
+    cursor: pointer;
+}
+
+
+.keyboard-user input,
+.keyboard-user select {
+
+    &:active,
+    &:focus {
+        outline-color: rgb(0, 103, 244) !important;
+        outline-offset: 0px !important;
+        outline-style: auto !important;
+        outline-width: 5px !important;
+    }
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.none {
+    display: none;
+}
+
+
+label.checkbox {
+    // required for FF to correctly render align-items: center;
+    font-family: Arial; // my name is HELVETICA
+    display: flex;
+    align-items: center;
+
+    &.inline {
+        display: inline-flex;
+    }
+}
+
+input[type=checkbox] {
+    padding: 0.1em;
+    border: 0.1em dashed $grey;
+
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    font-size: inherit;
+    height: 1em;
+    width: 1em;
+    background-clip: content-box;
+
+    &:checked {
+        background-image: linear-gradient(black, black);
+        border-color: black;
+    }
+
+    &:active,
+    &:focus {
+        outline: none;
+    }
+
+    &:disabled {
+        opacity: 0.25;
+    }
+}
+
+
+input[type=text],
+textarea {
+    font-size: inherit;
+    padding: .25em;
+}
+
+
+#popup {
+    width: 400px;
+    background-color: #fff;
+    line-height: 1.75em;
+
+    input[type=range],
+    input[type=text] {
+        width: 80%;
+    }
+
+
+    .indent {
+        margin-left: 1em;
+    }
+
+    .centered {
+        text-align: center;
+    }
+
+    h2 {
+        font-size: 125%;
+        text-align: center;
+        margin-bottom: 1em;
+        margin-top: .5em;
+
+        img.badge-example {
+            margin-right: .25em;
+            height: 1em;
+        }
+    }
+
+
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+        li {
+            padding: .25em 0;
+        }
+    }
+
+    label,
+    input {
+        font-size: inherit;
+        vertical-align: middle;
+    }
+
+    textarea {
+        width: 95%;
+        min-height: 5em;
+    }
+
+    label.badge-counter {
+        div {
+            display: inline-block;
+            border-top: 1px dashed $grey;
+            border-bottom: 1px dashed $grey;
+
+            select {
+                background: transparent;
+                border: none;
+                padding: 0;
+                font: inherit;
+                font-weight: 700;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+
+                &:focus,
+                &:hover,
+                &:active {
+                    outline: none;
+                    border: none;
+                }
+            }
+        }
+    }
+
+    .row {
+        display: flex;
+        text-align: center;
+
+        .col {
+            flex: 5 0 0px;
+
+            &.example {
+                flex: 4 0 0px;
+                border: 1px dashed $grey;
+                transition-duration: .5s;
+                min-height: 164px;
+
+                img {
+                    -khtml-user-select: none;
+                    -o-user-select: none;
+                    -moz-user-select: none;
+                    -webkit-user-select: none;
+                    user-select: none;
+                }
+            }
+        }
+
+        input[type=checkbox] {
+            margin-left: -1em;
+        }
+    }
+}
+
+// options page
+#options {
+    margin: auto;
+    text-align: center;
+    width: 50%;
+
+    #new-spoiler {
+        padding: 1.5em 2em;
+    }
+
+    .spoiler-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        input[type=text] {
+            flex: 1;
+            box-sizing: border-box;
+        }
+
+        label.checkbox {
+            padding-left: 1em;
+        }
+    }
+
+    label.supports-regex {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex: 1;
+        position: relative;
+
+        span.regex-marker {
+            visibility: hidden;
+            color: gray;
+            font-style: italic;
+            position: absolute;
+
+            &:first-of-type {
+                left: .5em;
+            }
+
+            &:nth-of-type(2) {
+                right: .5em;
+            }
+        }
+
+        &.is-regex {
+            input[type=text] {
+                padding-left: 1em;
+                padding-right: 1.75em;
+            }
+
+            span.regex-marker {
+                visibility: visible;
+            }
+        }
+    }
+}
+
+table {
+    width: 100%;
+    text-align: center;
+
+    tr td:first-of-type,
+    tr th:first-of-type {
+        width: 1em;
+    }
+
+    tr td {
+        padding: .5em;
+    }
+
+    input {
+        width: 95%;
+    }
+}
+
+.col-2 {
+    columns: 2;
+}
+
+ul,
+ol {
+    padding: 0;
+    width: 100%;
+    text-align: left;
+
+    li {
+        padding: .5em;
+        break-inside: avoid-column;
+        display: block;
+    }
+
+    input {
+        width: 85%;
+    }
+
+    i {
+        margin: auto .25em;
+    }
+}
+
+#sites {
+    tr td:nth-of-type(2) {
+        width: 15em;
+    }
+}
+
+.content-template {
+    display: none;
+}
+
+.icon {
+    line-height: 100%;
+    display: inline-block;
+    text-decoration: none;
+    font-style: normal;
+    color: $grey;
+    border-radius: 50%;
+    border: 1px dotted $grey;
+    width: 1em;
+    height: 1em;
+    padding: 0;
+    margin: .25em;
+    font-weight: 500;
+    font-size: 1em;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif;
+    transition: border .25s, color .25s;
+    text-align: center;
+
+    &.solid {
+        border: 1px solid black;
+        color: black;
+
+        &:hover {
+            border: 1px solid black;
+            color: black;
+        }
+    }
+
+    &.large {
+        font-size: 2em;
+    }
+
+    &:hover {
+        color: black;
+        border: 1px dotted black;
+    }
+}
+
+.help {
+    display: inline-block;
+
+    .icon:hover {
+        +.help-text {
+            transition: opacity .25s;
+            opacity: 1;
+        }
+    }
+}
+
+.help-text {
+    opacity: 0;
+    z-index: 9000;
+    position: absolute;
+    line-height: 1.5em;
+    font-size: 85%;
+    // move it up by its height with a bit of room
+    transform: translateY(calc(-100% - 3em));
+    left: 20px;
+    width: 350px;
+    // border-radius: 8px;
+    border: 1px dashed $grey;
+    padding: 12px;
+    pointer-events: none;
+    background-color: white;
+    text-align: left;
+    transition: opacity .25s;
+    box-shadow: 0 0 15px black;
+
+    .icon {
+        float: left;
+        font-size: 3em;
+        margin: 0;
+        margin-right: .25em;
+    }
+
+    &:hover {
+        opacity: 1;
+    }
+}
+
+// @todo what is this for?
+label:focus {
+    .help-text {
+        opacity: 1;
+        z-index: 9000;
+    }
+}
+
+.left,
+.right {
+    float: right;
+    font-size: small;
+    padding-top: 1em;
+    color: #000088;
+
+    a {
+        text-decoration: none;
+        color: #000088
+    }
+}
+
+.left {
+    float: left;
+}
+
+.save-flasher {
+    &.save-success {
+        animation: pulse-green .25s alternate 2;
+
+        &:after {
+            content: 'SAVED';
+            color: green;
+            animation: flash-fade 1s;
+        }
+    }
+
+    &.save-fail {
+        animation: pulse-red .12s alternate 6;
+
+        &:before {
+            content: '✓';
+            color: green;
+            // animation: flash-fade 1s;
+        }
+
+        &:after {
+            content: 'FAILED';
+            color: red;
+            // animation: flash-fade 1s;
+        }
+    }
+}
+
+footer {
+    padding-bottom: 1em;
+}
+
+ol {
+    list-style: none;
+}
+
+i.fader {
+    opacity: .25;
+    transition: opacity .25s;
+
+    &:hover {
+        opacity: 1;
+    }
+}
+
+section {
+    border: 1px dashed $grey;
+    margin: 2em 0;
+}
+
+@keyframes flash-fade {
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes pulse-green {
+    to {
+        box-shadow: 0 0 25px green;
+    }
+}
+
+@keyframes pulse-red {
+    to {
+        box-shadow: 0 0 25px red;
+    }
+}

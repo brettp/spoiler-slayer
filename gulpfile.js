@@ -6,6 +6,7 @@ var jsontf = require('gulp-json-transform');
 var sass = require('gulp-sass');
 var gutil = require('gulp-util');
 var tinylr = require('tiny-lr');
+var exec = require('child_process').exec;
 
 // Copy static folders to build directory
 gulp.task('update-static', function() {
@@ -81,6 +82,20 @@ gulp.task('scss', function() {
         .pipe(gulp.dest('build/firefox/styles'));
 });
 
+// preact for options page
+gulp.task('options', function() {
+    del('build/options/**');
+    del('build/*/options/**');
+
+    // these is almost definitely a better way to do this
+    exec('preact build --src src/options --dest build/options -p', (err, stdout, stderr) => {
+        console.log(stdout, stderr);
+        gulp.src('build/options/**')
+            .pipe(gulp.dest('build/chrome/options'))
+            .pipe(gulp.dest('build/firefox/options'));
+    });
+})
+
 
 // Watch paths
 var watchPaths = {
@@ -114,7 +129,6 @@ gulp.task('watch', function() {
     var livereload = tinylr();
     livereload.listen(35729);
     gulp.watch(['build/chrome/**/*', 'build/chrome/scripts/**/*'], function(evt) {
-        console.log('reload!');
         livereload.changed({
             body: {
                 files: [evt.path]
@@ -123,7 +137,7 @@ gulp.task('watch', function() {
     });
 });
 
-gulp.task('build', ['update-static', 'html', 'js', 'scss'], function() {});
+gulp.task('build', ['update-static', 'html', 'js', 'scss', 'options'], function() {});
 
 // Default gulp is watch
 gulp.task('default', ['build', 'watch'], function() {});

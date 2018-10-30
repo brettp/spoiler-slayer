@@ -12,52 +12,51 @@
 </head>
 
 <body id="options">
-    <div class="col-left">
-        <h2 id="title">Game of Spoils Lite</h2>
-        <hr />
+    <h2 id="title">Game of Spoils Lite</h2>
+    <hr />
 
-        <section id="spoilers-settings">
-            <h2>Spoilers</h2>
-            <p>Add words to block. Can be RegEx if you know how!</p>
-            <form id="new-spoiler" class="spoiler-row">
-                <!-- <i class="fa fa-tag"></i> -->
-                <label class="supports-regex">
-                    <span class="regex-marker">/</span>
-                    <input autocomplete='off' type='text' class="save-flasher no-auto-save" name="spoiler" />
-                    <span class="regex-marker">/ig</span>
-                </label>
-                <label class="checkbox inline">
-                    <input type="checkbox" name="isRegex" value="1" class="no-auto-save">
-                    <code>/re/</code>
-                </label>
-            </form>
+    <section id="spoilers-settings">
+        <h2>Spoilers</h2>
+        <p>Add words to block. Can be RegEx if you know how!</p>
+        <form id="new-spoiler" class="spoiler-row">
+            <i class="fa fa-tag"></i>
+            <label class="supports-regex">
+                <span class="regex-marker">/</span>
+                <input autocomplete='off' type='text' class="save-flasher no-auto-save" name="spoiler" />
+                <span class="regex-marker">/ig</span>
+            </label>
+            <label class="checkbox inline">
+                <input type="checkbox" name="isRegex" value="1" class="no-auto-save">
+                <code>/re/</code>
+            </label>
+        </form>
 
-            <div>
-                <ol class="col-2" id="spoilers" data-settings-name="spoilers">
-                    <li id="spoiler-template" class="none spoiler-row">
-                        <a class='remove-li'><i class='fa fa-trash fader'></i></a>
-                        <label class="supports-regex">
-                            <span class="regex-marker">/</span>
-                            <input autocomplete='off' type='text' name="spoiler" class="save-flasher no-auto-save" />
-                            <span class="regex-marker">/ig</span>
-                        </label>
-                    </li>
-                </ol>
-            </div>
-        </section>
+        <div>
+            <ol class="col-2" id="spoilers" data-settings-name="spoilers">
+                <li id="spoiler-template" class="none spoiler-row">
+                    <a class='remove-li'><i class='fa fa-trash fader'></i></a>
+                    <label class="supports-regex">
+                        <span class="regex-marker">/</span>
+                        <input autocomplete='off' type='text' name="spoiler" class="save-flasher no-auto-save" />
+                        <span class="regex-marker">/ig</span>
+                    </label>
+                </li>
+            </ol>
+        </div>
+    </section>
 
-        <section class="sites-settings">
-            <h2>Sites & Selectors</h2>
-            <p>Add sites to block (regex supported) and a selector for that site</p>
-            <table id="sites" data-settings-name="sites">
-                <tr>
-                    <th><a class="new-row" data-row-type="site"><i class="fa fa-plus"></i></th>
-                    <th>Site or RegEx</th>
-                    <th>Element selector</th>
-                </tr>
-            </table>
-        </section>
-    </div>
+    <section class="sites-settings">
+        <h2>Sites & Selectors</h2>
+        <p>Add sites to block (regex supported) and a selector for that site</p>
+        <table id="sites" data-settings-name="sites">
+            <tr>
+                <th><a class="new-row" data-row-type="site"><i class="fa fa-plus"></i></th>
+                <th>Site or RegEx</th>
+                <th>Element selector</th>
+            </tr>
+        </table>
+    </section>
+
 
     <footer>
         <form class="file-upload">
