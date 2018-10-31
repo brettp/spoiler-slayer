@@ -88,7 +88,7 @@ gulp.task('options', function() {
     del('build/*/options/**');
 
     // these is almost definitely a better way to do this
-    exec('preact build --src src/options --dest build/options -p', (err, stdout, stderr) => {
+    exec('preact build --no-prerender --template src/options/webpack_template.html --src src/options --dest build/options -p', (err, stdout, stderr) => {
         console.log(stdout, stderr);
         gulp.src('build/options/**')
             .pipe(gulp.dest('build/chrome/options'))

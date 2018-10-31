@@ -8,7 +8,7 @@ $spoilerTpl.find('input').removeClass('no-auto-save');
 
 let $spoilers = $('#spoilers');
 let $sites = $('#sites');
-
+console.log(chrome);
 async function init() {
     updateInputsFromSettings();
 

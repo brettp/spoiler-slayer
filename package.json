@@ -32,8 +32,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "options-dev": "preact watch src/options",
-    "options-build": "preact build --src src/options --dest build/options -p"
+    "options-dev": "preact watch -c ./preact.config-dev.js --template ./src/options/webpack_template.html --src src/options",
+    "options-build": "preact build --no-prerender --src src/options --dest build/options -p"
   },
   "author": "Brett Profitt",
   "license": "MIT",

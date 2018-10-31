@@ -80,132 +80,23 @@ input[type=checkbox] {
     }
 }
 
-
 input[type=text],
 textarea {
     font-size: inherit;
     padding: .25em;
 }
 
-
-#popup {
-    width: 400px;
-    background-color: #fff;
-    line-height: 1.75em;
-
-    input[type=range],
-    input[type=text] {
-        width: 80%;
-    }
-
-
-    .indent {
-        margin-left: 1em;
-    }
-
-    .centered {
-        text-align: center;
-    }
-
-    h2 {
-        font-size: 125%;
-        text-align: center;
-        margin-bottom: 1em;
-        margin-top: .5em;
-
-        img.badge-example {
-            margin-right: .25em;
-            height: 1em;
-        }
-    }
-
-
-    ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-
-        li {
-            padding: .25em 0;
-        }
-    }
-
-    label,
-    input {
-        font-size: inherit;
-        vertical-align: middle;
-    }
-
-    textarea {
-        width: 95%;
-        min-height: 5em;
-    }
-
-    label.badge-counter {
-        div {
-            display: inline-block;
-            border-top: 1px dashed $grey;
-            border-bottom: 1px dashed $grey;
-
-            select {
-                background: transparent;
-                border: none;
-                padding: 0;
-                font: inherit;
-                font-weight: 700;
-                -webkit-appearance: none;
-                -moz-appearance: none;
-
-                &:focus,
-                &:hover,
-                &:active {
-                    outline: none;
-                    border: none;
-                }
-            }
-        }
-    }
-
-    .row {
-        display: flex;
-        text-align: center;
-
-        .col {
-            flex: 5 0 0px;
-
-            &.example {
-                flex: 4 0 0px;
-                border: 1px dashed $grey;
-                transition-duration: .5s;
-                min-height: 164px;
-
-                img {
-                    -khtml-user-select: none;
-                    -o-user-select: none;
-                    -moz-user-select: none;
-                    -webkit-user-select: none;
-                    user-select: none;
-                }
-            }
-        }
-
-        input[type=checkbox] {
-            margin-left: -1em;
-        }
-    }
-}
-
 // options page
 #options {
+    section {
+        padding: 1em;
+    }
+
     margin: auto;
     text-align: center;
     width: 50%;
 
-    #new-spoiler {
-        padding: 1.5em 2em;
-    }
-
-    .spoiler-row {
+    .row {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -213,10 +104,6 @@ textarea {
         input[type=text] {
             flex: 1;
             box-sizing: border-box;
-        }
-
-        label.checkbox {
-            padding-left: 1em;
         }
     }
 
@@ -255,6 +142,29 @@ textarea {
     }
 }
 
+.site-row {
+    .site-at {
+        padding: 0 .5em;
+        color: $grey;
+    }
+
+    input[name=selector] {
+        flex: 1;
+        display: inline-flex;
+    }
+
+    .selector-input {
+        display: inline-flex;
+        flex: 1;
+        align-items: center;
+    }
+
+    .site-input {
+        display: inline-flex;
+        flex: 1;
+    }
+}
+
 table {
     width: 100%;
     text-align: center;
@@ -284,7 +194,7 @@ ol {
     text-align: left;
 
     li {
-        padding: .5em;
+        padding: .5em 0;
         break-inside: avoid-column;
         display: block;
     }

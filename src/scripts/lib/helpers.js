@@ -170,18 +170,18 @@ helpers = (function() {
 
 
 async function getSetting(name) {
-    return cmd('getSetting', name);
+    return await cmd('getSetting', name);
 }
 
 async function setSetting(name, val) {
-    return cmd('setSetting', {
+    return await cmd('setSetting', {
         name: name,
         value: val
     })
 }
 
 async function cmd(cmd, data) {
-    return msg({
+    return await msg({
         cmd: cmd,
         data: data
     });
