@@ -1,5 +1,5 @@
 $siteTpl = $("<tr>" +
-    "<td><a class='remove-row'><i class='fa fa-trash fader'></i></a> <td><input autocomplete='off' type='text' name='url_regex' /></td>" +
+    "<td><a class='remove-row'><i class='fa fa-trash fader'></i></a> <td><input autocomplete='off' type='text' name='urlRegex' /></td>" +
     "<td><input type='text' name='selector' /></td> </tr>"
 );
 
@@ -9,6 +9,7 @@ $spoilerTpl.find('input').removeClass('no-auto-save');
 let $spoilers = $('#spoilers');
 let $sites = $('#sites');
 console.log(chrome);
+
 async function init() {
     updateInputsFromSettings();
 
@@ -296,162 +297,3 @@ function saveSettings() {
         }
     }
 }
-
-var ogSites = [{
-        url_regex: 'avclub.com',
-        selector: '.item, article.short, article > .heading'
-    },
-    {
-        url_regex: 'buzzfeed.com',
-        selector: '.card--article-featured, .card--article, .card--package, .card--video, .sidebar__link, .js-now-buzzing__list > li'
-    },
-    {
-        url_regex: 'facebook.com',
-        selector: 'div[data-testid="fbfeed_story"], div[role="article"], #pagelet_trending_tags_and_topics ul > li'
-    },
-    {
-        url_regex: 'feedly.com',
-        selector: '.entry'
-    },
-    {
-        url_regex: 'gizmodo.com',
-        selector: '.featured-item, article'
-    },
-    {
-        url_regex: 'news.google.com',
-        selector: 'a[target="_blank"]'
-    },
-    {
-        url_regex: 'plus.google.com',
-        selector: 'div[id^="update-"], c-wiz div div c-wiz'
-    },
-    {
-        url_regex: 'reddit.com',
-        selector: '.sitetable > .thing.link:visible, .usertext-body, .scrollerItem'
-    },
-    {
-        url_regex: 'slack.com',
-        selector: 'ts-message'
-    },
-    {
-        url_regex: 'tumblr.com',
-        selector: '.post_container, article'
-    },
-    {
-        url_regex: 'twitter.com',
-        selector: "[data-item-type='tweet'], .trend-item"
-    },
-    {
-        url_regex: 'youtube.com',
-        selector: '.yt-lockup, .related-list-item, .comment-renderer-text'
-    },
-];
-
-var ogSpoilers = [
-    '#got',
-    'ady stonehea',
-    'aidan gillen',
-    'alfie allen',
-    'arya stark',
-    'asoiaf',
-    'azor ahai',
-    'baelish',
-    'baratheon',
-    'ben crompton',
-    'bloodraven',
-    'braavos',
-    'bran stark',
-    'briene of tarth',
-    'brienne of tarth',
-    'carice van houten',
-    'casterly rock',
-    'cersei ',
-    'conleth hill',
-    'd.b. weiss',
-    'daenerys',
-    'daniel portman',
-    'david benioff',
-    'davos seaworth',
-    'dornish',
-    'dothraki',
-    'dreadfort',
-    'emilia clarke',
-    'game of thrones',
-    'gameofthrone',
-    'gameofthone',
-    'gamesofthrone',
-    'greyjoy',
-    'gwendoline christie',
-    'highgarden',
-    'hodor',
-    'house bolton',
-    'house stark',
-    'house tyrell',
-    'howland reed',
-    'iain glen',
-    'ian mcelhinney',
-    'iron throne',
-    'isaac hempstead wright',
-    'jerome flynn',
-    'john bradley',
-    'jojen reed',
-    'jon snow',
-    'julian glover',
-    'khaleesi',
-    "king's landing",
-    'kit harington',
-    'kit harrington',
-    'kristian nairn',
-    'lanister',
-    'lannisport',
-    'lannister',
-    'lena headey',
-    'liam cunningham',
-    'littlefinger',
-    'maisie williams',
-    'meereen',
-    'melisandre',
-    'michele fairley',
-    'michelle fairley',
-    'myrcella',
-    'natalie dormer',
-    'nathalie emmanue',
-    'ned stark',
-    'nikolaj coster-waldau',
-    'olenna tyrell',
-    'peter dinklage',
-    'podrick payne',
-    'queen of thorns',
-    'ramsay bolton',
-    'roose bolton',
-    'rory mccann',
-    'sandor clegane',
-    'sansa stark',
-    'sophie turner',
-    'sothoryos',
-    'stephen dillane',
-    'targaryen',
-    'three eyed raven',
-    'tower of joy',
-    'tyrion',
-    'vaes dothrak',
-    'viserys',
-    'walder frey',
-    'westeros',
-    'white walker',
-    'whitewalker',
-    'wildling',
-    'winterfell'
-];
-
-var ogIgnoredSubreddits = [
-    'gameofthrones',
-    'asoiaf',
-    'iceandfire',
-    'agotboardgame',
-    'gamesofthrones',
-    'westeros',
-    'thronescomics',
-    'asongofmemesandrage',
-    'earthoficeandfire'
-];

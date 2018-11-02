@@ -1,370 +1,192 @@
 import './styles';
 import '../../node_modules/@fortawesome/fontawesome-free/css/all';
-import {render, Component} from 'preact';
+import {render, Component, Input} from 'preact';
 import {SpoilerSettings} from './components/SpoilerSettings';
 import {SiteSettings} from './components/SiteSettings';
-
-let cmd;
-
-if (typeof cmd !== 'function') {
-    let settings = {
-        "sites": [
-          {
-            "selector": ".item, article.short, article > .heading",
-            "url_regexp": "avclub.com"
-          },
-          {
-            "selector": ".card--article-featured, .card--article, .card--package, .card--video, .sidebar__link, .js-now-buzzing__list > li",
-            "url_regexp": "buzzfeed.com"
-          },
-          {
-            "selector": "div[data-testid=\"fbfeed_story\"], div[role=\"article\"], #pagelet_trending_tags_and_topics ul > li",
-            "url_regexp": "facebook.com"
-          },
-          {
-            "selector": ".entry",
-            "url_regexp": "feedly.com"
-          },
-          {
-            "selector": ".featured-item, article",
-            "url_regexp": "gizmodo.com"
-          },
-          {
-            "selector": "a[target=\"_blank\"]",
-            "url_regexp": "news.google.com"
-          },
-          {
-            "selector": "div[id^=\"update-\"], c-wiz div div c-wiz",
-            "url_regexp": "plus.google.com"
-          },
-          {
-            "selector": ".sitetable > .thing.link:visible, .usertext-body, .scrollerItem",
-            "url_regexp": "reddit.com"
-          },
-          {
-            "selector": "ts-message",
-            "url_regexp": "slack.com"
-          },
-          {
-            "selector": ".post_container, article",
-            "url_regexp": "tumblr.com"
-          },
-          {
-            "selector": "[data-item-type='tweet'], .trend-item",
-            "url_regexp": "twitter.com"
-          },
-          {
-            "selector": ".yt-lockup, .related-list-item, .comment-renderer-text",
-            "url_regexp": "youtube.com"
-          }
-        ],
-        "spoilers": [
-          {
-            "spoiler": "#got"
-          },
-          {
-            "spoiler": "ady stonehea"
-          },
-          {
-            "spoiler": "aidan gillen"
-          },
-          {
-            "spoiler": "alfie allen"
-          },
-          {
-            "spoiler": "arya stark"
-          },
-          {
-            "spoiler": "asoiaf"
-          },
-          {
-            "spoiler": "azor ahai"
-          },
-          {
-            "spoiler": "baelish"
-          },
-          {
-            "spoiler": "baratheon"
-          },
-          {
-            "spoiler": "ben crompton"
-          },
-          {
-            "spoiler": "bloodraven"
-          },
-          {
-            "spoiler": "braavos"
-          },
-          {
-            "spoiler": "bran stark"
-          },
-          {
-            "spoiler": "briene of tarth"
-          },
-          {
-            "spoiler": "brienne of tarth"
-          },
-          {
-            "spoiler": "carice van houten"
-          },
-          {
-            "spoiler": "casterly rock"
-          },
-          {
-            "spoiler": "cersei "
-          },
-          {
-            "spoiler": "conleth hill"
-          },
-          {
-            "spoiler": "d.b. weiss"
-          },
-          {
-            "spoiler": "daenerys"
-          },
-          {
-            "spoiler": "daniel portman"
-          },
-          {
-            "spoiler": "david benioff"
-          },
-          {
-            "spoiler": "davos seaworth"
-          },
-          {
-            "spoiler": "dornish"
-          },
-          {
-            "spoiler": "dothraki"
-          },
-          {
-            "spoiler": "dreadfort"
-          },
-          {
-            "spoiler": "emilia clarke"
-          },
-          {
-            "spoiler": "game of thrones"
-          },
-          {
-            "spoiler": "gameofthrone"
-          },
-          {
-            "spoiler": "gameofthone"
-          },
-          {
-            "spoiler": "gamesofthrone"
-          },
-          {
-            "spoiler": "greyjoy"
-          },
-          {
-            "spoiler": "gwendoline christie"
-          },
-          {
-            "spoiler": "highgarden"
-          },
-          {
-            "spoiler": "hodor"
-          },
-          {
-            "spoiler": "house bolton"
-          },
-          {
-            "spoiler": "house stark"
-          },
-          {
-            "spoiler": "house tyrell"
-          },
-          {
-            "spoiler": "howland reed"
-          },
-          {
-            "spoiler": "iain glen"
-          },
-          {
-            "spoiler": "ian mcelhinney"
-          },
-          {
-            "spoiler": "iron throne"
-          },
-          {
-            "spoiler": "isaac hempstead wright"
-          },
-          {
-            "spoiler": "jerome flynn"
-          },
-          {
-            "spoiler": "john bradley"
-          },
-          {
-            "spoiler": "jojen reed"
-          },
-          {
-            "spoiler": "jon snow"
-          },
-          {
-            "spoiler": "julian glover"
-          },
-          {
-            "spoiler": "khaleesi"
-          },
-          {
-            "spoiler": "king's landing"
-          },
-          {
-            "spoiler": "kit harington"
-          },
-          {
-            "spoiler": "kit harrington"
-          },
-          {
-            "spoiler": "kristian nairn"
-          },
-          {
-            "spoiler": "lanister"
-          },
-          {
-            "spoiler": "lannisport"
-          },
-          {
-            "spoiler": "lannister"
-          },
-          {
-            "spoiler": "lena headey"
-          },
-          {
-            "spoiler": "liam cunningham"
-          },
-          {
-            "spoiler": "littlefinger"
-          },
-          {
-            "spoiler": "maisie williams"
-          },
-          {
-            "spoiler": "meereen"
-          },
-          {
-            "spoiler": "melisandre"
-          },
-          {
-            "spoiler": "michele fairley"
-          },
-          {
-            "spoiler": "michelle fairley"
-          },
-          {
-            "spoiler": "myrcella"
-          },
-          {
-            "spoiler": "natalie dormer"
-          },
-          {
-            "spoiler": "nathalie emmanue"
-          },
-          {
-            "spoiler": "ned stark"
-          },
-          {
-            "spoiler": "nikolaj coster-waldau"
-          },
-          {
-            "spoiler": "olenna tyrell"
-          },
-          {
-            "spoiler": "peter dinklage"
-          },
-          {
-            "spoiler": "podrick payne"
-          },
-          {
-            "spoiler": "queen of thorns"
-          },
-          {
-            "spoiler": "ramsay bolton"
-          },
-          {
-            "spoiler": "roose bolton"
-          },
-          {
-            "spoiler": "rory mccann"
-          },
-          {
-            "spoiler": "sandor clegane"
-          },
-          {
-            "spoiler": "sansa stark"
-          },
-          {
-            "spoiler": "sophie turner"
-          },
-          {
-            "spoiler": "sothoryos"
-          },
-          {
-            "spoiler": "stephen dillane"
-          },
-          {
-            "spoiler": "targaryen"
-          },
-          {
-            "spoiler": "three eyed raven"
-          },
-          {
-            "spoiler": "tower of joy"
-          },
-          {
-            "spoiler": "tyrion"
-          },
-          {
-            "spoiler": "vaes dothrak"
-          },
-          {
-            "spoiler": "viserys"
-          },
-          {
-            "spoiler": "walder frey"
-          },
-          {
-            "spoiler": "westeros"
-          },
-          {
-            "spoiler": "white walker"
-          },
-          {
-            "spoiler": "whitewalker"
-          },
-          {
-            "spoiler": "wildling"
-          },
-          {
-            "spoiler": "winterfell"
-          }
-        ]
-      };
-    console.log("Using fake data");
-    cmd = async function (cmd) {
-        console.log(`Got cmd ${cmd}`);
-        return new Promise(res => {res(settings)});
-    }
-}
-
-cmd('bob');
-
-async function getSettings() {
-    let settings = await cmd('getSettings');
-    console.log('Got them', settings);
-    return settings;
-}
+import {downloadSettings, resetToOg} from './lib/import_export';
 
 class Options extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            settings: props.settings
+        this.state = {...props.settings};
+        this.state.newSpoiler = {
+            spoiler: '',
+            isRegex: false,
+        };
+
+        this.state.newSite = {
+            urlRegex: '',
+            selector: '',
+            isRegex: false,
+        };
+
+        if (!this.state.sites) {
+            this.state.sites = [];
         }
+
+        if (!this.state.spoilers) {
+            this.state.spoilers = [];
+        }
+
+        this.resetToOgSites = this.resetToOgSites.bind(this);
+        this.resetToOgSpoilers = this.resetToOgSpoilers.bind(this);
+        this.reset = this.reset.bind(this);
+        this.saveToSettings = this.saveToSettings.bind(this);
+
+        this.onRemove = this.onRemove.bind(this);
+        this.onUpdate = this.onUpdate.bind(this);
+
+        this.onNewSpoilerSubmit = this.onNewSpoilerSubmit.bind(this);
+        this.onNewChange = this.onNewChange.bind(this);
+
+        this.onNewSiteSubmit = this.onNewSiteSubmit.bind(this);
+
+        this.importSettings = this.importSettings.bind(this);
+        this.fileBrowser = this.fileBrowser.bind(this);
+
+        this.forceUpdate = this.forceUpdate.bind(this);
+    }
+
+    async updateFromSettings() {
+        console.log('Updating from settings...');
+        const settings = await cmd('getSettings');
+        console.log('presettings', settings);
+        console.log('prestate', this.state);
+        this.setState({...settings}, () => { console.log('post state', this.state)});
+    }
+
+    async saveToSettings() {
+        setSetting('sites', this.state.sites);
+        setSetting('spoilers', this.state.spoilers);
+    }
+
+    async resetToOgSites(e) {
+        e.preventDefault();
+        if (confirm('Are you use you want to reset to the original list of sites?')) {
+            await resetToOg('sites');
+            await this.updateFromSettings();
+            // this.saveToSettings();
+        }
+    }
+
+    async resetToOgSpoilers(e) {
+        e.preventDefault();
+        if (confirm('Are you use you want to reset to the original list of spoilers?')) {
+            await resetToOg('spoilers');
+            await this.updateFromSettings();
+            // this.saveToSettings();
+        }
+    }
+
+    async reset(e) {
+        e.preventDefault();
+        if (confirm('Are you use you want to reset all settings?')) {
+            let defaults = await cmd('getDefaultSettings');
+            await cmd('saveSettings', defaults);
+            this.updateFromSettings();
+        }
+    }
+
+    onRemove(e, type, id) {
+        const data = [...this.state[type]];
+        data.splice(id, 1);
+        const state = {};
+        state[type] = data;
+        this.setState(state, this.saveToSettings);
+    }
+
+    onUpdate(datum, type, id) {
+        const data = [...this.state[type]];
+        data[id] = datum;
+
+        const state = {};
+        state[type] = data;
+        this.setState(state, this.saveToSettings);
+    }
+
+    onNewSpoilerSubmit(e) {
+        e.preventDefault();
+        const spoiler = {...this.state.newSpoiler};
+        const spoilers = [...this.state.spoilers];
+        spoilers.unshift(spoiler);
+
+        this.setState(
+            {
+                spoilers: spoilers,
+                newSpoiler: {
+                    spoiler: '',
+                    isRegex: false,
+                },
+            },
+            this.saveToSettings
+        );
+    }
+
+    onNewChange(datum, type, id) {
+        let key = type === 'spoilers' ? 'newSpoiler' : 'newSite';
+        let newState = {};
+        newState[key] = datum;
+        this.setState(newState);
+    }
+
+    onNewSiteSubmit(e) {
+        e.preventDefault();
+        const site = {...this.state.newSite};
+        const sites = [...this.state.sites];
+        sites.unshift(site);
+
+        this.setState(
+            {
+                sites: sites,
+                newSite: {
+                    urlRegex: '',
+                    selector: '',
+                    isRegex: false,
+                },
+            },
+            this.saveToSettings
+        );
+    }
+
+    async importSettings(e) {
+        e.preventDefault();
+        let files = e.target.files;
+        let self = this;
+
+        for (const file of files) {
+            let reader = new FileReader();
+            reader.readAsBinaryString(file);
+            reader.onloadend = async function() {
+                let obj = JSON.parse(this.result);
+                let settings = await cmd('getSettings');
+
+                // @todo validate!
+                for (const item in obj) {
+                    switch (item) {
+                        case 'sites':
+                        case 'spoilers':
+                            if (settings[item]) {
+                                settings[item] = settings[item].concat(obj[item]);
+                            }
+                            console.log(settings[item]);
+                            await setSetting(item, settings[item]);
+                            await self.updateFromSettings();
+                            break;
+                    }
+                }
+            };
+        }
+
+        this.uploadForm.reset();
+    }
+
+    fileBrowser(e) {
+        this.fileInput.click();
+    }
+
+    async forceUpdate() {
+        this.updateFromSettings();
     }
 
     render() {
@@ -372,45 +194,82 @@ class Options extends Component {
             <div id="options">
                 <h2 id="title">Game of Spoils Lite</h2>
                 <hr />
-                <SpoilerSettings spoilers={this.state.settings.spoilers} />
-                <SiteSettings sites={this.state.settings.sites} />
+                <SpoilerSettings
+                    spoilers={this.state.spoilers}
+                    onSpoilerChange={this.onUpdate}
+                    onNewChange={this.onNewChange}
+                    onNewSpoilerSubmit={this.onNewSpoilerSubmit}
+                    onRemove={this.onRemove}
+                    newSpoiler={this.state.newSpoiler}
+                />
+                <SiteSettings
+                    sites={this.state.sites}
+                    onSiteChange={this.onUpdate}
+                    onNewChange={this.onNewChange}
+                    onNewSiteSubmit={this.onNewSiteSubmit}
+                    onRemove={this.onRemove}
+                    newSite={this.state.newSite}
+                />
 
                 <footer>
-                    <form class="file-upload">
-                        <input type="file" class="no-auto-save xnone" id="file-import" />
+                    <form class="none" ref={uploadForm => (this.uploadForm = uploadForm)}>
+                        <input
+                            type="file"
+                            onChange={this.importSettings}
+                            ref={fileInput => (this.fileInput = fileInput)}
+                        />
                         <input type="submit" />
                     </form>
+
                     <div class="left">
-                        <a href="#" id="reset-to-default-sites">
-                            Reset to default sites
-                        </a>{' '}
-                        |
-                        <a href="#" id="reset-to-default-spoilers">
-                            Reset to default spoilers
-                        </a>{' '}
-                        |
-                        <a href="#import" id="import">
-                            Import
-                        </a>{' '}
-                        |
-                        <a href="#export" id="export">
-                            Export
-                        </a>
+                        <ul class="menu-h">
+                            <li>
+                                <a href="#" onClick={this.resetToOgSites}>
+                                    Reset to default sites
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" onClick={this.resetToOgSpoilers}>
+                                    Reset to default spoilers
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" onClick={this.fileBrowser}>
+                                    Import
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" onClick={() => downloadSettings('all')}>
+                                    Export
+                                </a>
+                            </li>
+                        </ul>
                     </div>
 
                     <div class="right">
-                        <a href="#clear-settings" id="clear-settings">
-                            Clear settings
-                        </a>
+                        <ul class="menu-h">
+                            <li class="debug">
+                                <a href="#clear-settings" onClick={this.forceUpdate}>
+                                    Clear settings
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#clear-settings" onClick={this.reset}>
+                                    Clear settings
+                                </a>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="debug">debug</div>
                 </footer>
             </div>
         );
     }
 }
 
-console.log('index included');
-getSettings().then(res => {
-    render(<Options settings={res} />, document.body);
-});
+async function init() {
+    cmd('getSettings').then(res => {
+        render(<Options settings={res} />, document.body);
+    });
+}
+
+init();

@@ -21,9 +21,9 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - [X] Quick add spoiler phrase on popup
 - [ ] Quick add site on popup?
 - [ ] New example image
-- [ ] Less awful advanced settings interface
+- [X] Less awful advanced settings interface
 - - [ ] Better text explaining what to do
-- - [ ] Checkbox to mark spoilers as regexp
+- - [X] Checkbox to mark spoilers as regexp
 - [ ] On install tutorial
 - [ ] Disable on certain sites
 - [X] Badge / popup counter for session and lifetime blocks
@@ -35,7 +35,7 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - - [ ] Make not flash when loading a site on the same domain
 - [X] Live update for settings changes (use on change event)
 - - [X] Live updates for no-fx changes
-- [ ] Settings import and export
+- [X] Settings import and export
 - [ ] Settings import from gists
 - [ ] Better way to add new site input in settings (tables are too slow for some reason)
 - [ ] Opt-in analytics?

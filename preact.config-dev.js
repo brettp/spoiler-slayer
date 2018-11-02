@@ -2,11 +2,11 @@ export default (config, env, helpers) => {
     // config.output.publicPath = '/options/';
 
     // // use the public path in your app as 'process.env.PUBLIC_PATH'
-    // config.plugins.push(
-    //     new helpers.webpack.DefinePlugin({
-    //         'process.env.PUBLIC_PATH': JSON.stringify(config.output.publicPath || '/'),
-    //     })
-    // );
+    config.plugins.push(
+        new helpers.webpack.DefinePlugin({
+            'process.env.DEV': 1,
+        })
+    );
 
     // let {index} = helpers.getPluginsByName(config, 'UglifyJsPlugin')[0];
     // config.plugins.splice(index, 1);

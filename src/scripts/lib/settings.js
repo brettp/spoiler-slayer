@@ -1,12 +1,13 @@
 class Settings {
+    /**
+     * Define available settings and set defaults.
+     */
     static get defaultSettings() {
         return {
             blockingEnabled: true,
             destroySpoilers: false,
             showSpecificSpoiler: true,
             warnBeforeReveal: false,
-            // out of 0 - 100, which gets converted to a range from 0-20pt
-            // 100 means completely black, no animations
             heavyBlur: 10,
             hoverBlur: 2,
             blurSpoilers: true,
@@ -32,6 +33,14 @@ class Settings {
     constructor(saved) {
         if (saved && Object.keys(saved).length < 1) {
             saved = Settings.defaultSettings;
+        }
+
+        if (!saved.sites) {
+            saved.sites = [];
+        }
+
+        if (!saved.spoilers) {
+            saved.spoilers = [];
         }
 
         this.cached = saved;
@@ -126,7 +135,7 @@ class Settings {
         let urls = [];
 
         for (let info of this.sites) {
-            urls.push(info.url_regex);
+            urls.push(info.urlRegex);
         }
 
         let urlRegex = new RegExp(urls.join('|'), 'i');
@@ -138,7 +147,7 @@ class Settings {
 
         for (let info of this.sites) {
             val.push({
-                url_regex: new RegExp(info.url_regex, 'i'),
+                urlRegex: new RegExp(info.urlRegex, 'i'),
                 selector: info.selector
             });
         }
@@ -173,7 +182,7 @@ class Settings {
     }
 
     save(settings, cb) {
-        cachedSettings = settings;
+        this.cached = settings;
         chrome.storage.sync.set(settings, cb || helpers.nullFunc);
     }
 

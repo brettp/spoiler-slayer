@@ -1,12 +1,12 @@
 document.addEventListener('keydown', (event) => {
     if (event.key && event.key.toLowerCase() == 'alt') {
-        $('body').addClass('debug');
+        $('body').addClass('debug-active');
     }
 });
 
 document.addEventListener('keyup', (event) => {
     if (event.key && event.key.toLowerCase() == 'alt') {
-        $('body').removeClass('debug');
+        $('body').removeClass('debug-active');
     } else {
         // someone wants to use the keyboard, so make sure outlines show up
         $('body').addClass('keyboard-user');
@@ -23,20 +23,14 @@ async function getActiveTabInfoReal() {
 }
 
 (async function init() {
-    openOptionsPage();
-    // let tab = await cmd('getActiveTabInfo');
     let tab = await getActiveTabInfoReal();
     cmd('debug', tab);
 
     let settings = await cmd('getSettings');
-    if (!settings) {
-        settings = await cmd('getDefaultSettings');
-    }
 
     loadSettings(settings);
     $('body').on('change', 'input, select', saveSetting);
 
-    // openOptionsPage();
     $('#open-options-page').on('click', openOptionsPage);
     $('.open-page').on('click', (e) => {
         let page = $(e.target).attr('href');

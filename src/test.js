@@ -59,11 +59,11 @@ test = new Settings({
     blurSpoilers: true,
     blurHover: true,
     sites: [{
-            url_regex: 'reddit.com',
+            urlRegex: 'reddit.com',
             selector: 'article'
         },
         {
-            url_regex: 'twitter.com',
+            urlRegex: 'twitter.com',
             selector: 'post'
         },
     ],

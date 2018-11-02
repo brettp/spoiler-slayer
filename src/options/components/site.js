@@ -2,17 +2,15 @@ import {Component} from 'preact';
 import Spoiler from './Spoiler';
 
 export default class Site extends Spoiler {
+    constructor(props) {
+        super(props);
+        this.type = 'sites';
+    }
+
     render() {
-        let classes = 'supports-regex';
-        let icon = this.renderIcon();
-
-        if (this.state.isRegex) {
-            classes += ' is-regex';
-        }
-
         return (
             <div class="site-row row">
-                {icon}
+                {this.renderIcon()}
                 <label class="selector-input">
                     <input
                         name="selector"
@@ -25,30 +23,20 @@ export default class Site extends Spoiler {
                     <span class="site-at">@</span>
                 </label>
                 <div class="site-input">
-                    <label class={classes}>
+                    <label class={this.getClasses()}>
                         <span class="regex-marker">/</span>
                         <input
                             placeholder="www.reddit.com"
                             autocomplete="off"
                             type="text"
                             class="save-flasher no-auto-save"
-                            name="url_regex"
-                            value={this.state.url_regex}
+                            name="urlRegex"
+                            value={this.state.urlRegex}
                             onChange={this.handleChange}
                         />
                         <span class="regex-marker">/ig</span>
                     </label>
-                    <label class="checkbox inline">
-                        <input
-                            type="checkbox"
-                            name="isRegex"
-                            value="1"
-                            class="no-auto-save"
-                            checked={this.state.isRegex}
-                            onChange={this.handleChange}
-                        />
-                        <code>/re/</code>
-                    </label>
+                    {this.renderCheckbox()}
                 </div>
             </div>
         );

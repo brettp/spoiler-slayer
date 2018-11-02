@@ -33,25 +33,25 @@
         <ul>
             <li>
                 <label class="checkbox">
-                    <input class="popup-setting" type="checkbox" checked="checked" name="blockingEnabled" />
+                    <input class="popup-setting" type="checkbox" name="blockingEnabled" />
                     Enable spoiler blocking
                 </label>
             </li>
             <li>
                 <label class="checkbox">
-                    <input class="popup-setting" type="checkbox" checked="checked" name="destroySpoilers" />
+                    <input class="popup-setting" type="checkbox" name="destroySpoilers" />
                     Remove spoilers instead of censoring
                 </label>
             </li>
             <li class="indent">
                 <label class="checkbox">
-                    <input class="popup-setting" type="checkbox" checked="checked" name="showSpecificSpoiler" />
+                    <input class="popup-setting" type="checkbox" name="showSpecificSpoiler" />
                     Show the phrase that triggered the block
                 </label>
             </li>
             <li class="indent">
                 <label class="checkbox">
-                    <input class="popup-setting" type="checkbox" checked="checked" name="warnBeforeReveal" />
+                    <input class="popup-setting" type="checkbox" name="warnBeforeReveal" />
                     Warn before revealing a spoiler
                 </label>
             </li>
@@ -102,13 +102,15 @@
                                 <i class="icon">?</i>
                                 <span class="help-text">
                                     <i class="icon">?</i>
-                                    Add words or phrases separated by commas, then push enter to save to your block list.
+                                    Add words or phrases separated by commas, then push enter to save to your block
+                                    list.
                                     <br />Use the advanced options to edit, remove, or create complex regex entries.
                                 </span>
                             </div>
                             Quick Add Spoilers
                             <form id="quick-add-spoiler-form">
-                                <input class="no-auto-save save-flasher" autocomplete="off" type="text" type="text" name="spoiler" placeholder="doctor who, maisie williams, dumbledore, westworld" />
+                                <input class="no-auto-save save-flasher" autocomplete="off" type="text" type="text"
+                                    name="spoiler" placeholder="doctor who, maisie williams, dumbledore, westworld" />
                             </form>
                         </label>
                     </div>
@@ -153,10 +155,17 @@
         </div>
 
         <div class="right">
-            <a href="#" id="open-options-page">Advanced options</a>
-            <span class="debug">|
-                <a href="popup.html" class="open-page">Popup</a> |
-                <label><input type="checkbox" name="debug" />Log msgs</label>
+            <ul class="menu-h">
+                <li class="debug">
+                    <label><input type="checkbox" name="debug" />Log msgs</label>
+                </li>
+                <li class="debug">
+                    <a href="popup.html" class="open-page">Popup</a>
+                </li>
+                <li>
+                    <a href="#" id="open-options-page">Advanced options</a>
+                </li>
+            </ul>
             </span>
         </div>
     </div>

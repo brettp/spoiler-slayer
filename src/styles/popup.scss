@@ -5,16 +5,16 @@ body {
     font-size: 100%;
 }
 
-body.debug {
+.debug {
+    display: none !important;
+}
+
+body.debug-active {
     display: inherit;
 
     .debug {
-        display: initial;
+        display: initial !important;
     }
-}
-
-.debug {
-    display: none;
 }
 
 a {
@@ -437,6 +437,17 @@ label:focus {
             content: 'FAILED';
             color: red;
             // animation: flash-fade 1s;
+        }
+    }
+}
+
+ul.menu-h {
+    display: inline;
+    li {
+        display: inline;
+        &:not(:last-of-type)::after {
+            margin: 0 .5em;
+            content: ' | ';
         }
     }
 }

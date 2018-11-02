@@ -22,7 +22,7 @@ async function init(settings) {
     }
 
     if (settings.badgeDisplay == 'pageload') {
-        // cmd('resetPageCount');
+        // helpers.cmd('resetPageCount');
     }
 
     console.log("Starting spoiler blocker");

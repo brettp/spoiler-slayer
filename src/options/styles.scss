@@ -84,6 +84,10 @@ input[type=text],
 textarea {
     font-size: inherit;
     padding: .25em;
+
+    &::placeholder {
+        color: $grey;
+    }
 }
 
 // options page
@@ -323,6 +327,17 @@ label:focus {
     float: left;
 }
 
+ul.menu-h {
+    display: inline;
+    li {
+        display: inline;
+        &:not(:last-of-type)::after {
+            margin: 0 .5em;
+            content: ' | ';
+        }
+    }
+}
+
 .save-flasher {
     &.save-success {
         animation: pulse-green .25s alternate 2;
@@ -371,6 +386,10 @@ i.fader {
 section {
     border: 1px dashed $grey;
     margin: 2em 0;
+
+    h2 {
+        margin-top: 0;
+    }
 }
 
 @keyframes flash-fade {

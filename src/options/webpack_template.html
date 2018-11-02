@@ -21,14 +21,18 @@
 			<% } %>
 		<% } %>
 
+		<% if (process.env.DEV === 1) { %>
+		<script src="/dev-fakers.js" type="text/javascript"></script>
+		<% } else { %>
 		<script src="/scripts/lib/helpers.js" type="text/javascript"></script>
 		<script src="/scripts/lib/settings.js" type="text/javascript"></script>
+		<% } %>
 	</head>
 	<body>
 		<%= htmlWebpackPlugin.options.ssr({
 			url: '/'
 		}) %>
-		<script defer src="<%= htmlWebpackPlugin.files.chunks['bundle'].entry %>"></script>
+		<script src="<%= htmlWebpackPlugin.files.chunks['bundle'].entry %>"></script>
 		<script src="<%= htmlWebpackPlugin.files.chunks['polyfills'].entry %>"></script>
 	</body>
 </html>

@@ -5,12 +5,9 @@ import Site from './Site';
 export default class List extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            // spoilers: props.spoilers,
-        };
     }
 
-    render(props) {
+    render() {
         let classes = '';
         if (this.props.type == 'spoilers') {
             classes = 'col-2';
@@ -18,12 +15,13 @@ export default class List extends Component {
         return (
             <ol class={classes} id={this.props.type} data-settings-name={this.props.type}>
                 {this.props.data.map((datum, i) => {
-                    let hash = Object.keys(datum).join('') + Object.values(datum).join('');
+                    let hash = i + Object.keys(datum).join('') + Object.values(datum).join('');
                     switch (this.props.type) {
                         case 'spoilers':
                             return (
-                                <li key={hash}>
+                                <li>
                                     <Spoiler
+                                        key={hash}
                                         id={i}
                                         value={datum}
                                         onIconClick={this.props.onIconClick}
@@ -34,8 +32,9 @@ export default class List extends Component {
                             );
                         case 'sites':
                             return (
-                                <li key={hash}>
+                                <li>
                                     <Site
+                                        key={hash}
                                         id={i}
                                         value={datum}
                                         onIconClick={this.props.onIconClick}

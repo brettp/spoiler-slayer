@@ -30,7 +30,7 @@ class CmdHandler {
         let selectors = [];
 
         for (var info of this.settings.compiledSitesAndSelectors) {
-            if (info.url_regex.test(url)) {
+            if (info.urlRegex.test(url)) {
                 selectors.push(info.selector);
             }
         }
@@ -51,11 +51,11 @@ class CmdHandler {
     }
 
     saveSettings(data) {
-        this.settings.saveSettings(data);
+        this.settings.save(data);
     }
 
     getDefaultSettings() {
-        return this.settings.defaultSettings;
+        return Settings.defaultSettings;
     }
 
     hasSpoilers(text) {
@@ -224,7 +224,10 @@ async function init() {
         if (req.cmd in cmdHandler) {
             res = cmdHandler[req.cmd].call(cmdHandler, req.data, sender);
         } else {
-            res = false;
+            if (settings.debug) {
+                debugMsg(req, res);
+            }
+            throw `Unknown command '${cmd}'`;
         }
 
         if (settings.debug) {

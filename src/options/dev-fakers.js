@@ -1,16 +1,69 @@
-// call this manually first to set early.
-var debug = false;
-chrome.storage.sync.get({
-    debug: false
-}, res => {
-    debug = res;
-});
+console.log("Using debug settings API");
+var debug = true;
 
-chrome.storage.onChanged.addListener(changes => {
-    if (changes.name == 'debug') {
-        debug = changes.debug.newValue;
-    }
-});
+var settings = {
+    sites: [
+        {
+            selector: '.item, article.short, article > .heading',
+            urlRegex: 'avclub.com',
+        },
+        {
+            selector:
+                '.card--article-featured, .card--article, .card--package, .card--video, .sidebar__link, .js-now-buzzing__list > li',
+            urlRegex: 'buzzfeed.com',
+        },
+        {
+            selector:
+                'div[data-testid="fbfeed_story"], div[role="article"], #pagelet_trending_tags_and_topics ul > li',
+            urlRegex: 'facebook.com',
+        },
+        {
+            selector: '.entry',
+            urlRegex: 'feedly.com',
+        },
+        {
+            selector: '.featured-item, article',
+            urlRegex: 'gizmodo.com',
+        },
+    ],
+    spoilers: [
+        {
+            spoiler: '#got',
+        },
+        {
+            spoiler: 'ady stonehea',
+        },
+        {
+            spoiler: 'aidan gillen',
+        },
+        {
+            spoiler: 'alfie allen',
+        },
+        {
+            spoiler: 'arya stark',
+        },
+        {
+            spoiler: 'asoiaf',
+        },
+        {
+            spoiler: 'azor ahai',
+        },
+        {
+            spoiler: 'baelish',
+        },
+        {
+            spoiler: 'baratheon',
+        },
+    ],
+};
+
+cmd = async function (cmd) {
+    console.log(`Got cmd ${cmd}`);
+
+    return new Promise(res => {
+        res(settings);
+    });
+};
 
 helpers = (function() {
     var nullFunc = function() {};
@@ -156,6 +209,7 @@ helpers = (function() {
 
         return number;
     }
+
     return {
         nullFunc: nullFunc,
         debounce: debounce,
@@ -164,7 +218,11 @@ helpers = (function() {
         getSpoilersRegex: getSpoilersRegex,
         describe: describe,
         excerpt: excerpt,
-        friendlyNum: friendlyNum
+        friendlyNum: friendlyNum,
+        getSetting: getSetting,
+        setSetting: setSetting,
+        cmd: cmd,
+        msg: msg,
     };
 })();
 
@@ -177,18 +235,7 @@ async function setSetting(name, val) {
     return await cmd('setSetting', {
         name: name,
         value: val
-    });
-}
-
-async function saveSettings(settings) {
-    return await cmd('saveSettings', settings);
-}
-
-function cmd(cmd, data) {
-    return msg({
-        cmd: cmd,
-        data: data
-    });
+    })
 }
 
 async function msg(msg) {
