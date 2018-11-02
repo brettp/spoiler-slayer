@@ -64,7 +64,7 @@ async function getActiveTabInfoReal() {
 })();
 
 function loadSettings(settings) {
-    $('input,select').each(function() {
+    $('input, select').each(function() {
         var $input = $(this);
         var name = $input.prop('name');
 

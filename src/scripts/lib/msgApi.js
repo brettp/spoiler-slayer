@@ -3,7 +3,6 @@ var debug = false;
 let sendMsg;
 
 if (chrome.storage) {
-    console.log("Have chrome storage");
     chrome.storage.sync.get(
         {
             debug: false,

@@ -17,12 +17,7 @@ async function init(settings) {
     let shouldBlock = await cmd('shouldBlock', url);
 
     if (!shouldBlock) {
-        console.log("Disabled, no sites, or not spoilers defined.");
         return;
-    }
-
-    if (settings.badgeDisplay == 'pageload') {
-        // helpers.cmd('resetPageCount');
     }
 
     console.log("Starting spoiler blocker");
@@ -32,16 +27,21 @@ async function init(settings) {
     initiateSpoilerBlocking(selector, false, settings);
 }
 
-// run what we need to ASAP, then register a doc ready event for actual blocking
 (async () => {
+    cmd('resetBadgePageCount');
     let settings = await cmd('getSettings');
 
     // wait until onload
     // @todo can get rid of this since using mutations observers?
     // Probably no. Some sites (reddit) update formatting on doc ready
-    $(() => {
+    if (settings.disableOnDocReady) {
+        console.log("Not waiting for doc ready");
         init(settings);
-    });
+    } else {
+        $(() => {
+            init(settings);
+        });
+    }
 })();
 
 chrome.storage.onChanged.addListener((changes, namespace) => {

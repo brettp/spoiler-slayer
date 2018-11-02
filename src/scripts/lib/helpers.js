@@ -28,6 +28,14 @@ var helpers = (function() {
         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
     }
 
+    function getRegexStr(text, isRegex) {
+        if (isRegex) {
+            return text.trim();
+        } else {
+            return '\\' + 'b' + helpers.escapeRegex(text).trim() + '\\' + 'b';
+        }
+    }
+
     function getSpoilersRegex(spoilers) {
         var spoiler_strs = [];
         if (!spoilers) {
@@ -35,9 +43,8 @@ var helpers = (function() {
         }
 
         for (let spoiler_info of spoilers) {
-            helpers.escapeRegex(spoiler_info.spoiler.trim());
+            let spoiler = helpers.getRegexStr(spoiler_info.spoiler, spoiler_info.isRegex);
 
-            var spoiler = helpers.escapeRegex(spoiler_info.spoiler.trim());
             if (spoiler) {
                 spoiler_strs.push(spoiler);
             }
@@ -47,7 +54,7 @@ var helpers = (function() {
             return false;
         }
 
-        return new RegExp(spoiler_strs.join('|'), 'i');
+        return new RegExp(spoiler_strs.join('|'), 'iu');
     }
 
     function describe(obj, limit) {
@@ -147,6 +154,7 @@ var helpers = (function() {
         ucWords: ucWords,
         escapeRegex: escapeRegex,
         getSpoilersRegex: getSpoilersRegex,
+        getRegexStr: getRegexStr,
         describe: describe,
         excerpt: excerpt,
         friendlyNum: friendlyNum,

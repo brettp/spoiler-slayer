@@ -12,21 +12,24 @@ class Settings {
             hoverBlur: 2,
             blurSpoilers: true,
             blurHover: true,
-            debug: false,
             badgeDisplay: 'pageload',
             sites: [],
             spoilers: [],
             lifetimeBlockedCount: {
                 total: 0,
-                hosts: {}
-            }
+                hosts: {},
+            },
+
+            // debug and hidden options
+            debug: false,
+            disableOnDocReady: false
         };
     }
 
     get compiledSettingsInfo() {
         return {
-            'sites': ['allSitesRegex', 'sitesInfo', 'compiledSitesAndSelectors'],
-            'spoilers': ['spoilersRegex']
+            sites: ['allSitesRegex', 'sitesInfo', 'compiledSitesAndSelectors'],
+            spoilers: ['spoilersRegex'],
         };
     }
 
@@ -53,7 +56,7 @@ class Settings {
                 },
                 set(v) {
                     this.set(k, v);
-                }
+                },
             });
         }
 
@@ -105,13 +108,13 @@ class Settings {
                 Object.defineProperty(this, propName, {
                     value: val,
                     configurable: true,
-                    writeable: false
+                    writeable: false,
                 });
 
                 return val;
             },
             configurable: true,
-            writeable: false
+            writeable: false,
         });
     }
 
@@ -120,7 +123,9 @@ class Settings {
             console.log(`Compiling setting ${name} using ${helpers.describe(compiler)}`);
             compiler.call(this, name);
         } else if (this[name + 'Compiler']) {
-            console.log(`Compiling setting ${name} using ${this.constructor.name}.${name}Compiler()`);
+            console.log(
+                `Compiling setting ${name} using ${this.constructor.name}.${name}Compiler()`
+            );
             return this[name + 'Compiler'].call(this);
         }
     }
@@ -135,10 +140,11 @@ class Settings {
         let urls = [];
 
         for (let info of this.sites) {
-            urls.push(info.urlRegex);
+            let regex = helpers.getRegexStr(info.urlRegex, info.isRegex);
+            urls.push(regex);
         }
 
-        let urlRegex = new RegExp(urls.join('|'), 'i');
+        let urlRegex = new RegExp(urls.join('|'), 'iu');
         return urlRegex;
     }
 
@@ -147,8 +153,8 @@ class Settings {
 
         for (let info of this.sites) {
             val.push({
-                urlRegex: new RegExp(info.urlRegex, 'i'),
-                selector: info.selector
+                urlRegex: new RegExp(helpers.getRegexStr(info.urlRegex, info.isRegex), 'iu'),
+                selector: info.selector,
             });
         }
 
@@ -163,22 +169,24 @@ class Settings {
     // }
 
     set(k, v) {
-        console.log(`Saving setting ${helpers.describe(k)} to`, v);
-        this.cached[k] = v;
-
-        var setting = {};
-        setting[k] = v;
-        this.clearCompiledValues(k);
-
         // only save if this is a known value
-        if (k in Settings.defaultSettings) {
+        // if (k in Settings.defaultSettings) {
+            console.log(`Saving setting ${helpers.describe(k)} to`, v);
+            this.cached[k] = v;
+
+            var setting = {};
+            setting[k] = v;
+            this.clearCompiledValues(k);
+
             // @todo use a Setting class that knows when it changed
             let cb = helpers.nullFunc;
             if (typeof this[k + 'OnChange'] === 'function') {
                 cb = this[k + 'OnChange'];
             }
             chrome.storage.sync.set(setting, cb);
-        }
+        // } else {
+        //     console.log(`Unknown settings ${helpers.describe(k)}. Will not set to`, v);
+        // }
     }
 
     save(settings, cb) {

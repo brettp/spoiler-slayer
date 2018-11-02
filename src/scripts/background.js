@@ -150,8 +150,10 @@ class CmdHandler {
         return info;
     }
 
-    resetPageCount(cmd, sender) {
-        this.blockedCounts.page[sender.tab.id] = 0;
+    resetBadgePageCount(cmd, sender) {
+        if (sender.tab && sender.tab.id) {
+            this.blockedCounts.page[sender.tab.id] = 0;
+        }
     }
 
     debug(msg) {
@@ -216,7 +218,6 @@ function debugMsg(req, res) {
 async function init() {
     settings = await Settings.factory();
     let cmdHandler = new CmdHandler(settings);
-    console.log("Settings", settings);
 
     chrome.runtime.onMessage.addListener(function(req, sender, cb) {
         let res = '';

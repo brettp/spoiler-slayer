@@ -4,7 +4,7 @@ An open-source browser extension to block spoilers.
 Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils).
 
 ## Differences from Game of Spoils
-* Removed superfluous fonts and long-winded block notifications (but you can still enable them if you want).
+* Removed superfluous fonts and long-winded block notifications (@todo but you can still enable them if you want).
 * Simplified and improved UI
 * Improved code readability and maintainability
 * Switched to modern ES6 and SCSS
