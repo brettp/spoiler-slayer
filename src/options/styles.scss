@@ -72,7 +72,7 @@ input[type=checkbox] {
 
     &:active,
     &:focus {
-        outline: none;
+        outline-width: 2px;
     }
 
     &:disabled {
@@ -87,6 +87,10 @@ textarea {
 
     &::placeholder {
         color: $grey;
+    }
+
+    &:focus {
+        outline-width: 2px;
     }
 }
 
@@ -343,26 +347,12 @@ ul.menu-h {
         animation: pulse-green .25s alternate 2;
 
         &:after {
-            content: 'SAVED';
-            color: green;
             animation: flash-fade 1s;
         }
     }
 
     &.save-fail {
-        animation: pulse-red .12s alternate 6;
-
-        &:before {
-            content: '✓';
-            color: green;
-            // animation: flash-fade 1s;
-        }
-
-        &:after {
-            content: 'FAILED';
-            color: red;
-            // animation: flash-fade 1s;
-        }
+        animation: pulse-red .1s alternate 6;
     }
 }
 

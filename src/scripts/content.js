@@ -38,7 +38,7 @@ async function init(settings) {
 
     // wait until onload
     // @todo can get rid of this since using mutations observers?
-    // Probably no. Some sites update formatting on doc ready
+    // Probably no. Some sites (reddit) update formatting on doc ready
     $(() => {
         init(settings);
     });
@@ -122,14 +122,17 @@ async function searchForAndBlockSpoilers(selector, force_update, remove_parent, 
         for (let i = 0; i < $items.length; i++) {
             let el = $items.get(i);
             let $el = $(el);
+            let content = el.textContent.trim();
 
             $el.addClass(`glamoured ${hostname_dotless}`);
 
-            // check for spoilers adn block if found
-            let spoilers = await cmd('hasSpoilers', el.textContent);
-            if (spoilers) {
-                blockedCount++;
-                blockElement($el, spoilers[0], settings);
+            // check for spoilers and block if found
+            if (content) {
+                let spoilers = await cmd('hasSpoilers', content);
+                if (spoilers) {
+                    blockedCount++;
+                    blockElement($el, spoilers[0], settings);
+                }
             }
         }
     }
@@ -140,69 +143,95 @@ async function searchForAndBlockSpoilers(selector, force_update, remove_parent, 
     }
 }
 
+function createSpoilerInfo(spoiler, classes) {
+    let h2 = document.createElement('h2');
+    h2.classList = `spoiler-info ${classes}`;
+    h2.innerText = `Spoiler about "${spoiler}"`;
+
+    return h2;
+}
+
+function createContentWrapper(el) {
+    let nodes = el.childNodes;
+    let frag = document.createDocumentFragment();
+    let wrapper = document.createElement('div');
+    wrapper.classList = `content-wrapper glamoured-active`;
+
+    while (nodes.length > 0) {
+        wrapper.appendChild(nodes[0]);
+    }
+
+    el.prepend(wrapper);
+    return wrapper;
+}
+
+function unwrapContent(wrapped) {
+    let parent = wrapped.parentNode;
+    let nodes = wrapped.childNodes;
+
+    while (nodes.length > 0) {
+        parent.appendChild(nodes[0]);
+    }
+
+    wrapped.remove();
+}
+
 async function blockElement($element, blocked_word, settings) {
-    var $contentWrapper, $info, capitalized_spoiler_words;
+    let contentWrapper, info, capitalized_spoiler_words;
+    let el = $element[0];
 
     if (settings.destroySpoilers) {
-        $element.remove();
+        el.remove();
         return;
     }
 
     // move all content into a new div so we can blur
     // but keep the info text clear without doing silly stuff
-    $contentWrapper = $(`<div class="content-wrapper glamoured-active" />`)
-        .append($element.children())
-        .appendTo($element);
-
+    contentWrapper = createContentWrapper(el);
     if (!settings.blurSpoilers) {
-        $contentWrapper.addClass('no-fx');
+        contentWrapper.classList += ' no-fx';
     }
 
     capitalized_spoiler_words = helpers.ucWords(blocked_word);
 
     if (settings.showSpecificSpoiler) {
-        $info = $("<h2 class='spoiler-info'>Spoiler about \"" + capitalized_spoiler_words + "\"</h2>");
+        // @todo probably don't need this
+        let classes = '';
         if (!settings.blurSpoilers) {
-            $info.addClass('no-fx');
+            classes = 'no-fx';
         }
         if (smaller_font_mode) {
-            $info.addClass('small');
+            classes = 'small';
         }
         if (reddit_mode) {
-            $info.addClass('redditized');
+            classes = 'redditized';
         }
-    } else {
-        $info = $();
+
+        info = createSpoilerInfo(capitalized_spoiler_words, classes);
     }
 
-    $element.prepend($info);
+    el.prepend(info);
 
-    $contentWrapper.on('click', function(ev) {
-        var $this = $(this);
-        if ($this.hasClass('revealed')) {
-            return;
-        }
-
+    contentWrapper.addEventListener('click', (ev) => {
         ev.stopPropagation();
         ev.preventDefault();
 
         // move everything back to its original parent and remove the info
         // because it confuses some sites
         // for some reason the animation end event is only fired for the info tag
-        $info.on('animationend webkitAnimationEnd', function(e) {
-            $element.append($this.children());
-            $info.remove();
-            $contentWrapper.remove();
+        info.addEventListener('animationend', (e) => {
+            unwrapContent(contentWrapper);
+            info.remove();
         });
 
         if (settings.warnBeforeReveal) {
-            let specific_words_for_confirm = settings.showSpecificSpoiler ? " about '" + capitalized_spoiler_words + "'" : "";
-            if (!confirm("Show spoiler" + specific_words_for_confirm + "?")) {
+            let specific_words_for_confirm = settings.showSpecificSpoiler ? ` about "${capitalized_spoiler_words}"` : "";
+            if (!confirm(`Show spoiler ${specific_words_for_confirm}?`)) {
                 return;
             }
         }
 
-        $contentWrapper.removeClass('glamoured-active').addClass('revealed');
-        $info.addClass('revealed');
-    });
+        contentWrapper.classList = contentWrapper.classList.toString().replace('glamoured-active', '') + ' revealed';
+        info.classList += ' revealed';
+    }, {once: true});
 }

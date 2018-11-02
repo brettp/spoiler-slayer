@@ -33,7 +33,7 @@ export async function downloadSettings(section = 'all') {
     let now = new Date();
     // dates in JS are awful.
     // let filename = now.toISOString().replace('T', '-').replace('Z', ' ').replace(':', );
-    let filename = 'Spoiler Settings ' + now.toISOString().split('T')[0];
+    let filename = 'Spoiler Settings ' + now.toISOString().split('T')[0] + '.json';
     var url = URL.createObjectURL(file);
 
     chrome.downloads.download({

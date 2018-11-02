@@ -1,18 +1,4 @@
-// call this manually first to set early.
-var debug = false;
-chrome.storage.sync.get({
-    debug: false
-}, res => {
-    debug = res;
-});
-
-chrome.storage.onChanged.addListener(changes => {
-    if (changes.name == 'debug') {
-        debug = changes.debug.newValue;
-    }
-});
-
-helpers = (function() {
+var helpers = (function() {
     var nullFunc = function() {};
 
     // thanks, lodash
@@ -39,7 +25,7 @@ helpers = (function() {
     }
 
     function escapeRegex(str) {
-        return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+        return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
     }
 
     function getSpoilersRegex(spoilers) {
@@ -49,7 +35,7 @@ helpers = (function() {
         }
 
         for (let spoiler_info of spoilers) {
-            helpers.escapeRegex(spoiler_info.spoiler.trim())
+            helpers.escapeRegex(spoiler_info.spoiler.trim());
 
             var spoiler = helpers.escapeRegex(spoiler_info.spoiler.trim());
             if (spoiler) {
@@ -86,7 +72,7 @@ helpers = (function() {
                     let val = describe(obj[name]);
                     tmp.push(`${name}: ${val}`);
                 }
-                txt = `{${tmp.join(", ")}}`;
+                txt = `{${tmp.join(', ')}}`;
                 break;
             case typeof obj.toString === 'function':
                 txt = obj.toString();
@@ -121,11 +107,10 @@ helpers = (function() {
         decPlaces = Math.pow(10, decPlaces);
 
         // Enumerate number abbreviations
-        var abbrev = ["k", "m", "b", "t"];
+        var abbrev = ['k', 'm', 'b', 't'];
 
         // Go through the array backwards, so we do the largest first
         for (var i = abbrev.length - 1; i >= 0; i--) {
-
             // Convert array index to "1000", "1000000", etc
             var size = Math.pow(10, (i + 1) * 3);
 
@@ -133,10 +118,10 @@ helpers = (function() {
             if (size <= number) {
                 // Here, we multiply by decPlaces, round, and then divide by decPlaces.
                 // This gives us nice rounding to a particular decimal place.
-                number = Math.round(number * decPlaces / size) / decPlaces;
+                number = Math.round((number * decPlaces) / size) / decPlaces;
 
                 // Handle special case where we round up to the next abbreviation
-                if ((number == 1000) && (i < abbrev.length - 1)) {
+                if (number == 1000 && i < abbrev.length - 1) {
                     number = 1;
                     i++;
                 }
@@ -164,49 +149,6 @@ helpers = (function() {
         getSpoilersRegex: getSpoilersRegex,
         describe: describe,
         excerpt: excerpt,
-        friendlyNum: friendlyNum
+        friendlyNum: friendlyNum,
     };
 })();
-
-
-async function getSetting(name) {
-    return await cmd('getSetting', name);
-}
-
-async function setSetting(name, val) {
-    return await cmd('setSetting', {
-        name: name,
-        value: val
-    });
-}
-
-async function saveSettings(settings) {
-    return await cmd('saveSettings', settings);
-}
-
-function cmd(cmd, data) {
-    return msg({
-        cmd: cmd,
-        data: data
-    });
-}
-
-async function msg(msg) {
-    if (debug) {
-        let stack = (new Error()).stack.split("\n");
-        let newStack = [];
-        stack.shift();
-
-        for (let line of stack) {
-            if (!/helpers.js/.test(line)) {
-                newStack.push(line.trim());
-            }
-        }
-        msg.stack = newStack;
-    }
-    return new Promise(res => {
-        chrome.runtime.sendMessage(msg, (ret) => {
-            res(ret);
-        });
-    });
-}

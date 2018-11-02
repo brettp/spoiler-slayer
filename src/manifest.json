@@ -26,12 +26,13 @@
     "open_in_tab": true
   },
   "background": {
-    "scripts": ["scripts/lib/helpers.js", "scripts/lib/settings.js", "scripts/background.js"]
+    "scripts": ["scripts/lib/msgApi.js", "scripts/lib/helpers.js", "scripts/lib/settings.js", "scripts/background.js"]
   },
 
   "content_scripts": [
     {
       "matches": [
+        "<all_urls>",
         "*://*.mozilla.org/*",
         "*://asdf.com/*",
         "*://feedly.com/*",
@@ -50,7 +51,7 @@
         "*://www.youtube.com/*"
       ],
       "css": ["styles/content.css"],
-      "js":  ["scripts/vendor/jquery.min.js", "scripts/lib/helpers.js", "scripts/content.js"]
+      "js":  ["scripts/vendor/jquery.min.js", "scripts/lib/msgApi.js", "scripts/lib/helpers.js", "scripts/content.js"]
     }
   ],
   "permissions": [

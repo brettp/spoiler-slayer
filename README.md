@@ -37,7 +37,7 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - - [X] Live updates for no-fx changes
 - [X] Settings import and export
 - [ ] Settings import from gists
-- [ ] Better way to add new site input in settings (tables are too slow for some reason)
+- [X] Better way to add new site input in settings (tables are too slow for some reason)
 - [ ] Opt-in analytics?
 - [ ] Remove jQuery req?
 - [ ] Add one-click legacy mode
@@ -50,9 +50,11 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 
 
 ### Known Bugs
+- [X] Selectors MUST not have plain text nodes or the blocker jumbles the words.
 - [X] Example text in popup is slightly off centered
 - [X] Hovering over the spoiler text doesn't de-blur the spoiler
 - - [X] Neither does clicking on it
+- [ ] Popup spoiler blur checkbox has bad spacing in FF
 - [ ] Retweeted content has the retweeted username bleed through the no-fx censor
 - [ ] Sometimes there can be embedded blocked elements
 - [X] Reddit's up and down arrows don't change color for glamoured content. Probably need to move all the content back to its real parent on reveal.

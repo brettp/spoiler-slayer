@@ -166,7 +166,6 @@ async function updateExample() {
     let $exTpl = $('.content-template');
     let $ex = $exTpl.clone().removeClass('content-template').addClass('glamoured');
 
-    console.log("Updating example");
     $('.example').html($ex);
 
     if (await getSetting('blockingEnabled')) {

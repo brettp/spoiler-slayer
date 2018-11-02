@@ -1,16 +1,22 @@
 import Site from './Site';
 import List from './List';
 import { SpoilerSettings } from './SpoilerSettings';
+import { addFlash } from '../lib/util';
 
 export class SiteSettings extends SpoilerSettings {
-    constructor(props) {
-        super(props);
-        this.submitAndReset = this.submitAndReset.bind(this);
-    }
 
-    submitAndReset(e) {
-        this.props.onNewSiteSubmit(e);
-        this.input.reset();
+    validate() {
+        if (!this.input.selectorInput.value.trim()) {
+            addFlash(this.input.selectorInput, 'fail');
+            return false;
+        } else if (!this.input.siteInput.value.trim()) {
+            addFlash(this.input.siteInput, 'fail');
+            return false;
+        }
+
+        // addFlash(this.input.selectorInput, 'success');
+        // addFlash(this.input.siteInput, 'success');
+        return true;
     }
 
     render() {

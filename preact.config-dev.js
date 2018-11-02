@@ -1,5 +1,13 @@
 export default (config, env, helpers) => {
-    // config.output.publicPath = '/options/';
+    // disable spread syntax rewriting
+    // let {rule} = helpers.getLoadersByName(config, 'babel-loader')[0];
+    // rule.options.plugins = rule.options.plugins.filter(v => {
+    //     if (typeof v === 'string') {
+    //         console.log(v.indexOf('object-rest-spread'));
+    //         return v.indexOf('object-rest-spread') === -1;
+    //     }
+    //     return true;
+    // });
 
     // // use the public path in your app as 'process.env.PUBLIC_PATH'
     config.plugins.push(

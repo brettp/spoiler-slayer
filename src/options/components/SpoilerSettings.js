@@ -1,6 +1,7 @@
 import {Component} from 'preact';
 import Spoiler from './Spoiler';
 import List from './List';
+import {addFlash} from '../lib/util';
 
 export class SpoilerSettings extends Component {
     constructor(props) {
@@ -9,8 +10,21 @@ export class SpoilerSettings extends Component {
     }
 
     submitAndReset(e) {
-        this.props.onNewSpoilerSubmit(e);
-        this.input.reset();
+        e.preventDefault();
+
+        if (this.validate()) {
+            this.props.onSubmit(e);
+            this.input.reset();
+        }
+    }
+
+    validate() {
+        if (!this.input.spoilerInput.value.trim()) {
+            addFlash(this.input.spoilerInput, 'fail');
+            return false;
+        }
+        // addFlash(this.input.spoilerInput, 'success');
+        return true;
     }
 
     render() {

@@ -1,4 +1,5 @@
 import {Component} from 'preact';
+import { addFlash } from '../lib/util';
 
 export default class Spoiler extends Component {
     constructor(props) {
@@ -10,7 +11,7 @@ export default class Spoiler extends Component {
     }
 
     handleChange(e) {
-        const target = event.target;
+        const target = e.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
@@ -45,7 +46,6 @@ export default class Spoiler extends Component {
                         type="checkbox"
                         name="isRegex"
                         value="1"
-                        class="no-auto-save"
                         checked={this.state.isRegex}
                         onChange={this.handleChange}
                     />
@@ -74,8 +74,9 @@ export default class Spoiler extends Component {
                     <input
                         autocomplete="off"
                         type="text"
-                        class="save-flasher no-auto-save"
+                        class="save-flasher"
                         name="spoiler"
+                        ref={ref => (this.spoilerInput = ref)}
                         value={this.state.spoiler}
                         onChange={this.handleChange}
                     />

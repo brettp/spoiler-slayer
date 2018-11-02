@@ -198,7 +198,7 @@ class Options extends Component {
                     spoilers={this.state.spoilers}
                     onSpoilerChange={this.onUpdate}
                     onNewChange={this.onNewChange}
-                    onNewSpoilerSubmit={this.onNewSpoilerSubmit}
+                    onSubmit={this.onNewSpoilerSubmit}
                     onRemove={this.onRemove}
                     newSpoiler={this.state.newSpoiler}
                 />
@@ -206,7 +206,7 @@ class Options extends Component {
                     sites={this.state.sites}
                     onSiteChange={this.onUpdate}
                     onNewChange={this.onNewChange}
-                    onNewSiteSubmit={this.onNewSiteSubmit}
+                    onSubmit={this.onNewSiteSubmit}
                     onRemove={this.onRemove}
                     newSite={this.state.newSite}
                 />
@@ -248,11 +248,6 @@ class Options extends Component {
 
                     <div class="right">
                         <ul class="menu-h">
-                            <li class="debug">
-                                <a href="#clear-settings" onClick={this.forceUpdate}>
-                                    Clear settings
-                                </a>
-                            </li>
                             <li>
                                 <a href="#clear-settings" onClick={this.reset}>
                                     Clear settings
