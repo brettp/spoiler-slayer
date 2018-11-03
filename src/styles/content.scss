@@ -2,32 +2,61 @@ $transition_duration: .5s;
 $heavy_blur: blur(8px);
 $hover_blur: blur(3px);
 
-.content-wrapper {
-    transition-duration: $transition_duration;
-}
-
 .glamoured-active {
-    cursor: no-drop !important;
-    animation: blur-out $transition_duration ease-in-out;
-    filter: $heavy_blur;
+    cursor: no-drop;
+
+    // must use animations for elements injected into the dom
+    .content-wrapper {
+        transition-duration: $transition_duration;
+        animation: blur $transition_duration ease-in-out;
+        // this is just a default
+        // the real value is injected to the page
+        filter: $heavy_blur;
+
+        // don't allow mouse events on obscured content
+        &>* {
+            pointer-events: none;
+        }
+    }
+
+    .spoiler-info {
+        position: absolute;
+        transition-duration: $transition_duration;
+        animation: fade-in $transition_duration ease-in-out;
+
+        padding: 6pt 12pt;
+        z-index: 1000;
+
+        color: white;
+        opacity: 1;
+
+        font: 700 14pt verdana, arial, helvetica, sans-serif !important;
+        text-shadow: 0 0 10px #000;
+        text-stroke: .25px black;
+        -webkit-text-stroke: .25px black;
+    }
 
     &:hover {
-        filter: $hover_blur;
-        transition-duration: $transition_duration
+        // also overridden with injected CSS
+        .content-wrapper {
+            filter: $hover_blur;
+        }
+
+        .spoiler-info {
+            filter: $heavy_blur;
+            opacity: 0;
+        }
     }
 
-    // don't allow mouse events on obscured content
-    >* {
-        pointer-events: none;
-    }
-
-    &.revealed {
-        filter: none !important;
-    }
-
-    // black censor bar without animations
     &.no-fx {
+        transition: initial !important;
+        animation: initial !important;
         position: relative;
+
+        .spoiler-info {
+            transition: none !important;
+            animation: none !important;
+        }
 
         &:after {
             content: "";
@@ -44,56 +73,41 @@ $hover_blur: blur(3px);
             filter: none !important;
             animation: none !important;
             transition: none !important;
+
+            .spoiler-info {
+                opacity: initial !important;
+                filter: initial !important;
+            }
         }
     }
 }
 
-.glamoured .no-fx {
-    transition: none !important;
-    animation: none !important;
-    filter: none !important;
+// can use normal transitions when revealing
+.glamoured-active.revealed:not(.no-fx) {
+    pointer-events: none;
+
+    .content-wrapper {
+        filter: none;
+    }
+
+    .spoiler-info {
+        opacity: 0;
+        filter: $heavy_blur;
+    }
 }
 
-.revealed {
-    transition-duration: $transition_duration;
+
+// the target blur value is injected into the page
+@keyframes blur {
+    from {
+        filter: inherit;
+    }
 }
 
-.glamoured {
-    h2.spoiler-info {
-        pointer-events: none;
-        position: absolute;
-        transition-duration: $transition_duration;
-        animation: fade-in $transition_duration ease-in-out;
 
-        padding: 6pt 12pt;
-        // margin: auto;
-        z-index: 1000;
-
-        color: white;
-        opacity: 1;
-
-        font: 700 14pt verdana, arial, helvetica, sans-serif !important;
-        text-shadow: 0 0 10px #000;
-        text-stroke: .25px black;
-        -webkit-text-stroke: .25px black;
-
-        // pointer-events: none;
-
-        &.revealed {
-            // need to double the duration because we fade the opacity to 0
-            // at 50% to prevent a pop when we change the z-index
-            // animation: fade-out calc(2 * #{$transition_duration});
-            animation: fade-out $transition_duration;
-            opacity: 0 !important;
-            z-index: -5 !important;
-        }
-
-        // unblur on info hover
-        &:hover {
-            +.content-wrapper {
-                filter: $hover_blur;
-            }
-        }
+@keyframes unblur {
+    to {
+        filter: unset;
     }
 }
 
@@ -104,32 +118,18 @@ $hover_blur: blur(3px);
 }
 
 @keyframes fade-out {
-    0% {
-        opacity: 1;
-        z-index: 1000;
-    }
-
-    50% {
-        opacity: 0 !important;
-        z-index: 1000;
-    }
-
-    90% {
-        z-index: 1000;
-    }
-
-    100% {
-        z-index: -5 !important;
-    }
-}
-
-@keyframes blur-out {
     from {
-        filter: blur(0);
+        opacity: inherit;
+    }
+    to {
+        opacity: 0;
     }
 }
 
-// specific site changes
+
+
+
+// old unused site-specific stuff
 
 article {
     &.item {
@@ -218,10 +218,4 @@ article {
         line-height: 11px !important;
         margin-top: 4px !important;
     }
-}
-
-#spoiler-console {
-    position: absolute;
-    top: 0;
-    left: 0;
 }

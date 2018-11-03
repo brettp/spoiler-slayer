@@ -8,8 +8,8 @@ var hostname_dotless = hostname.replace(/\./g, '-');
 // add style tag that we can adjust for user customizable styles
 // and when the settings change
 let styleSettings = {
-    heavyBlur: '.glamoured-active',
-    hoverBlur: '.glamoured-active:hover'
+    heavyBlur: '.glamoured-active:not(.revealed) > .content-wrapper',
+    hoverBlur: '.glamoured-active:not(.revealed):hover > .content-wrapper'
 };
 
 async function init(settings) {
@@ -49,9 +49,9 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
     if (changes.blurSpoilers) {
         $('.spoiler-injected-style').remove();
         if (changes.blurSpoilers.newValue) {
-            $('.content-wrapper.glamoured-active').removeClass('no-fx');
+            $('.no-fx').removeClass('no-fx');
         } else {
-            $('.content-wrapper.glamoured-active').addClass('no-fx');
+            $('.glamoured-active').addClass('no-fx');
         }
         setupStyles();
     }
@@ -131,7 +131,7 @@ async function searchForAndBlockSpoilers(selector, force_update, remove_parent, 
                 let spoilers = await cmd('hasSpoilers', content);
                 if (spoilers) {
                     blockedCount++;
-                    blockElement($el, spoilers[0], settings);
+                    blockElement(el, spoilers[0], settings);
                 }
             }
         }
@@ -153,15 +153,14 @@ function createSpoilerInfo(spoiler, classes) {
 
 function createContentWrapper(el) {
     let nodes = el.childNodes;
-    let frag = document.createDocumentFragment();
     let wrapper = document.createElement('div');
-    wrapper.classList = `content-wrapper glamoured-active`;
+    wrapper.classList = 'content-wrapper';
 
     while (nodes.length > 0) {
         wrapper.appendChild(nodes[0]);
     }
 
-    el.prepend(wrapper);
+    el.append(wrapper);
     return wrapper;
 }
 
@@ -176,30 +175,28 @@ function unwrapContent(wrapped) {
     wrapped.remove();
 }
 
-async function blockElement($element, blocked_word, settings) {
+async function blockElement(el, blocked_word, settings) {
     let contentWrapper, info, capitalized_spoiler_words;
-    let el = $element[0];
 
     if (settings.destroySpoilers) {
         el.remove();
         return;
     }
 
+    if (!settings.blurSpoilers) {
+        el.classList.add('no-fx');
+    }
+
     // move all content into a new div so we can blur
     // but keep the info text clear without doing silly stuff
     contentWrapper = createContentWrapper(el);
-    if (!settings.blurSpoilers) {
-        contentWrapper.classList += ' no-fx';
-    }
+    el.classList.add('glamoured-active');
 
     capitalized_spoiler_words = helpers.ucWords(blocked_word);
 
     if (settings.showSpecificSpoiler) {
         // @todo probably don't need this
         let classes = '';
-        if (!settings.blurSpoilers) {
-            classes = 'no-fx';
-        }
         if (smaller_font_mode) {
             classes = 'small';
         }
@@ -212,17 +209,9 @@ async function blockElement($element, blocked_word, settings) {
 
     el.prepend(info);
 
-    contentWrapper.addEventListener('click', (ev) => {
+    el.addEventListener('click', (ev) => {
         ev.stopPropagation();
         ev.preventDefault();
-
-        // move everything back to its original parent and remove the info
-        // because it confuses some sites
-        // for some reason the animation end event is only fired for the info tag
-        info.addEventListener('animationend', (e) => {
-            unwrapContent(contentWrapper);
-            info.remove();
-        });
 
         if (settings.warnBeforeReveal) {
             let specific_words_for_confirm = settings.showSpecificSpoiler ? ` about "${capitalized_spoiler_words}"` : "";
@@ -231,7 +220,26 @@ async function blockElement($element, blocked_word, settings) {
             }
         }
 
-        contentWrapper.classList = contentWrapper.classList.toString().replace('glamoured-active', '') + ' revealed';
-        info.classList += ' revealed';
+        if (settings.blurSpoilers) {
+            console.log("Lisetning for end");
+            // move everything back to its original parent and remove the info
+            // because it confuses some sites
+            // for some reason the animation end event is only fired for the info tag
+            info.addEventListener('transitionend', (e) => {
+                console.log('animation end');
+                unwrapContent(contentWrapper);
+                info.remove();
+                el.classList.remove('glamoured-active');
+                el.classList.remove('revealed');
+            }, {once: true});
+
+            el.classList.add('revealed');
+        } else {
+            unwrapContent(contentWrapper);
+            info.remove();
+            el.classList.remove('glamoured-active');
+            el.classList.remove('revealed');
+        }
+
     }, {once: true});
 }

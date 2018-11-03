@@ -170,7 +170,7 @@ async function updateExample() {
 
     if (await getSetting('blockingEnabled')) {
         let settings = await cmd('getSettings');
-        blockElement($ex, 'Dumbledore', settings, false);
+        blockElement($ex[0], 'Dumbledore', settings, false);
     }
 }
 

@@ -32,7 +32,7 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - - - [X] Add upper limit
 - - [X] Lifetime badge
 - - [X] Add config option
-- - [ ] Make not flash when loading a site on the same domain
+- - [ ] Make not flash when loading a site on the same domain (don't think this is possible)
 - [X] Live update for settings changes (use on change event)
 - - [X] Live updates for no-fx changes
 - [X] Settings import and export
