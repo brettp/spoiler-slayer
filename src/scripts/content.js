@@ -208,14 +208,14 @@ async function blockElement(el, blocked_word, settings) {
         }
 
         if (settings.blurSpoilers) {
-            console.log("Setting timeout for ", settings.transitionDuration);
             // move everything back to its original parent and remove the info
             // because it confuses some sites
             // can't listen to animation or transition end events because they aren't reliably fired
             setTimeout(() => {
-                console.log("unwrapping glamour");
                 unwrapContent(contentWrapper);
-                info.remove();
+                if (info) {
+                    info.remove();
+                }
                 el.classList.remove('glamoured-active');
                 el.classList.remove('revealed');
             }, settings.transitionDuration);
@@ -223,7 +223,9 @@ async function blockElement(el, blocked_word, settings) {
             el.classList.add('revealed');
         } else {
             unwrapContent(contentWrapper);
-            info.remove();
+            if (info) {
+                info.remove();
+            }
             el.classList.remove('glamoured-active');
             el.classList.remove('revealed');
         }
