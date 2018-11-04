@@ -21,15 +21,19 @@ a {
     cursor: pointer;
 }
 
+*:disabled {
+    opacity: 0.25;
+}
 
 .keyboard-user input,
-.keyboard-user select {
+.keyboard-user select,
+.keyboard-user textarea {
     &:active,
     &:focus {
         outline-color: rgb(0, 103, 244) !important;
         outline-offset: 0px !important;
         outline-style: auto !important;
-        outline-width: 5px !important;
+        outline-width: 2px !important;
     }
 }
 
@@ -40,7 +44,6 @@ a {
 .none {
     display: none;
 }
-
 
 label.checkbox {
     // required for FF to correctly render align-items: center;
@@ -53,7 +56,7 @@ label.checkbox {
     }
 }
 
-input[type=checkbox] {
+input[type='checkbox'] {
     padding: 0.1em;
     border: 0.1em dashed $grey;
 
@@ -68,35 +71,31 @@ input[type=checkbox] {
         background-image: linear-gradient(black, black);
         border-color: black;
     }
-
-    &:active,
-    &:focus {
-        outline: none;
-    }
-
-    &:disabled {
-        opacity: 0.25;
-    }
 }
 
-
-input[type=text],
+input[type='text'],
 textarea {
     font-size: inherit;
-    padding: .25em;
-}
+    padding: 0.25em;
 
+    &::placeholder {
+        color: $grey;
+    }
+
+    &:focus {
+        outline-width: 2px;
+    }
+}
 
 #popup {
     width: 400px;
     background-color: #fff;
     line-height: 1.75em;
 
-    input[type=range],
-    input[type=text] {
+    input[type='range'],
+    input[type='text'] {
         width: 80%;
     }
-
 
     .indent {
         margin-left: 1em;
@@ -110,14 +109,13 @@ textarea {
         font-size: 125%;
         text-align: center;
         margin-bottom: 1em;
-        margin-top: .5em;
+        margin-top: 0.5em;
 
         img.badge-example {
-            margin-right: .25em;
+            margin-right: 0.25em;
             height: 1em;
         }
     }
-
 
     ul {
         list-style: none;
@@ -125,7 +123,7 @@ textarea {
         padding: 0;
 
         li {
-            padding: .25em 0;
+            padding: 0.25em 0;
         }
     }
 
@@ -161,10 +159,6 @@ textarea {
                     outline: none;
                     border: none;
                 }
-
-                &:disabled {
-                    color: $grey;
-                }
             }
         }
     }
@@ -179,7 +173,7 @@ textarea {
             &.example {
                 flex: 4 0 0px;
                 border: 1px dashed $grey;
-                transition-duration: .5s;
+                transition-duration: 0.5s;
                 min-height: 164px;
 
                 img {
@@ -192,7 +186,7 @@ textarea {
             }
         }
 
-        input[type=checkbox] {
+        input[type='checkbox'] {
             margin-left: -1em;
         }
     }
@@ -200,26 +194,22 @@ textarea {
 
 // options page
 #options {
+    section {
+        padding: 1em;
+    }
+
     margin: auto;
     text-align: center;
     width: 50%;
 
-    #new-spoiler {
-        padding: 1.5em 2em;
-    }
-
-    .spoiler-row {
+    .row {
         display: flex;
         justify-content: space-between;
         align-items: center;
 
-        input[type=text] {
+        input[type='text'] {
             flex: 1;
             box-sizing: border-box;
-        }
-
-        label.checkbox {
-            padding-left: 1em;
         }
     }
 
@@ -237,16 +227,16 @@ textarea {
             position: absolute;
 
             &:first-of-type {
-                left: .5em;
+                left: 0.5em;
             }
 
             &:nth-of-type(2) {
-                right: .5em;
+                right: 0.5em;
             }
         }
 
         &.is-regex {
-            input[type=text] {
+            input[type='text'] {
                 padding-left: 1em;
                 padding-right: 1.75em;
             }
@@ -255,6 +245,29 @@ textarea {
                 visibility: visible;
             }
         }
+    }
+}
+
+.site-row {
+    .site-at {
+        padding: 0 0.5em;
+        color: $grey;
+    }
+
+    input[name='selector'] {
+        flex: 1;
+        display: inline-flex;
+    }
+
+    .selector-input {
+        display: inline-flex;
+        flex: 1;
+        align-items: center;
+    }
+
+    .site-input {
+        display: inline-flex;
+        flex: 1;
     }
 }
 
@@ -268,7 +281,7 @@ table {
     }
 
     tr td {
-        padding: .5em;
+        padding: 0.5em;
     }
 
     input {
@@ -287,7 +300,7 @@ ol {
     text-align: left;
 
     li {
-        padding: .5em;
+        padding: 0.5em 0;
         break-inside: avoid-column;
         display: block;
     }
@@ -297,7 +310,7 @@ ol {
     }
 
     i {
-        margin: auto .25em;
+        margin: auto 0.25em;
     }
 }
 
@@ -322,11 +335,11 @@ ol {
     width: 1em;
     height: 1em;
     padding: 0;
-    margin: .25em;
+    margin: 0.25em;
     font-weight: 500;
     font-size: 1em;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif;
-    transition: border .25s, color .25s;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif;
+    transition: border 0.25s, color 0.25s;
     text-align: center;
 
     &.solid {
@@ -353,8 +366,8 @@ ol {
     display: inline-block;
 
     .icon:hover {
-        +.help-text {
-            transition: opacity .25s;
+        + .help-text {
+            transition: opacity 0.25s;
             opacity: 1;
         }
     }
@@ -376,14 +389,14 @@ ol {
     pointer-events: none;
     background-color: white;
     text-align: left;
-    transition: opacity .25s;
+    transition: opacity 0.25s;
     box-shadow: 0 0 15px black;
 
     .icon {
         float: left;
         font-size: 3em;
         margin: 0;
-        margin-right: .25em;
+        margin-right: 0.25em;
     }
 
     &:hover {
@@ -408,7 +421,7 @@ label:focus {
 
     a {
         text-decoration: none;
-        color: #000088
+        color: #000088;
     }
 }
 
@@ -418,29 +431,15 @@ label:focus {
 
 .save-flasher {
     &.save-success {
-        animation: pulse-green .25s alternate 2;
+        animation: pulse-green 0.25s alternate 2;
 
         &:after {
-            content: 'SAVED';
-            color: green;
             animation: flash-fade 1s;
         }
     }
 
     &.save-fail {
-        animation: pulse-red .12s alternate 6;
-
-        &:before {
-            content: '✓';
-            color: green;
-            // animation: flash-fade 1s;
-        }
-
-        &:after {
-            content: 'FAILED';
-            color: red;
-            // animation: flash-fade 1s;
-        }
+        animation: pulse-red 0.1s alternate 6;
     }
 }
 
@@ -449,7 +448,7 @@ ul.menu-h {
     li {
         display: inline;
         &:not(:last-of-type)::after {
-            margin: 0 .5em;
+            margin: 0 0.5em;
             content: ' | ';
         }
     }
@@ -464,8 +463,8 @@ ol {
 }
 
 i.fader {
-    opacity: .25;
-    transition: opacity .25s;
+    opacity: 0.25;
+    transition: opacity 0.25s;
 
     &:hover {
         opacity: 1;
@@ -475,6 +474,10 @@ i.fader {
 section {
     border: 1px dashed $grey;
     margin: 2em 0;
+
+    h2 {
+        margin-top: 0;
+    }
 }
 
 @keyframes flash-fade {

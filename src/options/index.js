@@ -1,4 +1,4 @@
-import './styles';
+import '../styles/popup.scss';
 import '../../node_modules/@fortawesome/fontawesome-free/css/all';
 import {render, Component, Input} from 'preact';
 import {SpoilerSettings} from './components/SpoilerSettings';
