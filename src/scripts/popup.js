@@ -23,12 +23,8 @@ async function getActiveTabInfoReal() {
 }
 
 (async function init() {
-    let tab = await getActiveTabInfoReal();
-    cmd('debug', tab);
-
     let settings = await cmd('getSettings');
 
-    loadSettings(settings);
     $('body').on('change', 'input, select', saveSetting);
 
     $('#open-options-page').on('click', openOptionsPage);
@@ -39,16 +35,55 @@ async function getActiveTabInfoReal() {
         }
     });
 
-    // disable options when needed
-    $('body').on('input', '[name=destroySpoilers]', function() {
-        $('[name=showSpecificSpoiler], [name=warnBeforeReveal], ' +
-                '[name=heavyBlur], [name=hoverBlur], [name=blurSpoilers]')
-            .attr('disabled', $(this).prop('checked'));
+    let inputs = {};
+    for (let type of ['input', 'select', 'range', 'textarea']) {
+        for (let input of document.getElementsByTagName(type)) {
+            inputs[input.name] = input;
+        }
+    }
+
+    let changes = {
+        destroySpoilers: ['showSpecificSpoiler', 'warnBeforeReveal', 'heavyBlur', 'hoverBlur', 'blurSpoilers', 'transitionDuration'],
+        blurSpoilers: ['heavyBlur', 'hoverBlur', 'transitionDuration']
+    }
+
+    inputs.blockingEnabled.addEventListener('input', () => {
+        for (const [name, input] of Object.entries(inputs)) {
+            if (name !== 'blockingEnabled') {
+                input.disabled = !inputs.blockingEnabled.checked;
+            }
+        }
     });
 
-    $('body').on('input', '[name=blurSpoilers]', function() {
-        $('[name=heavyBlur], [name=hoverBlur]').attr('disabled', !$(this).prop('checked'));
+    inputs.destroySpoilers.addEventListener('input', () => {
+        for (const input of changes.destroySpoilers) {
+            inputs[input].disabled = inputs.destroySpoilers.checked;
+        }
     });
+
+    inputs.blurSpoilers.addEventListener('input', () => {
+        for (const input of changes.blurSpoilers) {
+            inputs[input].disabled = !inputs.blurSpoilers.checked;
+        }
+    });
+
+    // set initial
+    for (const [name, input] of Object.entries(inputs)) {
+        if (settings[name] !== undefined) {
+            if (input.type == 'checkbox') {
+                input.checked = settings[name];
+            } else {
+                input.value = settings[name];
+            }
+
+            let event = new Event('input', {
+                'bubbles': true,
+                'cancelable': true
+            });
+
+            input.dispatchEvent(event);
+        }
+    }
 
     // register quick adds
     $('body').on('click', '#quick-add-site, #quick-add-spoiler', function() {
@@ -61,35 +96,9 @@ async function getActiveTabInfoReal() {
     });
 
     $('body').on('submit', '#quick-add-spoiler-form', saveQuickAdd);
-})();
-
-function loadSettings(settings) {
-    $('input, select').each(function() {
-        var $input = $(this);
-        var name = $input.prop('name');
-
-        if (settings.hasOwnProperty(name)) {
-            if ($input.attr('type') == 'checkbox') {
-                $input.prop('checked', settings[name]);
-            } else {
-                $input.val(settings[name]);
-            }
-        }
-    });
-
-    // disable if needed
-    let $destroySpoilers = $('[name=destroySpoilers]');
-    $('[name=showSpecificSpoiler], [name=warnBeforeReveal], ' +
-            '[name=heavyBlur], [name=hoverBlur], [name=blurSpoilers]')
-        .attr('disabled', $destroySpoilers.prop('checked'));
-
-    let $blurSpoilers = $('[name=blurSpoilers]');
-    $('[name=heavyBlur], [name=hoverBlur]').attr('disabled', ($destroySpoilers.prop('checked') || !$blurSpoilers.prop('checked')));
-
-    // force setting up styles since the content init func is never called for this page
     updateStyles();
     updateExample();
-}
+})();
 
 async function saveSetting(e) {
     let $input = $(this);

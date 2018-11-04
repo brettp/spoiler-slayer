@@ -40,11 +40,14 @@ async function init(settings) {
 chrome.storage.onChanged.addListener((changes, namespace) => {
     // if blur spoilers is changed, remove all injected styles and add/remove no-fx
     if (changes.blurSpoilers || changes.heavyBlur || changes.hoverBlur || changes.transitionDuration) {
-        if (changes.blurSpoilers.newValue) {
-            $('.no-fx').removeClass('no-fx');
-        } else {
-            $('.glamoured-active').addClass('no-fx');
+        if (changes.blurSpoilers) {
+            if (changes.blurSpoilers.newValue) {
+                $('.no-fx').removeClass('no-fx');
+            } else {
+                $('.glamoured-active').addClass('no-fx');
+            }
         }
+
         updateStyles();
     }
 });
@@ -60,7 +63,7 @@ async function updateStyles() {
         document.getElementsByTagName('head')[0].append(style);
     }
 
-    style.innerHTML = `:root {
+    style.textContent = `:root {
         --heavy-blur: ${styles.heavyBlur}px;
         --hover-blur: ${styles.hoverBlur}px;
         --transition-duration: ${styles.transitionDurationSecs}s;
@@ -102,7 +105,12 @@ async function searchForAndBlockSpoilers(selector, force_update, remove_parent, 
         for (let i = 0; i < $items.length; i++) {
             let el = $items.get(i);
             let $el = $(el);
-            let content = el.textContent.trim();
+            // use could use innerText here because it doesn't truncate whitespace,
+            // except Chrome still does enough mangling to make it useless
+            // we need this so we don't get extra content appended / prepended to
+            // spoilers at the start / end of nodes
+            // let content = el.innerText.trim();
+            let content = el.innerHTML.replace(/<[^>]+>/g, ' ');
 
             $el.addClass(`glamoured ${hostname_dotless}`);
 
@@ -185,9 +193,8 @@ async function blockElement(el, blocked_word, settings) {
         }
 
         info = createSpoilerInfo(capitalized_spoiler_words, classes);
+        el.prepend(info);
     }
-
-    el.prepend(info);
 
     el.addEventListener('click', (ev) => {
         ev.stopPropagation();
@@ -195,7 +202,7 @@ async function blockElement(el, blocked_word, settings) {
 
         if (settings.warnBeforeReveal) {
             let specific_words_for_confirm = settings.showSpecificSpoiler ? ` about "${capitalized_spoiler_words}"` : "";
-            if (!confirm(`Show spoiler ${specific_words_for_confirm}?`)) {
+            if (!confirm(`Show spoiler${specific_words_for_confirm}?`)) {
                 return;
             }
         }

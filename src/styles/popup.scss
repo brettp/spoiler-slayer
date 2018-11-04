@@ -24,7 +24,6 @@ a {
 
 .keyboard-user input,
 .keyboard-user select {
-
     &:active,
     &:focus {
         outline-color: rgb(0, 103, 244) !important;
@@ -161,6 +160,10 @@ textarea {
                 &:active {
                     outline: none;
                     border: none;
+                }
+
+                &:disabled {
+                    color: $grey;
                 }
             }
         }

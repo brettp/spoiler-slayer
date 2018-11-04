@@ -26,7 +26,10 @@
         transition-duration: var(--transition-duration);
         animation: fade-in var(--transition-duration) ease-in-out;
 
-        padding: 6pt 12pt;
+        padding: 0;
+        margin: 0;
+
+        // padding: 6pt 12pt;
         z-index: 1000;
 
         color: white;
@@ -125,99 +128,5 @@
     }
     to {
         opacity: 0;
-    }
-}
-
-
-
-
-// old unused site-specific stuff
-
-article {
-    &.item {
-        &.graphical .spoiler-glamour h3 {
-            font-size: 24px !important;
-            line-height: 24px !important;
-            padding: 0;
-            margin: 0;
-        }
-
-        &.tabular .spoiler-glamour h3 {
-            font-size: 24px !important;
-            line-height: 24px !important;
-            padding: 0;
-            margin: 0;
-        }
-    }
-
-    &.short .spoiler-glamour.small h3 {
-        margin: 0;
-        font-size: 18px !important;
-        line-height: 18px !important;
-    }
-}
-
-.trend-item {
-    .spoiler-glamour {
-        width: 95%;
-        padding: 3px 6px 1px;
-
-        h3 {
-            font-size: 11px !important;
-            line-height: 11px !important;
-            margin-top: 4px !important;
-        }
-    }
-
-    .click-to-view-spoiler {
-        font-size: 11px !important;
-        line-height: 11px !important;
-        margin-top: 4px !important;
-    }
-}
-
-.comment-renderer-text {
-    .spoiler-glamour {
-        width: 95%;
-        padding: 3px 6px 1px;
-
-        h3 {
-            font-size: 11px !important;
-            line-height: 11px !important;
-            margin-top: 4px !important;
-        }
-    }
-
-    .click-to-view-spoiler {
-        font-size: 11px !important;
-        line-height: 11px !important;
-        margin-top: 4px !important;
-    }
-}
-
-.u0Entry.glamoured .spoiler-glamour {
-    padding: 4px;
-
-    .spoiler-obituary {
-        vertical-align: top;
-    }
-}
-
-#pagelet_trending_tags_and_topics ul>li {
-    .spoiler-glamour {
-        width: 95%;
-        padding: 3px 6px 1px;
-
-        h3 {
-            font-size: 11px !important;
-            line-height: 11px !important;
-            margin-top: 4px !important;
-        }
-    }
-
-    .click-to-view-spoiler {
-        font-size: 11px !important;
-        line-height: 11px !important;
-        margin-top: 4px !important;
     }
 }
