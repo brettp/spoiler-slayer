@@ -47,6 +47,8 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - [ ] Don't update the badge while searching elements. Update it once at the end.
 - [ ] Don't register onTabChange event unless badge count is site / page based
 - [ ] Sort sites alphabetically
+- [ ] Don't block if parent has been glamoured and revealed.
+- [ ] Set global transition-duration time injected as setting, built into injected CSS and then use that value as a timeout to remove revealed and glamoured-active instead of waiting on unreliable animationend / transitionend
 
 
 ### Known Bugs

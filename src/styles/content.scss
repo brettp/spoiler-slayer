@@ -1,17 +1,19 @@
-$transition_duration: .5s;
-$heavy_blur: blur(8px);
-$hover_blur: blur(3px);
+:root {
+    --transition-duration: .5s;
+    --heavy-blur: 8px;
+    --hover-blur: 3px;
+}
 
 .glamoured-active {
     cursor: no-drop;
 
     // must use animations for elements injected into the dom
     .content-wrapper {
-        transition-duration: $transition_duration;
-        animation: blur $transition_duration ease-in-out;
+        transition-duration: var(--transition-duration);
+        animation: blur var(--transition-duration) ease-in-out;
         // this is just a default
         // the real value is injected to the page
-        filter: $heavy_blur;
+        filter: blur(var(--heavy-blur));
 
         // don't allow mouse events on obscured content
         &>* {
@@ -21,8 +23,8 @@ $hover_blur: blur(3px);
 
     .spoiler-info {
         position: absolute;
-        transition-duration: $transition_duration;
-        animation: fade-in $transition_duration ease-in-out;
+        transition-duration: var(--transition-duration);
+        animation: fade-in var(--transition-duration) ease-in-out;
 
         padding: 6pt 12pt;
         z-index: 1000;
@@ -39,11 +41,11 @@ $hover_blur: blur(3px);
     &:hover {
         // also overridden with injected CSS
         .content-wrapper {
-            filter: $hover_blur;
+            filter: blur(var(--hover-blur));
         }
 
         .spoiler-info {
-            filter: $heavy_blur;
+            filter: blur(var(--heavy-blur));
             opacity: 0;
         }
     }
@@ -92,7 +94,7 @@ $hover_blur: blur(3px);
 
     .spoiler-info {
         opacity: 0;
-        filter: $heavy_blur;
+        filter: blur(var(--heavy-blur));
     }
 }
 

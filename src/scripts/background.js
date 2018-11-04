@@ -15,7 +15,6 @@ class CmdHandler {
         }
 
         this.blockedCounts.lifetime = this.settings.lifetimeBlockedCount;
-        console.log(this.blockedCounts);
     }
 
     validUrl(url) {
@@ -23,7 +22,7 @@ class CmdHandler {
     }
 
     shouldBlock(url) {
-        return this.settings.blockingEnabled && this.validUrl(url) && this.settings.spoilersRegex !== false;
+        return this.settings.blockingEnabled && this.settings.spoilers.length > 0 && this.validUrl(url);
     }
 
     getSelectors(url) {
@@ -184,6 +183,14 @@ class CmdHandler {
         }
         chrome.browserAction.setBadgeText(text);
     }
+
+    getVariableStyles() {
+        return {
+            transitionDurationSecs: this.settings.transitionDurationSecs,
+            heavyBlur: this.settings.heavyBlur,
+            hoverBlur: this.settings.hoverBlur
+        }
+    }
 }
 
 function debugMsg(req, res) {
@@ -248,10 +255,6 @@ async function init() {
                 tab: tabInfo
             });
         });
-    });
-
-    chrome.tabs.onUpdated.addListener((id, changes, tab) => {
-        // console.log(id, changes, tab);
     });
 
     return settings;

@@ -36,27 +36,6 @@ var helpers = (function() {
         }
     }
 
-    function getSpoilersRegex(spoilers) {
-        var spoiler_strs = [];
-        if (!spoilers) {
-            return false;
-        }
-
-        for (let spoiler_info of spoilers) {
-            let spoiler = helpers.getRegexStr(spoiler_info.spoiler, spoiler_info.isRegex);
-
-            if (spoiler) {
-                spoiler_strs.push(spoiler);
-            }
-        }
-
-        if (!spoilers.length > 0) {
-            return false;
-        }
-
-        return new RegExp(spoiler_strs.join('|'), 'iu');
-    }
-
     function describe(obj, limit) {
         let txt;
         let tmp = [];
@@ -153,7 +132,6 @@ var helpers = (function() {
         debounce: debounce,
         ucWords: ucWords,
         escapeRegex: escapeRegex,
-        getSpoilersRegex: getSpoilersRegex,
         getRegexStr: getRegexStr,
         describe: describe,
         excerpt: excerpt,

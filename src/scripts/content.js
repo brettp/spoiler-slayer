@@ -5,13 +5,6 @@ var $document = $(document);
 var hostname = window.location.hostname;
 var hostname_dotless = hostname.replace(/\./g, '-');
 
-// add style tag that we can adjust for user customizable styles
-// and when the settings change
-let styleSettings = {
-    heavyBlur: '.glamoured-active:not(.revealed) > .content-wrapper',
-    hoverBlur: '.glamoured-active:not(.revealed):hover > .content-wrapper'
-};
-
 async function init(settings) {
     let url = window.location.href.toLowerCase();
     let shouldBlock = await cmd('shouldBlock', url);
@@ -21,7 +14,7 @@ async function init(settings) {
     }
 
     console.log("Starting spoiler blocker");
-    setupStyles();
+    updateStyles();
 
     let selector = await cmd('getSelectors', url);
     initiateSpoilerBlocking(selector, false, settings);
@@ -46,45 +39,32 @@ async function init(settings) {
 
 chrome.storage.onChanged.addListener((changes, namespace) => {
     // if blur spoilers is changed, remove all injected styles and add/remove no-fx
-    if (changes.blurSpoilers) {
-        $('.spoiler-injected-style').remove();
+    if (changes.blurSpoilers || changes.heavyBlur || changes.hoverBlur || changes.transitionDuration) {
         if (changes.blurSpoilers.newValue) {
             $('.no-fx').removeClass('no-fx');
         } else {
             $('.glamoured-active').addClass('no-fx');
         }
-        setupStyles();
-    }
-
-    for (let name in styleSettings) {
-        if (name in changes) {
-            let newVal = changes[name].newValue;
-            updateStyles(name, newVal);
-        }
+        updateStyles();
     }
 });
 
-// load initial customizable styles
-async function setupStyles() {
-    for (let name in styleSettings) {
-        let val = await getSetting(name);
-        updateStyles(name, val);
-    }
-}
+// load customizable styles as vars
+async function updateStyles() {
+    let styles = await cmd('getVariableStyles');
+    let style = document.getElementById('spoilers-injected-style');
 
-function updateStyles(name, value) {
-    let $style = $(`#spoiler-${name}`);
-
-    if (!styleSettings[name]) {
-        return;
+    if (!style) {
+        style = document.createElement('style');
+        style.id = 'spoilers-injected-style';
+        document.getElementsByTagName('head')[0].append(style);
     }
 
-    if ($style.length < 1) {
-        $style = $(`<style id="spoiler-${name}" class="spoiler-injected-style"></style>`);
-        $('head').append($style);
-    }
-
-    $style.text(`${styleSettings[name]} { filter: blur(${value}px) !important; }`);
+    style.innerHTML = `:root {
+        --heavy-blur: ${styles.heavyBlur}px;
+        --hover-blur: ${styles.hoverBlur}px;
+        --transition-duration: ${styles.transitionDurationSecs}s;
+    }`;
 }
 
 function initiateSpoilerBlocking(selector_string, remove_parent, settings) {
@@ -221,17 +201,17 @@ async function blockElement(el, blocked_word, settings) {
         }
 
         if (settings.blurSpoilers) {
-            console.log("Lisetning for end");
+            console.log("Setting timeout for ", settings.transitionDuration);
             // move everything back to its original parent and remove the info
             // because it confuses some sites
-            // for some reason the animation end event is only fired for the info tag
-            info.addEventListener('transitionend', (e) => {
-                console.log('animation end');
+            // can't listen to animation or transition end events because they aren't reliably fired
+            setTimeout(() => {
+                console.log("unwrapping glamour");
                 unwrapContent(contentWrapper);
                 info.remove();
                 el.classList.remove('glamoured-active');
                 el.classList.remove('revealed');
-            }, {once: true});
+            }, settings.transitionDuration);
 
             el.classList.add('revealed');
         } else {

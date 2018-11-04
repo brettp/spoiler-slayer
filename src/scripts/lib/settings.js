@@ -19,6 +19,8 @@ class Settings {
                 total: 0,
                 hosts: {},
             },
+            // translated into seconds in the getter
+            transitionDuration: 2,
 
             // debug and hidden options
             debug: false,
@@ -30,6 +32,7 @@ class Settings {
         return {
             sites: ['allSitesRegex', 'sitesInfo', 'compiledSitesAndSelectors'],
             spoilers: ['spoilersRegex'],
+            transitionDuration: ['transitionDurationSecs']
         };
     }
 
@@ -130,10 +133,21 @@ class Settings {
         }
     }
 
-    // compiled settings
     spoilersRegexCompiler() {
-        let spoilersRegex = helpers.getSpoilersRegex(this.spoilers);
-        return spoilersRegex;
+        var spoiler_strs = [];
+        if (!this.spoilers) {
+            return false;
+        }
+
+        for (let info of this.spoilers) {
+            let spoiler = helpers.getRegexStr(info.spoiler, info.isRegex);
+
+            if (spoiler) {
+                spoiler_strs.push(spoiler);
+            }
+        }
+
+        return new RegExp(spoiler_strs.join('|'), 'iu');
     }
 
     allSitesRegexCompiler() {
@@ -159,6 +173,23 @@ class Settings {
         }
 
         return val;
+    }
+
+    transitionDurationSecsCompiler() {
+        switch (parseInt(this.transitionDuration)) {
+            case 0:
+                return 0;
+            case 1:
+                return .25;
+            case 2:
+                return .5;
+            case 3:
+                return 1;
+            case 4:
+                return 2;
+            default:
+                return .25;
+        }
     }
 
     // @todo this doesn't work...the cmd never hits the listener

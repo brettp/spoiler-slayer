@@ -87,7 +87,7 @@ function loadSettings(settings) {
     $('[name=heavyBlur], [name=hoverBlur]').attr('disabled', ($destroySpoilers.prop('checked') || !$blurSpoilers.prop('checked')));
 
     // force setting up styles since the content init func is never called for this page
-    setupStyles();
+    updateStyles();
     updateExample();
 }
 
