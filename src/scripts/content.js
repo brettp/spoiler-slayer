@@ -64,9 +64,9 @@ async function updateStyles() {
     }
 
     style.textContent = `:root {
-        --heavy-blur: ${styles.heavyBlur}px;
-        --hover-blur: ${styles.hoverBlur}px;
-        --transition-duration: ${styles.transitionDurationSecs}s;
+        --heavy-blur: ${styles.heavyBlur}px !important;
+        --hover-blur: ${styles.hoverBlur}px !important;
+        --transition-duration: ${styles.transitionDurationSecs}s !important;
     }`;
 }
 

@@ -25,7 +25,8 @@ var helpers = (function() {
     }
 
     function escapeRegex(str) {
-        return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+        // have to escape dashes separately because it was doing weird things
+        return str.replace(/[\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&').replace('-', '\-');
     }
 
     function getRegexStr(text, isRegex) {

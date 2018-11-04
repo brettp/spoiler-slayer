@@ -31,7 +31,7 @@ var ogSites = [
     },
     {
         urlRegex: 'reddit.com',
-        selector: '.sitetable > .thing.link:visible, .usertext-body, .scrollerItem',
+        selector: '.sitetable > .thing.link, .usertext-body, .scrollerItem',
     },
     {
         urlRegex: 'slack.com',
