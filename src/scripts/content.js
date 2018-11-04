@@ -207,6 +207,8 @@ async function blockElement(el, blocked_word, settings) {
             }
         }
 
+        let timeout = settings.transitionDurationSecs * 1000;
+
         if (settings.blurSpoilers) {
             // move everything back to its original parent and remove the info
             // because it confuses some sites
@@ -218,7 +220,7 @@ async function blockElement(el, blocked_word, settings) {
                 }
                 el.classList.remove('glamoured-active');
                 el.classList.remove('revealed');
-            }, settings.transitionDuration);
+            }, timeout);
 
             el.classList.add('revealed');
         } else {

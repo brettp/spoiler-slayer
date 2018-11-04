@@ -47,8 +47,8 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - [ ] Don't update the badge while searching elements. Update it once at the end.
 - [ ] Don't register onTabChange event unless badge count is site / page based
 - [ ] Sort sites alphabetically
-- [ ] Don't block if parent has been glamoured and revealed.
-- [ ] Set global transition-duration time injected as setting, built into injected CSS and then use that value as a timeout to remove revealed and glamoured-active instead of waiting on unreliable animationend / transitionend
+- [X] Don't block if parent has been glamoured and revealed.
+- [X] Set global transition-duration time injected as setting, built into injected CSS and then use that value as a timeout to remove revealed and glamoured-active instead of waiting on unreliable animationend / transitionend
 
 
 ### Known Bugs
@@ -58,7 +58,7 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - - [X] Neither does clicking on it
 - [ ] Popup spoiler blur checkbox has bad spacing in FF
 - [ ] Retweeted content has the retweeted username bleed through the no-fx censor
-- [ ] Sometimes there can be embedded blocked elements
+- [X] Sometimes there can be embedded blocked elements
 - [X] Reddit's up and down arrows don't change color for glamoured content. Probably need to move all the content back to its real parent on reveal.
 - [ ] The spoiler info pops out instead of fades on reveal in FF
 - [ ] position: static elements don't work great

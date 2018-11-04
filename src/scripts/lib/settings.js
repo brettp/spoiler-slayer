@@ -24,15 +24,34 @@ class Settings {
 
             // debug and hidden options
             debug: false,
-            disableOnDocReady: false
+            disableOnDocReady: false,
         };
     }
 
+    get compiledSettings() {
+        return ['allSitesRegex', 'sitesInfo', 'compiledSitesAndSelectors', 'transitionDurationSecs'];
+    }
+
+    /**
+     * Returns all settings, including compiled (as values)
+     */
+    get allSettings() {
+        let settings = this.cached;
+        for (const setting of this.compiledSettings) {
+            settings[setting] = this[setting];
+        }
+        return settings;
+    }
+
+    /**
+     * Defines which settings need recompiled when a setting changes.
+     * changed_setting: [settings to recompile]
+     */
     get compiledSettingsInfo() {
         return {
             sites: ['allSitesRegex', 'sitesInfo', 'compiledSitesAndSelectors'],
             spoilers: ['spoilersRegex'],
-            transitionDuration: ['transitionDurationSecs']
+            transitionDuration: ['transitionDurationSecs'],
         };
     }
 
@@ -101,7 +120,7 @@ class Settings {
         // but removed if their settings change, causing them
         // to be re-compiled and cached on the first call after
         Object.defineProperty(this.constructor.prototype, propName, {
-            // define a getter the prop with a getter that compiles
+            // define a getter for the prop that compiles when called
             get() {
                 let val = this.compileProp(propName);
 
@@ -180,15 +199,15 @@ class Settings {
             case 0:
                 return 0;
             case 1:
-                return .25;
+                return 0.25;
             case 2:
-                return .5;
+                return 0.5;
             case 3:
                 return 1;
             case 4:
                 return 2;
             default:
-                return .25;
+                return 0.25;
         }
     }
 

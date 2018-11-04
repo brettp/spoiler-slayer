@@ -42,7 +42,7 @@ class CmdHandler {
     }
 
     getSettings() {
-        return this.settings.cached;
+        return this.settings.allSettings;
     }
 
     setSetting(data) {
