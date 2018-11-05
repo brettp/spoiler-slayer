@@ -38,11 +38,11 @@ a {
 }
 
 .hidden {
-    visibility: hidden;
+    visibility: hidden !important;
 }
 
 .none {
-    display: none;
+    display: none !important;
 }
 
 label.checkbox {
@@ -478,6 +478,10 @@ section {
     h2 {
         margin-top: 0;
     }
+}
+
+.regex-error {
+    padding-left: .5em;
 }
 
 @keyframes flash-fade {

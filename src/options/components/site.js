@@ -38,7 +38,13 @@ export default class Site extends Spoiler {
                             onChange={this.handleChange}
                             ref={ref => (this.siteInput = ref)}
                         />
-                        <span class="regex-marker">/ig</span>
+                        <span class="regex-marker">
+                            /ig
+                            <i
+                                class="fas fa-exclamation-triangle regex-error none"
+                                ref={ref => (this.regexError = ref)}
+                            />
+                        </span>
                     </label>
                     {this.renderCheckbox()}
                 </div>

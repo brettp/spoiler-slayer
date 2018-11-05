@@ -10,3 +10,13 @@ export function addFlash(el, type = 'fail') {
 
     el.classList.add(`save-${type}`);
 }
+
+export function regexHasError(str) {
+    try {
+        new RegExp(str, 'iu');
+    } catch (e) {
+        return e.message;
+    }
+
+    return false;
+}

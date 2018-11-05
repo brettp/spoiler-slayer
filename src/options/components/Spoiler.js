@@ -1,5 +1,5 @@
 import {Component} from 'preact';
-import { addFlash } from '../lib/util';
+import {addFlash, regexHasError} from '../lib/util';
 
 export default class Spoiler extends Component {
     constructor(props) {
@@ -18,6 +18,15 @@ export default class Spoiler extends Component {
         this.setState({[name]: value}, () => {
             this.props.onChange(this.state, this.type, this.props.id);
         });
+
+        if (name == 'spoiler' || name == 'urlRegex') {
+            let error = regexHasError(value);
+            if (error) {
+                this.regexError.classList.remove('none');
+            } else {
+                this.regexError.classList.add('none');
+            }
+        }
     }
 
     reset() {
@@ -80,7 +89,13 @@ export default class Spoiler extends Component {
                         value={this.state.spoiler}
                         onChange={this.handleChange}
                     />
-                    <span class="regex-marker">/ig</span>
+                    <span class="regex-marker">
+                        /ig
+                        <i
+                            class="fas fa-exclamation-triangle regex-error none"
+                            ref={ref => (this.regexError = ref)}
+                        />
+                    </span>
                 </label>
                 {this.renderCheckbox()}
             </div>
