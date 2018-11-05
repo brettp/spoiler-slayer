@@ -165,7 +165,6 @@ class Settings {
                 spoiler_strs.push(spoiler);
             }
         }
-        console.log(spoiler_strs);
 
         return new RegExp(spoiler_strs.join('|'), 'iu');
     }
