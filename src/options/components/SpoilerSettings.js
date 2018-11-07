@@ -1,12 +1,13 @@
 import {Component} from 'preact';
 import Spoiler from './Spoiler';
 import List from './List';
-import {addFlash} from '../lib/util';
+import {addFlash, regexHasError} from '../lib/util';
 
 export class SpoilerSettings extends Component {
     constructor(props) {
         super(props);
         this.submitAndReset = this.submitAndReset.bind(this);
+        this.validateRegex = this.validateRegex.bind(this);
     }
 
     submitAndReset(e) {
@@ -18,7 +19,24 @@ export class SpoilerSettings extends Component {
         }
     }
 
+    validateRegex() {
+        this.input.regexError.classList.add('none');
+        let value = this.input[this.input.regexInputName];
+
+        if (this.input.isRegexInput.checked && regexHasError(value.value)) {
+            addFlash(value, 'fail');
+            this.input.regexError.classList.remove('none');
+            return false;
+        }
+
+        return true;
+    }
+
     validate() {
+        if (!this.validateRegex(this.spoilerInput)) {
+            return false;
+        }
+
         if (!this.input.spoilerInput.value.trim()) {
             addFlash(this.input.spoilerInput, 'fail');
             return false;

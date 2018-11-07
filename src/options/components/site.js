@@ -5,6 +5,7 @@ export default class Site extends Spoiler {
     constructor(props) {
         super(props);
         this.type = 'sites';
+        this.regexInputName = 'siteInput';
     }
 
     render() {
@@ -37,6 +38,7 @@ export default class Site extends Spoiler {
                             value={this.state.urlRegex}
                             onChange={this.handleChange}
                             ref={ref => (this.siteInput = ref)}
+                            onKeyUp={this.checkRegex}
                         />
                         <span class="regex-marker">
                             /ig

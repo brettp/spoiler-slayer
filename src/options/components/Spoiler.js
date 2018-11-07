@@ -8,6 +8,8 @@ export default class Spoiler extends Component {
         this.type = 'spoilers';
         this.state = props.value;
         this.handleChange = this.handleChange.bind(this);
+        this.checkRegex = this.checkRegex.bind(this);
+        this.regexInputName = 'spoilerInput';
     }
 
     handleChange(e) {
@@ -18,9 +20,11 @@ export default class Spoiler extends Component {
         this.setState({[name]: value}, () => {
             this.props.onChange(this.state, this.type, this.props.id);
         });
+    }
 
-        if (name == 'spoiler' || name == 'urlRegex') {
-            let error = regexHasError(value);
+    checkRegex() {
+        if (this.isRegexInput.checked) {
+            let error = regexHasError(this.regexInput.value);
             if (error) {
                 this.regexError.classList.remove('none');
             } else {
@@ -57,11 +61,17 @@ export default class Spoiler extends Component {
                         value="1"
                         checked={this.state.isRegex}
                         onChange={this.handleChange}
+                        ref={ref => (this.isRegexInput = ref)}
+                        onKeyUp={this.checkRegex}
                     />
                     <code>/re/</code>
                 </label>
             );
         }
+    }
+
+    get regexInput() {
+        return this[this.regexInputName];
     }
 
     getClasses() {
@@ -85,7 +95,7 @@ export default class Spoiler extends Component {
                         type="text"
                         class="save-flasher"
                         name="spoiler"
-                        ref={ref => (this.spoilerInput = ref)}
+                        ref={ref => ( this.spoilerInput = ref) }
                         value={this.state.spoiler}
                         onChange={this.handleChange}
                     />

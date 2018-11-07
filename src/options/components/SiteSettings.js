@@ -1,11 +1,15 @@
 import Site from './Site';
 import List from './List';
 import { SpoilerSettings } from './SpoilerSettings';
-import { addFlash } from '../lib/util';
+import { addFlash, regexHasError } from '../lib/util';
 
 export class SiteSettings extends SpoilerSettings {
 
     validate() {
+        if (!this.validateRegex(this.siteInput)) {
+            return false;
+        }
+
         if (!this.input.selectorInput.value.trim()) {
             addFlash(this.input.selectorInput, 'fail');
             return false;

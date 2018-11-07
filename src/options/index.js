@@ -49,11 +49,8 @@ class Options extends Component {
     }
 
     async updateFromSettings() {
-        console.log('Updating from settings...');
         const settings = await cmd('getSettings');
-        console.log('presettings', settings);
-        console.log('prestate', this.state);
-        this.setState({...settings}, () => { console.log('post state', this.state)});
+        this.setState({...settings});
     }
 
     async saveToSettings() {
