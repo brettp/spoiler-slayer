@@ -1,5 +1,3 @@
-console.log(module);
-
 var helpers = (function() {
     var nullFunc = function() {};
 

@@ -61,7 +61,7 @@ var settings = {
 };
 
 sendMsg = async function(...args) {
-    console.log(`Got msg `, ...args);
+    console.log('Got msg', ...args);
 
     return new Promise(res => {
         res(settings);
@@ -69,6 +69,4 @@ sendMsg = async function(...args) {
 };
 
 
-setSetting = getSetting = saveSettings = cmd = sendMsg;
-
-console.log('Using dev API');
+setSetting = getSetting = saveSettings = cmd = sendMsg;``

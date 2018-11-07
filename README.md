@@ -33,6 +33,8 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - - [X] Lifetime badge
 - - [X] Add config option
 - - [ ] Make not flash when loading a site on the same domain (don't think this is possible)
+- - [ ] Don't update the badge while searching elements. Update it once at the end.
+- - [ ] Don't register onTabChange event unless badge count is site / page based
 - [X] Live update for settings changes (use on change event)
 - - [X] Live updates for no-fx changes
 - [X] Settings import and export
@@ -44,8 +46,6 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - [ ] FF mobile?
 - [ ] Disable right click on popup
 - [ ] Categorize / tag sites and spoilers to allow export of single collection settings like Harry Potter
-- [ ] Don't update the badge while searching elements. Update it once at the end.
-- [ ] Don't register onTabChange event unless badge count is site / page based
 - [ ] Sort sites alphabetically
 - [X] Don't block if parent has been glamoured and revealed.
 - [X] Set global transition-duration time injected as setting, built into injected CSS and then use that value as a timeout to remove revealed and glamoured-active instead of waiting on unreliable animationend / transitionend
