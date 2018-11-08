@@ -49,6 +49,7 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - [ ] Sort sites alphabetically
 - [X] Don't block if parent has been glamoured and revealed.
 - [X] Set global transition-duration time injected as setting, built into injected CSS and then use that value as a timeout to remove revealed and glamoured-active instead of waiting on unreliable animationend / transitionend
+- [ ] Add "global" mode that blocks full unknown sites if the body text matches any spoilers.
 
 
 ### Known Bugs

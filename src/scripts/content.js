@@ -17,7 +17,7 @@ async function init(settings) {
     updateStyles();
 
     let selector = await cmd('getSelectors', url);
-    initiateSpoilerBlocking(selector, false, settings);
+    initiateSpoilerBlocking(selector, settings);
 }
 
 (async () => {
@@ -70,12 +70,28 @@ async function updateStyles() {
     }`;
 }
 
-function initiateSpoilerBlocking(selector_string, remove_parent, settings) {
-    searchForAndBlockSpoilers(selector_string, true, remove_parent, settings);
+function initiateSpoilerBlocking(selector_string, settings) {
+    searchForAndBlockSpoilers(selector_string, false, settings);
     var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
     var observer = new MutationObserver(helpers.debounce(function(muts, obs) {
-        searchForAndBlockSpoilers(selector_string, false, remove_parent, settings);
+        searchForAndBlockSpoilers(selector_string, true, settings);
+        // let fire = false;
+        // for (let mut of muts) {
+        //     console.log("Observed ", mut.target);
+        //     if (mut.target) {
+        //         let cl = mut.target.classList;
+        //         if (!cl.contains('glamoured') && !cl.contains('content-wrapper') && !cl.contains('spoiler-info')) {
+        //             fire = true;
+        //             break;
+        //         }
+        //     }
+        // }
+
+        // console.log('Firing', fire);
+        // if (fire) {
+        //     searchForAndBlockSpoilers(selector_string, false, settings);
+        // }
     }, 150));
 
     const opts = {
@@ -91,28 +107,46 @@ function initiateSpoilerBlocking(selector_string, remove_parent, settings) {
     observer.observe(document.querySelector('body'), opts);
 }
 
-async function searchForAndBlockSpoilers(selector, force_update, remove_parent, settings) {
+function ancestorHasGlamour(el) {
+    let parent, test = el;
+    while (parent = test.parentElement) {
+        test = parent;
+
+        if (parent.nodeName == 'BODY') {
+            break;
+        }
+
+        if (parent.classList.contains('glamoured')) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+async function searchForAndBlockSpoilers(selector, check_parent, settings) {
     let $items = $(selector).not('.glamoured');
     let blockedCount = 0;
 
-    if (remove_parent) {
-        $items = items.parent();
-    }
-
-    if (force_update || $items.length > 0) {
+    if ($items.length > 0) {
         // don't use jquery to loop because it causes
         // too many requests to the messages
         for (let i = 0; i < $items.length; i++) {
             let el = $items.get(i);
-            let $el = $(el);
+
+            if (check_parent && ancestorHasGlamour(el)) {
+                continue;
+            }
+
+            el.classList.add('glamoured');
+            el.classList.add(hostname_dotless);
+
             // use could use innerText here because it doesn't truncate whitespace,
             // except Chrome still does enough mangling to make it useless
             // we need this so we don't get extra content appended / prepended to
             // spoilers at the start / end of nodes
             // let content = el.innerText.trim();
             let content = el.innerHTML.replace(/<[^>]+>/g, ' ');
-
-            $el.addClass(`glamoured ${hostname_dotless}`);
 
             // check for spoilers and block if found
             if (content) {
@@ -219,7 +253,7 @@ async function blockElement(el, blocked_word, settings) {
                     info.remove();
                 }
                 el.classList.remove('glamoured-active');
-                el.classList.remove('revealed');
+                // el.classList.remove('revealed');
             }, timeout);
 
             el.classList.add('revealed');
@@ -229,7 +263,7 @@ async function blockElement(el, blocked_word, settings) {
                 info.remove();
             }
             el.classList.remove('glamoured-active');
-            el.classList.remove('revealed');
+            // el.classList.remove('revealed');
         }
 
     }, {once: true});

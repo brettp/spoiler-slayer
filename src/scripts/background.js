@@ -14,7 +14,12 @@ class CmdHandler {
             page: {}
         }
 
+        // updated on each call to incBlockCount before count is incremented
+        // used by showCorrectBadgeCount to do active count up
+        this.prevBlockedCounts;
+
         this.blockedCounts.lifetime = this.settings.lifetimeBlockedCount;
+        this.tabOnActivated = this.tabOnActivated.bind(this);
     }
 
     validUrl(url) {
@@ -71,6 +76,10 @@ class CmdHandler {
             count = 1;
         }
 
+        // if it's a good enough deep clone for Mozilla...
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+        this.prevBlockedCounts = JSON.parse(JSON.stringify(this.blockedCounts));
+
         // lifetime (is persisted and synced kinda?)
         this.blockedCounts.lifetime.total += count;
         if (!this.blockedCounts.lifetime.hosts[url.host]) {
@@ -101,52 +110,74 @@ class CmdHandler {
     // when a tab is activated, see if the badge needs updated
     // based on the settings
     showCorrectBadgeCount(data, sender) {
-        let tab, url, info = {};
-        // default to sender's tab, but allow settings to specify tab
-        // it has problems resolving the active tab when this is called from settings
-        if (data && data.tab) {
-            tab = data.tab;
+        let tab, url, prevC, newC, info = {};
+
+        if (this.badgeDisplay == 'none') {
+            return this.setBadgeText('');
+        }
+
+        // if we're showing life, tabs don't matter
+        if (this.settings.badgeDisplay == 'life') {
+            prevC = this.prevBlockedCounts.lifetime.total;
+            newC = this.blockedCounts.lifetime.total;
         } else {
-            if (!sender.tab) {
-                return;
+            // default to sender's tab, but allow settings to specify tab
+            // it has problems resolving the active tab when this is called from settings
+            if (data && data.tab) {
+                tab = data.tab;
+            } else {
+                if (!sender.tab) {
+                    return;
+                }
+                tab = sender.tab;
             }
-            tab = sender.tab;
+
+            info.tabId = tab.id;
+
+            switch (this.settings.badgeDisplay) {
+                case 'lifeSite':
+                    url = new URL(tab.url);
+                    prevC = this.prevBlockedCounts.lifetime.hosts[url.host];
+                    newC = this.blockedCounts.lifetime.hosts[url.host];
+                    break;
+
+                case 'session':
+                    prevC = this.prevBlockedCounts.session.total;
+                    newC = this.blockedCounts.session.total;
+                    break;
+
+                case 'sessionSite':
+                    url = new URL(tab.url);
+                    prevC = this.prevBlockedCounts.session.hosts[url.host];
+                    newC = this.blockedCounts.session.hosts[url.host];
+                    break;
+
+                case 'pageload':
+                    prevC = this.prevBlockedCounts.page[tab.id];
+                    newC = this.blockedCounts.page[tab.id];
+                    break;
+
+                case 'none':
+                    return this.setBadgeText('');
+                    break;
+            }
         }
 
-        info.tabId = tab.id;
+        this.setBadgeText(helpers.friendlyNum(prevC));
 
-        switch (this.settings.badgeDisplay) {
-            case 'life':
-                info.text = this.blockedCounts.lifetime.total
-                break;
+        // set timeout doesn't work in extensions
+        // not sure how to do a count up timer from here...
+        // while (prevC++ < newC) {
+        //     console.log("Setting to ", prevC);
+        //     helpers.friendlyNum(prevC);
+        //     setTimeout(() => {
+        //         this.setBadgeText(helpers.friendlyNum(prevC));
+        //     }, 1000);
+        // }
 
-            case 'lifeSite':
-                url = new URL(tab.url);
-                info.text = this.blockedCounts.lifetime.hosts[url.host];
-                break;
-
-
-            case 'session':
-                info.text = this.blockedCounts.session.total;
-                break;
-
-            case 'sessionSite':
-                url = new URL(tab.url);
-                info.text = this.blockedCounts.session.hosts[url.host];
-                break;
-
-            case 'pageload':
-                info.text = this.blockedCounts.page[tab.id];
-                break;
-
-            case 'none':
-                info.text = '';
-                break;
-        }
-
-        this.setBadgeText(info);
-
-        return info;
+        return {
+            text: newC
+        };
     }
 
     resetBadgePageCount(cmd, sender) {
@@ -176,11 +207,11 @@ class CmdHandler {
             text.text = 0;
         }
 
-        text.text = helpers.friendlyNum(parseInt(text.text)).toString();
-
         if (text.text == 0) {
             text.text = '';
         }
+
+        text.text = text.text.toString();
         chrome.browserAction.setBadgeText(text);
     }
 
@@ -189,6 +220,19 @@ class CmdHandler {
             transitionDurationSecs: this.settings.transitionDurationSecs,
             heavyBlur: this.settings.heavyBlur,
             hoverBlur: this.settings.hoverBlur
+        }
+    }
+
+    tabOnActivated(info) {
+        var self = this;
+
+        // don't change if registered for site to prevent flash when changing tabs
+        if (this.settings.badgeDisplay != 'life') {
+            chrome.tabs.get(info.tabId, function(tabInfo) {
+                // put in same format as the sender obj
+                debugMsg({cmd: 'tabs.onActivated'}, tabInfo);
+                self.showCorrectBadgeCount(null, {tab: tabInfo});
+            });
         }
     }
 }
@@ -245,17 +289,8 @@ async function init() {
         return true;
     });
 
-    chrome.tabs.onActivated.addListener(function(info) {
-        chrome.tabs.get(info.tabId, function(tabInfo) {
-            // put in same format as the sender obj
-            debugMsg({
-                cmd: 'tabs.onActivated'
-            }, tabInfo);
-            cmdHandler.showCorrectBadgeCount(null, {
-                tab: tabInfo
-            });
-        });
-    });
+    chrome.tabs.onActivated.addListener(cmdHandler.tabOnActivated);
+    // cmdHandler.showCorrectBadgeCount();
 
     return settings;
 }
