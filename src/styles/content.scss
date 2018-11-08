@@ -4,11 +4,11 @@
     --hover-blur: 3px;
 }
 
-.glamoured-active {
+.spoiler-blocker-glamoured-active {
     cursor: no-drop;
 
     // must use animations for elements injected into the dom
-    .content-wrapper {
+    .spoiler-blocker-content-wrapper {
         transition-duration: var(--transition-duration);
         animation: blur var(--transition-duration) ease-in-out;
         // this is just a default
@@ -21,7 +21,7 @@
         }
     }
 
-    .spoiler-info {
+    .spoiler-blocker-spoiler-info {
         position: absolute;
         transition-duration: var(--transition-duration);
         animation: fade-in var(--transition-duration) ease-in-out;
@@ -43,22 +43,22 @@
 
     &:hover {
         // also overridden with injected CSS
-        .content-wrapper {
+        .spoiler-blocker-content-wrapper {
             filter: blur(var(--hover-blur));
         }
 
-        .spoiler-info {
+        .spoiler-blocker-spoiler-info {
             filter: blur(var(--heavy-blur));
             opacity: 0;
         }
     }
 
-    &.no-fx {
+    &.spoiler-blocker-no-fx {
         transition: initial !important;
         animation: initial !important;
         position: relative;
 
-        .spoiler-info {
+        .spoiler-blocker-spoiler-info {
             transition: none !important;
             animation: none !important;
         }
@@ -79,7 +79,7 @@
             animation: none !important;
             transition: none !important;
 
-            .spoiler-info {
+            .spoiler-blocker-spoiler-info {
                 opacity: initial !important;
                 filter: initial !important;
             }
@@ -88,14 +88,14 @@
 }
 
 // can use normal transitions when revealing
-.glamoured-active.revealed:not(.no-fx) {
+.spoiler-blocker-glamoured-active.spoiler-blocker-revealed:not(.spoiler-blocker-no-fx) {
     pointer-events: none;
 
-    .content-wrapper {
+    .spoiler-blocker-content-wrapper {
         filter: none;
     }
 
-    .spoiler-info {
+    .spoiler-blocker-spoiler-info {
         opacity: 0;
         filter: blur(var(--heavy-blur));
     }

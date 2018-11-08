@@ -125,7 +125,7 @@ async function saveSetting(e) {
         }
     }
 
-    if ($('.spoiler-info').hasClass('revealed') || $input.attr('type') != 'range') {
+    if ($('.spoiler-info').hasClass('spoiler-blocker-revealed') || $input.attr('type') != 'range') {
         updateExample();
     }
 }
@@ -173,7 +173,7 @@ async function saveQuickAdd(e) {
 
 async function updateExample() {
     let $exTpl = $('.content-template');
-    let $ex = $exTpl.clone().removeClass('content-template').addClass('glamoured');
+    let $ex = $exTpl.clone().removeClass('content-template').addClass('spoiler-blocker-glamoured');
 
     $('.example').html($ex);
 

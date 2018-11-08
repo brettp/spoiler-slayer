@@ -42,9 +42,9 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
     if (changes.blurSpoilers || changes.heavyBlur || changes.hoverBlur || changes.transitionDuration) {
         if (changes.blurSpoilers) {
             if (changes.blurSpoilers.newValue) {
-                $('.no-fx').removeClass('no-fx');
+                $('.spoiler-blocker-no-fx').removeClass('spoiler-blocker-no-fx');
             } else {
-                $('.glamoured-active').addClass('no-fx');
+                $('.spoiler-blocker-glamoured-active').addClass('spoiler-blocker-no-fx');
             }
         }
 
@@ -116,7 +116,7 @@ function ancestorHasGlamour(el) {
             break;
         }
 
-        if (parent.classList.contains('glamoured')) {
+        if (parent.classList.contains('spoiler-blocker-glamoured')) {
             return true;
         }
     }
@@ -125,7 +125,7 @@ function ancestorHasGlamour(el) {
 }
 
 async function searchForAndBlockSpoilers(selector, check_parent, settings) {
-    let $items = $(selector).not('.glamoured');
+    let $items = $(selector).not('.spoiler-blocker-glamoured');
     let blockedCount = 0;
 
     if ($items.length > 0) {
@@ -138,8 +138,8 @@ async function searchForAndBlockSpoilers(selector, check_parent, settings) {
                 continue;
             }
 
-            el.classList.add('glamoured');
-            el.classList.add(hostname_dotless);
+            el.classList.add('spoiler-blocker-glamoured');
+            el.classList.add(`spoiler-blocker-${hostname_dotless}`);
 
             // use could use innerText here because it doesn't truncate whitespace,
             // except Chrome still does enough mangling to make it useless
@@ -167,7 +167,7 @@ async function searchForAndBlockSpoilers(selector, check_parent, settings) {
 
 function createSpoilerInfo(spoiler, classes) {
     let h2 = document.createElement('h2');
-    h2.classList = `spoiler-info ${classes}`;
+    h2.classList = `spoiler-blocker-spoiler-info ${classes}`;
     h2.innerText = `Spoiler about "${spoiler}"`;
 
     return h2;
@@ -176,7 +176,7 @@ function createSpoilerInfo(spoiler, classes) {
 function createContentWrapper(el) {
     let nodes = el.childNodes;
     let wrapper = document.createElement('div');
-    wrapper.classList = 'content-wrapper';
+    wrapper.classList = 'spoiler-blocker-content-wrapper';
 
     while (nodes.length > 0) {
         wrapper.appendChild(nodes[0]);
@@ -206,13 +206,13 @@ async function blockElement(el, blocked_word, settings) {
     }
 
     if (!settings.blurSpoilers) {
-        el.classList.add('no-fx');
+        el.classList.add('spoiler-blocker-no-fx');
     }
 
     // move all content into a new div so we can blur
     // but keep the info text clear without doing silly stuff
     contentWrapper = createContentWrapper(el);
-    el.classList.add('glamoured-active');
+    el.classList.add('spoiler-blocker-glamoured-active');
 
     capitalized_spoiler_words = helpers.ucWords(blocked_word);
 
@@ -245,14 +245,14 @@ async function blockElement(el, blocked_word, settings) {
         // this is (maybe) more performant than checking ancestry when blocking
         var nodeIterator = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT, {
             acceptNode: (node) => {
-                return node.classList.contains('glamoured') ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
+                return node.classList.contains('spoiler-blocker-glamoured') ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
             }
         });
 
         while (node = nodeIterator.nextNode()) {
             // remove info
             node.childNodes[0].remove();
-            node.classList.remove('glamoured-active');
+            node.classList.remove('spoiler-blocker-glamoured-active');
             unwrapContent(node);
         }
 
@@ -267,17 +267,17 @@ async function blockElement(el, blocked_word, settings) {
                 if (info) {
                     info.remove();
                 }
-                el.classList.remove('glamoured-active');
+                el.classList.remove('spoiler-blocker-glamoured-active');
                 // el.classList.remove('revealed');
             }, timeout);
 
-            el.classList.add('revealed');
+            el.classList.add('spoiler-blocker-revealed');
         } else {
             unwrapContent(contentWrapper);
             if (info) {
                 info.remove();
             }
-            el.classList.remove('glamoured-active');
+            el.classList.remove('spoiler-blocker-glamoured-active');
             // el.classList.remove('revealed');
         }
 
