@@ -241,6 +241,21 @@ async function blockElement(el, blocked_word, settings) {
             }
         }
 
+        // remove any glamours on child elements
+        // this is (maybe) more performant than checking ancestry when blocking
+        var nodeIterator = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT, {
+            acceptNode: (node) => {
+                return node.classList.contains('glamoured') ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
+            }
+        });
+
+        while (node = nodeIterator.nextNode()) {
+            // remove info
+            node.childNodes[0].remove();
+            node.classList.remove('glamoured-active');
+            unwrapContent(node);
+        }
+
         let timeout = settings.transitionDurationSecs * 1000;
 
         if (settings.blurSpoilers) {
