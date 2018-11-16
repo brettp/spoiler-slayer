@@ -108,8 +108,7 @@ textarea {
     h2 {
         font-size: 125%;
         text-align: center;
-        margin-bottom: 1em;
-        margin-top: 0.5em;
+        margin: 0 auto;
 
         img.badge-example {
             margin-right: 0.25em;
@@ -189,6 +188,53 @@ textarea {
         input[type='checkbox'] {
             margin-left: -1em;
         }
+    }
+}
+
+#quick-adds > .col {
+    flex: none !important;
+    width: 50%;
+    transition: .5s;
+    white-space: nowrap;
+
+    &.active {
+        width: 95% !important;
+
+        #current-site-display {
+            opacity: .5;
+            width: 30%;
+        }
+    }
+
+    &.inactive {
+        width: 0% !important;
+        transition: .5s !important;
+        opacity: 0 !important;
+    }
+}
+
+#quick-add-selector-form {
+    display: flex;
+    color: $grey;
+
+    input {
+        flex: 1;
+        margin: 0 .5em;
+    }
+
+    span {
+        margin: 0 .25em;
+    }
+
+    #current-site-display {
+        transition: .5s;
+        width: 0;
+        color: initial;
+        opacity: 0;
+        max-width: 30%;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
     }
 }
 
@@ -364,6 +410,7 @@ ol {
 
 .help {
     display: inline-block;
+    white-space: normal;
 
     .icon:hover {
         + .help-text {

@@ -9,6 +9,26 @@ async function init(settings) {
     let url = window.location.href.toLowerCase();
     let shouldBlock = await cmd('shouldBlock', url);
 
+    chrome.runtime.onMessage.addListener((msg, sender, res) => {
+        // remove any active
+        let active = document.querySelectorAll('.spoiler-blocker-selector-preview');
+
+        for (let el of active) {
+            el.classList.remove('spoiler-blocker-selector-preview');
+        }
+
+        if (msg.data.selector) {
+            try {
+                let items = document.querySelectorAll(msg.data.selector);
+                for (let el of items) {
+                    el.classList.add('spoiler-blocker-selector-preview');
+                }
+            } catch (e) {
+                res(e);
+            }
+        }
+    });
+
     if (!shouldBlock) {
         return;
     }

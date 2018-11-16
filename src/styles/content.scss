@@ -1,5 +1,5 @@
 :root {
-    --transition-duration: .5s;
+    --transition-duration: 0.5s;
     --heavy-blur: 8px;
     --hover-blur: 3px;
 }
@@ -16,7 +16,7 @@
         filter: blur(var(--heavy-blur));
 
         // don't allow mouse events on obscured content
-        &>* {
+        & > * {
             pointer-events: none;
         }
     }
@@ -37,8 +37,8 @@
 
         font: 700 14pt verdana, arial, helvetica, sans-serif !important;
         text-shadow: 0 0 10px #000;
-        text-stroke: .25px black;
-        -webkit-text-stroke: .25px black;
+        text-stroke: 0.25px black;
+        -webkit-text-stroke: 0.25px black;
     }
 
     &:hover {
@@ -64,7 +64,7 @@
         }
 
         &:after {
-            content: "";
+            content: '';
             position: absolute;
             top: 0;
             left: 0;
@@ -101,6 +101,16 @@
     }
 }
 
+.spoiler-blocker-selector-preview {
+    box-shadow: 0 0 25px #0066ff, inset 0 0 100vh 100vh #0066ff;
+    animation: flash 1s infinite alternate;
+    border-radius: 5px;
+
+    *:not(#invalid) {
+        animation: anti-flash 1s infinite alternate;
+        background-color: transparent !important;
+    }
+}
 
 // the target blur value is injected into the page
 @keyframes blur {
@@ -108,7 +118,6 @@
         filter: inherit;
     }
 }
-
 
 @keyframes unblur {
     to {
@@ -128,5 +137,12 @@
     }
     to {
         opacity: 0;
+    }
+}
+
+@keyframes flash {
+    from {
+        box-shadow: initial;
+        border-radius: initial;
     }
 }

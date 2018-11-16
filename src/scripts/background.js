@@ -118,7 +118,7 @@ class CmdHandler {
 
         // if we're showing life, tabs don't matter
         if (this.settings.badgeDisplay == 'life') {
-            prevC = this.prevBlockedCounts.lifetime.total;
+            // prevC = this.prevBlockedCounts.lifetime.total;
             newC = this.blockedCounts.lifetime.total;
         } else {
             // default to sender's tab, but allow settings to specify tab
@@ -137,23 +137,23 @@ class CmdHandler {
             switch (this.settings.badgeDisplay) {
                 case 'lifeSite':
                     url = new URL(tab.url);
-                    prevC = this.prevBlockedCounts.lifetime.hosts[url.host];
+                    // prevC = this.prevBlockedCounts.lifetime.hosts[url.host];
                     newC = this.blockedCounts.lifetime.hosts[url.host];
                     break;
 
                 case 'session':
-                    prevC = this.prevBlockedCounts.session.total;
+                    // prevC = this.prevBlockedCounts.session.total;
                     newC = this.blockedCounts.session.total;
                     break;
 
                 case 'sessionSite':
                     url = new URL(tab.url);
-                    prevC = this.prevBlockedCounts.session.hosts[url.host];
+                    // prevC = this.prevBlockedCounts.session.hosts[url.host];
                     newC = this.blockedCounts.session.hosts[url.host];
                     break;
 
                 case 'pageload':
-                    prevC = this.prevBlockedCounts.page[tab.id];
+                    // prevC = this.prevBlockedCounts.page[tab.id];
                     newC = this.blockedCounts.page[tab.id];
                     break;
 
@@ -163,7 +163,7 @@ class CmdHandler {
             }
         }
 
-        this.setBadgeText(helpers.friendlyNum(prevC));
+        this.setBadgeText(helpers.friendlyNum(newC));
 
         // set timeout doesn't work in extensions
         // not sure how to do a count up timer from here...
@@ -235,6 +235,14 @@ class CmdHandler {
             });
         }
     }
+
+    async highlightElementsInActiveTab(selector) {
+        let tab = await _getActiveTabInfo();
+        chrome.tabs.sendMessage(tab.id, {
+            cmd: 'highlightElements',
+            data: { selector }
+        });
+    }
 }
 
 function debugMsg(req, res) {
@@ -291,6 +299,13 @@ async function init() {
 
     chrome.tabs.onActivated.addListener(cmdHandler.tabOnActivated);
     // cmdHandler.showCorrectBadgeCount();
+
+    chrome.runtime.onConnect.addListener((port) => {
+        port.onDisconnect.addListener(() => {
+            cmdHandler.highlightElementsInActiveTab('!!invalid selector!!');
+        });
+    });
+
 
     return settings;
 }
