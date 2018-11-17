@@ -91,10 +91,8 @@ async function updateStyles() {
 }
 
 function initiateSpoilerBlocking(selector_string, settings) {
-    searchForAndBlockSpoilers(selector_string, false, settings);
-    var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-
-    var observer = new MutationObserver(helpers.debounce(function(muts, obs) {
+    // searchForAndBlockSpoilers(selector_string, false, settings);
+    var observer = new window.MutationObserver(helpers.debounce(function(muts, obs) {
         searchForAndBlockSpoilers(selector_string, true, settings);
         // let fire = false;
         // for (let mut of muts) {
