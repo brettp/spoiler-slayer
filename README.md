@@ -19,7 +19,7 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - [X] Slider for opacity
 - - [X] Disable animations checkbox
 - [X] Quick add spoiler phrase on popup
-- [ ] Quick add site on popup?
+- [X] Quick add site on popup?
 - [ ] New example image
 - [X] Less awful advanced settings interface
 - - [ ] Better text explaining what to do
@@ -33,7 +33,7 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - - [X] Lifetime badge
 - - [X] Add config option
 - - [ ] Make not flash when loading a site on the same domain (don't think this is possible)
-- - [ ] Don't update the badge while searching elements. Update it once at the end.
+- - [X] Don't update the badge while searching elements. Update it once at the end.
 - - [ ] Don't register onTabChange event unless badge count is site / page based
 - [X] Live update for settings changes (use on change event)
 - - [X] Live updates for no-fx changes
@@ -44,12 +44,11 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - [ ] Remove jQuery req?
 - [ ] Add one-click legacy mode
 - [ ] FF mobile?
-- [ ] Disable right click on popup
 - [ ] Categorize / tag sites and spoilers to allow export of single collection settings like Harry Potter
 - [ ] Sort sites alphabetically
 - [X] Don't block if parent has been glamoured and revealed.
 - [X] Set global transition-duration time injected as setting, built into injected CSS and then use that value as a timeout to remove revealed and glamoured-active instead of waiting on unreliable animationend / transitionend
-- [ ] Add "global" mode that blocks full unknown sites if the body text matches any spoilers.
+- [X] Add "global" mode that blocks full unknown sites if the body text matches any spoilers. (Not needed. Can just use body as the selector.)
 
 
 ### Known Bugs
@@ -61,8 +60,8 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - [ ] Retweeted content has the retweeted username bleed through the no-fx censor
 - [X] Sometimes there can be embedded blocked elements
 - [X] Reddit's up and down arrows don't change color for glamoured content. Probably need to move all the content back to its real parent on reveal.
-- [ ] The spoiler info pops out instead of fades on reveal in FF
-- [ ] position: static elements don't work great
+- [X] The spoiler info pops out instead of fades on reveal in FF
+- [X] position: static elements don't work great
 
 ### How to build from source
 1. Clone the repo.
