@@ -183,11 +183,8 @@ async function onNewSubmit(e, type) {
 
     // reset doesn't work completely with web components, so do it manually too
     form.reset();
-    form.querySelectorAll('input').forEach(el => {
-        if (el.reset) {
-            el.reset();
-        }
-    });
+    form.querySelector('regex-input').reset();
+    form.querySelector('[type=text]').focus();
 
     renderList(data, type, true);
 }
