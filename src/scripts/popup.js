@@ -22,10 +22,13 @@ d.addEventListener('keyup', (event) => {
     byId('open-options-page').addEventListener('click', openOptionsPage);
     byQS('.open-page').forEach((el) => {
         addEventListener('click', (e) => {
+            e.preventDefault();
             let page = e.target.getAttribute('href');
             if (page) {
                 openPage(page);
             }
+
+            return false;
         });
     });
 
@@ -207,16 +210,22 @@ async function updateExample() {
     }
 }
 
-function openOptionsPage() {
+function openOptionsPage(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
     if (chrome.runtime.openOptionsPage) {
-        return chrome.runtime.openOptionsPage(helpers.nullFunc);
+        chrome.runtime.openOptionsPage(helpers.nullFunc);
     } else {
-        return openPage('options.html');
+        openPage('options.html');
     }
+
+    return false;
 }
 
 function openPage(page) {
-    return window.open(chrome.runtime.getURL(page));
+    window.open(chrome.runtime.getURL(page));
+    return false;
 }
 
 function initInputs(settings) {
