@@ -2,10 +2,10 @@ async function init() {
     populateFromSettings();
 
     // add forms and icons
-    byId('new-spoiler').addEventListener('submit', onNewSpoilerSubmit);
-    byId('new-site').addEventListener('submit', onNewSiteSubmit);
-    byId('plus-spoiler').addEventListener('click', onNewSpoilerSubmit);
-    byId('plus-site').addEventListener('click', onNewSiteSubmit);
+    byId('new-spoiler').addEventListener('submit', (e) => onNewSubmit(e, 'spoilers'));
+    byId('plus-spoiler').addEventListener('click', (e) => onNewSubmit(e, 'spoilers'));
+    byId('new-site').addEventListener('submit', (e) => onNewSubmit(e, 'sites'));
+    byId('plus-site').addEventListener('click', (e) => onNewSubmit(e, 'sites'));
 
     // delete icons
     d.body.addEventListener('click', onRemoveClick);
@@ -17,6 +17,44 @@ async function init() {
     byId('import').addEventListener('click', e => byId('import-files').click());
     byId('import-files').addEventListener('change', importSettings);
     byId('clear-settings').addEventListener('click', clearSettings);
+}
+
+async function onExistingSpoilerInput(e) {
+    onGenericInput(e, 'spoilers');
+}
+
+async function onExistingSiteInput(e) {
+    onGenericInput(e, 'sites');
+}
+
+function onGenericInput(e, type) {
+    const target = e.target;
+    let data = [];
+
+    if (target.nodeName !== 'INPUT') {
+        return;
+    }
+
+    let list = type === 'spoilers' ? byId('existing-spoilers') : byId('existing-sites');
+
+    list.querySelectorAll('li').forEach(el  => {
+        data.push(containerToDatum(el));
+    });
+
+    setSetting(type, data);
+}
+
+function containerToDatum(container) {
+    let values = {};
+    let inputs = container.querySelectorAll('input');
+
+    inputs.forEach(el => {
+        if (el.type !== 'submit') {
+            values[el.name] = el.type === 'checkbox' ? el.getAttribute('checked') || false : el.value;
+        }
+    })
+
+    return values;
 }
 
 async function populateFromSettings(clear = false) {
@@ -47,9 +85,11 @@ function renderList(data, type, clear = false) {
         let reInput = el.querySelector('regex-input');
 
         if (type == 'spoilers') {
+            // reInput.setAttribute('name', 'spoiler');
             reInput.setAttribute('value', datum.spoiler);
             reInput.setAttribute('is-regex', datum.isRegex || false);
         } else {
+            // reInput.setAttribute('name', 'site');
             reInput.setAttribute('value', datum.urlRegex);
             reInput.setAttribute('is-regex', datum.isRegex || false);
 
@@ -59,6 +99,7 @@ function renderList(data, type, clear = false) {
 
         list.appendChild(li);
         li.appendChild(el);
+        li.addEventListener('change', type == 'spoilers' ? onExistingSpoilerInput : onExistingSiteInput);
     }
 }
 
@@ -109,73 +150,46 @@ async function onRemoveClick(e) {
     renderList(data, type, true);
 }
 
-async function onNewSpoilerSubmit(e) {
+async function onNewSubmit(e, type) {
     e.preventDefault();
 
     let form = helpers.getNearest('form', e.target);
-    let input = form.querySelector('regex-input');
-
-    const spoiler = {
-        spoiler: input.value,
-        isRegex: input['is-regex']
-    };
-
-    if (!spoiler.spoiler) {
-        helpers.addFlash(input, 'fail');
+    let datum = containerToDatum(form);
+    if (datum.length < 1) {
+        helpers.addFlash(form, 'fail');
         return;
     }
+    let checks = [];
 
-    const settings = await cmd('getSettings');
+    if (type === 'spoilers') {
+        checks.push('spoiler');
+    } else {
+        checks.push('selector');
+        checks.push('urlRegex');
+    }
 
-    settings.spoilers.unshift(spoiler);
-    await setSetting('spoilers', settings.spoilers);
+    for (let name of checks) {
+        if (!datum.hasOwnProperty(name) || !datum[name]) {
+            helpers.addFlash(form.querySelector(`[name=${name}]`), 'fail');
+            return;
+        }
+    }
 
-    helpers.addFlash(input, 'success');
+    const data = await getSetting(type);
+    data.unshift(datum);
+    await setSetting(type, data);
+
+    helpers.addFlash(form, 'success');
 
     // reset doesn't work completely with web components, so do it manually too
     form.reset();
-    input.reset();
+    form.querySelectorAll('input').forEach(el => {
+        if (el.reset) {
+            el.reset();
+        }
+    });
 
-    let spoilers = await getSetting('spoilers');
-    renderList(spoilers, 'spoilers', true);
-}
-
-async function onNewSiteSubmit(e) {
-    e.preventDefault();
-
-    let form = helpers.getNearest('form', e.target);
-    let input = form.querySelector('regex-input');
-    let sel = form.querySelector('input[name=selector]');
-
-    const site = {
-        urlRegex: input.value,
-        isRegex: input['is-regex'],
-        selector: sel.value
-    };
-
-    if (!site.selector) {
-        helpers.addFlash(sel, 'fail');
-        return;
-    }
-
-    if (!site.urlRegex) {
-        helpers.addFlash(input, 'fail');
-        return;
-    }
-
-    const settings = await cmd('getSettings');
-    settings.sites.unshift(site);
-
-    await setSetting('sites', settings.sites);
-
-    helpers.addFlash(e.target, 'success');
-
-    // reset doesn't work completely with web components, so do it manually too
-    form.reset();
-    input.reset();
-
-    let sites = await getSetting('sites');
-    renderList(sites, 'sites', true);
+    renderList(data, type, true);
 }
 
 async function importSettings(e) {

@@ -35,7 +35,7 @@
                     />
                     <span class="site-at">@</span>
                 </label>
-                <regex-input></regex-input>
+                <regex-input name="urlRegex"></regex-input>
             </div>
         </template>
 
@@ -44,23 +44,26 @@
         <section id="spoilers-settings">
             <h2>Spoilers</h2>
             <p>Add words to block. Can be RegEx if you know how!</p>
-            <form class="new-entry" id="new-spoiler">
+            <form class="new-entry" id="new-spoiler" data-type="spoilers">
                 <input type="submit" class="none" />
                 <div class="row spoiler-row">
                     <a class="inline-icon fader" id="plus-spoiler">➕</a>
                     <regex-input
+                        name="spoiler"
                         placeholder="teddy flood"
                         regex-placeholder="west ?world">
                     </regex-input>
                 </div>
             </form>
-            <ol class="col-2" id="spoilers"></ol>
+            <form id="existing-spoilers" data-type="spoilers">
+                <ol class="col-2" id="spoilers"></ol>
+            </form>
         </section>
 
         <section class="sites-settings">
             <h2>Sites &amp; Selectors</h2>
             <p>Add sites to block (regex supported) and a selector for that site</p>
-            <form class="new-entry" id="new-site">
+            <form class="new-entry" id="new-site" data-type="sites">
                 <input type="submit" class="none" />
                 <div class="row site-row">
                     <a class="inline-icon fader" id="plus-site">➕</a>
@@ -74,12 +77,15 @@
                         <span class="site-at">@</span>
                     </label>
                     <regex-input
+                        name="urlRegex"
                         placeholder="reddit.com/r/doctorwho"
                         regex-placeholder="reddit.*doctor.*who.*">
                     </regex-input>
                 </div>
             </form>
-            <ol id="sites"></ol>
+            <form id="existing-sites" data-type="sites">
+                <ol id="sites"></ol>
+            </form>
         </section>
         <footer>
             <form class="none">
