@@ -136,6 +136,29 @@ var helpers = (function() {
 
         return number;
     }
+
+    // remove warning classes on quick adds
+    function addFlash(el, type) {
+        el.addEventListener(
+            'animationend', e => {
+                el.classList.remove('save-fail');
+                el.classList.remove('save-success');
+            },
+            {once: true}
+        );
+
+        el.classList.add(`save-${type}`);
+    }
+
+    function getNearest(type, el) {
+        while (el) {
+            if (el.nodeName === type.toUpperCase()) {
+                return el;
+            }
+            el = el.parentNode;
+        }
+    }
+
     return {
         nullFunc: nullFunc,
         debounce: debounce,
@@ -145,5 +168,7 @@ var helpers = (function() {
         describe: describe,
         excerpt: excerpt,
         friendlyNum: friendlyNum,
+        addFlash: addFlash,
+        getNearest: getNearest,
     };
 })();

@@ -82,21 +82,6 @@ gulp.task('scss', function() {
         .pipe(gulp.dest('build/firefox/styles'));
 });
 
-// preact for options page
-gulp.task('options', function() {
-    del('build/options/**');
-    del('build/*/options/**');
-
-    // these is almost definitely a better way to do this
-    exec('preact build --no-prerender --template src/options/webpack_template.html --src src/options --dest build/options -p', (err, stdout, stderr) => {
-        console.log(stdout, stderr);
-        gulp.src('build/options/**')
-            .pipe(gulp.dest('build/chrome/options'))
-            .pipe(gulp.dest('build/firefox/options'));
-    });
-})
-
-
 // Watch paths
 var watchPaths = {
     js: [
@@ -137,7 +122,7 @@ gulp.task('watch', function() {
     });
 });
 
-gulp.task('build', ['update-static', 'html', 'js', 'scss', 'options'], function() {});
+gulp.task('build', ['update-static', 'html', 'js', 'scss'], function() {});
 
 // Default gulp is watch
 gulp.task('default', ['build', 'watch'], function() {});

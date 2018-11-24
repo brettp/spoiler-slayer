@@ -25,7 +25,7 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - - [ ] Better text explaining what to do
 - - [X] Checkbox to mark spoilers as regexp
 - [ ] On install tutorial
-- [ ] Disable on certain sites
+- [ ] Ability to disable on certain sites
 - [X] Badge / popup counter for session and lifetime blocks
 - - [X] Session badge
 - - [X] Page badge

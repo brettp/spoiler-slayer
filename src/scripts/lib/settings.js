@@ -233,7 +233,13 @@ class Settings {
             if (typeof this[k + 'OnChange'] === 'function') {
                 cb = this[k + 'OnChange'];
             }
-            chrome.storage.sync.set(setting, cb);
+
+            try {
+                chrome.storage.sync.set(setting, cb);
+            } catch (e) {
+                // this doesn't actually catch it...
+                console.log('Error syncing settings!', e);
+            }
         // } else {
         //     console.log(`Unknown settings ${helpers.describe(k)}. Will not set to`, v);
         // }

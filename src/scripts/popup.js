@@ -39,11 +39,6 @@ d.addEventListener('keyup', (event) => {
         d.getElementById('current-site').value = '@ unknown';
     }
 
-    // remove warning classes on quick adds
-    $('body').on('animationend', '.save-flasher', (e) => {
-        $(e.currentTarget).removeClass('save-fail save-success');
-    });
-
     d.getElementById('quick-add-spoiler-form').addEventListener('submit', saveQuickAddSpoiler);
     d.getElementById('quick-add-selector-form').addEventListener('submit', saveQuickAddSelector);
 
@@ -152,16 +147,17 @@ async function saveQuickAddSpoiler(e) {
 
         for (let spoiler of cleaned) {
             cur.unshift({
-                'spoiler': spoiler
+                'spoiler': spoiler,
+                'isRegex': false
             });
         }
 
         setSetting('spoilers', cur);
-        input.classList.add('save-success');
+        helpers.addFlash(input, 'success');
         form.reset();
         input.blur();
     } else {
-        input.classList.add('save-fail');
+        helpers.addFlash(input, 'fail');
     }
 
     return false;
@@ -174,7 +170,7 @@ async function saveQuickAddSelector(e) {
     var siteInput = d.getElementById('current-site');
 
     if (!selectorInput.value || !siteInput.value) {
-        selectorInput.classList.add('save-fail');
+        helpers.addFlash(selectorInput, 'fail');
         return false;
     }
 
@@ -186,7 +182,7 @@ async function saveQuickAddSelector(e) {
     });
 
     setSetting('sites', cur);
-    selectorInput.classList.add('save-success');
+    helpers.addFlash(selectorInput, 'success');
     form.reset();
     selectorInput.blur();
 

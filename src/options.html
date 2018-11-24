@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Spoiler Slayer</title>
+        <link href="/styles/popup.css" rel="stylesheet" />
+    </head>
+    <body id="options">
+        <template id="regex-input">
+            <label class="supports-regex">
+                <span class="regex-marker">/</span>
+                <input autocomplete="off" type="text" name="spoiler" />
+                <span class="regex-marker">/ig <i class="regex-error icon solid">!</i> </span>
+            </label>
+
+            <label> <input type="checkbox" name="isRegex" value="1" /> <code>/re/</code> </label>
+        </template>
+
+        <template id="spoiler">
+            <div class="row spoiler-row">
+                <a class="fader inline-icon delete-item">✖️</a>
+                <regex-input name="spoiler"></regex-input>
+            </div>
+        </template>
+
+        <template id="site">
+            <div class="row site-row">
+                <a class="fader inline-icon delete-item">✖️</a>
+                <label class="selector-input">
+                    <input
+                        name="selector"
+                        type="text"
+                        autocomplete="off"
+                        placeholder=".sitetable > .thing.link:visible, .usertext-body, .scrollerItem"
+                    />
+                    <span class="site-at">@</span>
+                </label>
+                <regex-input></regex-input>
+            </div>
+        </template>
+
+        <h2 id="title">Game of Spoils Lite</h2>
+        <hr />
+        <section id="spoilers-settings">
+            <h2>Spoilers</h2>
+            <p>Add words to block. Can be RegEx if you know how!</p>
+            <form class="new-entry" id="new-spoiler">
+                <input type="submit" class="none" />
+                <div class="row spoiler-row">
+                    <a class="inline-icon fader" id="plus-spoiler">➕</a>
+                    <regex-input
+                        placeholder="teddy flood"
+                        regex-placeholder="west ?world">
+                    </regex-input>
+                </div>
+            </form>
+            <ol class="col-2" id="spoilers"></ol>
+        </section>
+
+        <section class="sites-settings">
+            <h2>Sites &amp; Selectors</h2>
+            <p>Add sites to block (regex supported) and a selector for that site</p>
+            <form class="new-entry" id="new-site">
+                <input type="submit" class="none" />
+                <div class="row site-row">
+                    <a class="inline-icon fader" id="plus-site">➕</a>
+                    <label class="selector-input">
+                        <input
+                            name="selector"
+                            type="text"
+                            autocomplete="off"
+                            placeholder=".sitetable > .thing.link:visible, .usertext-body, .scrollerItem"
+                        />
+                        <span class="site-at">@</span>
+                    </label>
+                    <regex-input
+                        placeholder="reddit.com/r/doctorwho"
+                        regex-placeholder="reddit.*doctor.*who.*">
+                    </regex-input>
+                </div>
+            </form>
+            <ol id="sites"></ol>
+        </section>
+        <footer>
+            <form class="none">
+                <input type="file" id='import-files'/>
+                <input type="submit" />
+            </form>
+            <div class="left">
+                <ul class="menu-h">
+                    <li><a href="#" id='reset-spoilers'>Reset to default spoilers</a></li>
+                    <li><a href="#" id='reset-sites'>Reset to default sites</a></li>
+                    <li><a href="#" id='import'>Import</a></li>
+                    <li><a href="#" id='export'>Export</a></li>
+                </ul>
+            </div>
+            <div class="right">
+                <ul class="menu-h">
+                    <li><a href="#" id="clear-settings">Clear settings</a></li>
+                </ul>
+            </div>
+        </footer>
+
+        <script src="/scripts/lib/msgApi.js"></script>
+        <script src="/scripts/lib/helpers.js"></script>
+        <script src="/scripts/lib/settings.js"></script>
+        <script src="/scripts/lib/components.js"></script>
+        <script src="/scripts/lib/ogSettings.js"></script>
+        <script src="/scripts/options.js"></script>
+    </body>
+</html>

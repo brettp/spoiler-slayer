@@ -194,7 +194,7 @@ textarea {
 #quick-adds > .col {
     flex: none !important;
     width: 50%;
-    transition: .5s;
+    transition: .25s;
     white-space: nowrap;
 
     &.active {
@@ -208,7 +208,7 @@ textarea {
 
     &.inactive {
         width: 0% !important;
-        transition: .5s !important;
+        transition: .25s !important;
         opacity: 0 !important;
     }
 }
@@ -258,40 +258,6 @@ textarea {
             box-sizing: border-box;
         }
     }
-
-    label.supports-regex {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex: 1;
-        position: relative;
-
-        span.regex-marker {
-            visibility: hidden;
-            color: gray;
-            font-style: italic;
-            position: absolute;
-
-            &:first-of-type {
-                left: 0.5em;
-            }
-
-            &:nth-of-type(2) {
-                right: 0.5em;
-            }
-        }
-
-        &.is-regex {
-            input[type='text'] {
-                padding-left: 1em;
-                padding-right: 1.75em;
-            }
-
-            span.regex-marker {
-                visibility: visible;
-            }
-        }
-    }
 }
 
 .site-row {
@@ -300,21 +266,25 @@ textarea {
         color: $grey;
     }
 
-    input[name='selector'] {
+    input[name=selector] {
         flex: 1;
         display: inline-flex;
     }
 
     .selector-input {
         display: inline-flex;
-        flex: 1;
+        flex: 3;
         align-items: center;
     }
 
-    .site-input {
-        display: inline-flex;
-        flex: 1;
+    regex-input {
+        flex: 2;
     }
+}
+
+.inline-icon {
+    display: inline;
+    filter: grayscale(100%);
 }
 
 table {
@@ -476,18 +446,16 @@ label:focus {
     float: left;
 }
 
-.save-flasher {
-    &.save-success {
-        animation: pulse-green 0.25s alternate 2;
+.save-success {
+    animation: pulse-green 0.25s alternate 2;
 
-        &:after {
-            animation: flash-fade 1s;
-        }
+    &:after {
+        animation: flash-fade 1s;
     }
+}
 
-    &.save-fail {
-        animation: pulse-red 0.1s alternate 6;
-    }
+.save-fail {
+    animation: pulse-red 0.1s alternate 6;
 }
 
 ul.menu-h {
@@ -509,7 +477,7 @@ ol {
     list-style: none;
 }
 
-i.fader {
+.fader {
     opacity: 0.25;
     transition: opacity 0.25s;
 
@@ -527,10 +495,6 @@ section {
     }
 }
 
-.regex-error {
-    padding-left: .5em;
-}
-
 @keyframes flash-fade {
     to {
         opacity: 0;
@@ -546,5 +510,110 @@ section {
 @keyframes pulse-red {
     to {
         box-shadow: 0 0 25px red;
+    }
+}
+
+
+// components
+:host,
+regex-input {
+    display: inline-flex;
+    width: 100%;
+    font: inherit;
+}
+
+:host(.is-regex) .regex-marker,
+regex-input.is-regex .regex-marker {
+    visibility: visible;
+}
+
+:host(.is-regex) input[type='text'],
+regex-input.is-regex input[type='text'] {
+    padding-left: 0.75em;
+    padding-right: 1.5em;
+}
+
+regex-input {
+    label {
+        display: inline-flex;
+        align-items: center;
+    }
+
+    label.supports-regex {
+        position: relative;
+        flex: 1;
+    }
+
+    .regex-marker {
+        visibility: hidden;
+        opacity: 0.25;
+        font-style: italic;
+        position: absolute;
+    }
+
+    .regex-marker:first-of-type {
+        left: 0.25em;
+    }
+
+    .regex-marker:nth-of-type(2) {
+        right: 0.25em;
+    }
+
+    input {
+        box-sizing: border-box;
+    }
+
+    input[type='text'] {
+        width: 100%;
+        font: inherit;
+        outline-width: var(--input-outline-width);
+        text-overflow: ellipsis;
+    }
+
+    /* ff needs the higher specificity with :host() */
+    input[type='text']:invalid {
+        outline-color: red;
+        outline-style: dashed;
+        padding-right: 2.75em;
+    }
+
+    .regex-error {
+        line-height: 100%;
+        display: none;
+        text-decoration: none;
+        font-style: normal;
+        border-radius: 50%;
+        border: 1px dotted;
+        width: 1em;
+        height: 1em;
+        padding: 0;
+        margin: auto;
+        font-weight: 700;
+        font-size: 1em;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+    }
+
+    input[type='text']:invalid + .regex-marker .regex-error {
+        display: inline-flex;
+    }
+
+    input[type='checkbox'] {
+        margin-left: 0.5em;
+        padding: 0.1em;
+        border: 0.1em dashed #cecece;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        font-size: inherit;
+        height: 1em;
+        width: 1em;
+        background-clip: content-box;
+    }
+
+    input[type='checkbox']:checked {
+        background-image: linear-gradient(black, black);
+        border-color: black;
     }
 }

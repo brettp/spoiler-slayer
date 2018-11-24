@@ -26,14 +26,11 @@
     "gulp-zip": "^3.1.0",
     "jshint": "^2.9.6",
     "node-sass": "^4.0.0",
-    "preact-cli": "^2.2.1",
     "sass-loader": "^7.1.0",
     "tiny-lr": "^0.2.1"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "options-dev": "preact watch -c ./preact.config-dev.js --template ./src/options/webpack_template.html --src src/options",
-    "options-build": "preact build --no-prerender --src src/options --dest build/options -p"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Brett Profitt",
   "license": "MIT",
