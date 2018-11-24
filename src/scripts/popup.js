@@ -1,17 +1,15 @@
-let d = document;
-
 d.addEventListener('keydown', (event) => {
     if (event.key && event.key.toLowerCase() == 'alt') {
-        $('body').addClass('debug-active');
+        d.body.classList.add('debug-active');
     }
 });
 
 d.addEventListener('keyup', (event) => {
     if (event.key && event.key.toLowerCase() == 'alt') {
-        $('body').removeClass('debug-active');
+        d.body.classList.remove('debug-active');
     } else {
         // someone wants to use the keyboard, so make sure outlines show up
-        $('body').addClass('keyboard-user');
+        d.body.classList.add('keyboard-user');
     }
 });
 
@@ -19,14 +17,16 @@ d.addEventListener('keyup', (event) => {
     let settings = await cmd('getSettings');
     initInputs(settings);
 
-    $('body').on('change', 'input, select', saveSetting);
+    d.body.addEventListener('change', saveSetting);
 
-    $('#open-options-page').on('click', openOptionsPage);
-    $('.open-page').on('click', (e) => {
-        let page = $(e.target).attr('href');
-        if (page) {
-            openPage(page);
-        }
+    byId('open-options-page').addEventListener('click', openOptionsPage);
+    byQS('.open-page').forEach((el) => {
+        addEventListener('click', (e) => {
+            let page = e.target.getAttribute('href');
+            if (page) {
+                openPage(page);
+            }
+        });
     });
 
     try {
@@ -91,14 +91,17 @@ function unwiden() {
 }
 
 async function saveSetting(e) {
-    let $input = $(this);
-
-    if ($input.hasClass('no-auto-save')) {
+    let input = e.target;
+    if (input.nodeName !== 'SELECT' && input.nodeName !== 'INPUT') {
         return;
     }
 
-    let name = $input.prop('name');
-    let val = ($input.attr('type') == 'checkbox') ? $input.prop('checked') : $input.val();
+    if (input.classList.contains('no-auto-save')) {
+        return;
+    }
+
+    let name = input.getAttribute('name');
+    let val = (input.getAttribute('type') == 'checkbox') ? input.checked : input.value;
     let tab;
 
     setSetting(name, val);
@@ -115,7 +118,8 @@ async function saveSetting(e) {
         }
     }
 
-    if ($('.spoiler-info').hasClass('spoiler-blocker-revealed') || $input.attr('type') != 'range') {
+    let revealed = byQSOne('.spoiler-blocker-revealed');
+    if (revealed || input.getAttribute('type') != 'range') {
         updateExample();
     }
 }
@@ -190,14 +194,16 @@ async function saveQuickAddSelector(e) {
 }
 
 async function updateExample() {
-    let $exTpl = $('.content-template');
-    let $ex = $exTpl.clone().removeClass('content-template').addClass('spoiler-blocker-glamoured');
+    let template = byId('content-template').content;
+    let ex = template.cloneNode(true);
+    ex.querySelector('div').classList.add('spoiler-blocker-glamoured');
 
-    $('.example').html($ex);
+    let wrapper = byId('example').querySelector('div');
+    wrapper.replaceWith(ex);
 
     if (await getSetting('blockingEnabled')) {
         let settings = await cmd('getSettings');
-        blockElement($ex[0], 'Dumbledore', settings, false);
+        blockElement(byQSOne('.spoiler-blocker-glamoured'), 'Dumbledore', settings, false);
     }
 }
 

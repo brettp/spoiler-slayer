@@ -1,6 +1,3 @@
-const d = document;
-const byId = d.getElementById.bind(document);
-
 async function init() {
     populateFromSettings();
 

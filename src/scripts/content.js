@@ -1,7 +1,3 @@
-var num_feed_elems = null;
-var smaller_font_mode = false;
-var reddit_mode = false;
-var $document = $(document);
 var hostname = window.location.hostname;
 var hostname_dotless = hostname.replace(/\./g, '-');
 
@@ -51,9 +47,7 @@ async function init(settings) {
         console.log("Not waiting for doc ready");
         init(settings);
     } else {
-        $(() => {
-            init(settings);
-        });
+        document.addEventListener('DOMContentLoaded', e => init(settings), false);
     }
 })();
 
@@ -62,9 +56,13 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
     if (changes.blurSpoilers || changes.heavyBlur || changes.hoverBlur || changes.transitionDuration) {
         if (changes.blurSpoilers) {
             if (changes.blurSpoilers.newValue) {
-                $('.spoiler-blocker-no-fx').removeClass('spoiler-blocker-no-fx');
+                byQS('.spoiler-blocker-no-fx').forEach((el) => {
+                    el.classList.remove('spoiler-blocker-no-fx');
+                });
             } else {
-                $('.spoiler-blocker-glamoured-active').addClass('spoiler-blocker-no-fx');
+                byQS('.spoiler-blocker-glamoured-active').forEach((el) => {
+                    el.classList.add('spoiler-blocker-no-fx');
+                });
             }
         }
 
@@ -143,23 +141,21 @@ function ancestorHasGlamour(el) {
 }
 
 async function searchForAndBlockSpoilers(selector, check_parent, settings) {
-    let $items = $(selector).not('.spoiler-blocker-glamoured');
+    // let $items = $(selector).not('.spoiler-blocker-glamoured');
+    let items = byQS(selector);
     let blockedCount = 0;
 
-    if ($items.length > 0) {
-        // don't use jquery to loop because it causes
-        // too many requests to the messages
-        for (let i = 0; i < $items.length; i++) {
-            let el = $items.get(i);
-
-            if (check_parent && ancestorHasGlamour(el)) {
-                continue;
+    if (items.length > 0) {
+        items.forEach((async (el) => {
+            if (el.classList.contains('spoiler-blocker-glamoured') ||
+                (check_parent && ancestorHasGlamour(el))) {
+                return;
             }
 
             el.classList.add('spoiler-blocker-glamoured');
             el.classList.add(`spoiler-blocker-${hostname_dotless}`);
 
-            // use could use innerText here because it doesn't truncate whitespace,
+            // could use innerText here because it doesn't truncate whitespace,
             // except Chrome still does enough mangling to make it useless
             // we need this so we don't get extra content appended / prepended to
             // spoilers at the start / end of nodes
@@ -174,7 +170,7 @@ async function searchForAndBlockSpoilers(selector, check_parent, settings) {
                     blockElement(el, spoilers[0], settings);
                 }
             }
-        }
+        }));
     }
 
     if (blockedCount) {
@@ -235,16 +231,7 @@ async function blockElement(el, blocked_word, settings) {
     capitalized_spoiler_words = helpers.ucWords(blocked_word);
 
     if (settings.showSpecificSpoiler) {
-        // @todo probably don't need this
-        let classes = '';
-        if (smaller_font_mode) {
-            classes = 'small';
-        }
-        if (reddit_mode) {
-            classes = 'redditized';
-        }
-
-        info = createSpoilerInfo(capitalized_spoiler_words, classes);
+        info = createSpoilerInfo(capitalized_spoiler_words);
         el.prepend(info);
     }
 

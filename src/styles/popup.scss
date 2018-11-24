@@ -169,7 +169,7 @@ textarea {
         .col {
             flex: 5 0 0px;
 
-            &.example {
+            &#example {
                 flex: 4 0 0px;
                 border: 1px dashed $grey;
                 transition-duration: 0.5s;
@@ -334,10 +334,6 @@ ol {
     tr td:nth-of-type(2) {
         width: 15em;
     }
-}
-
-.content-template {
-    display: none;
 }
 
 .icon {

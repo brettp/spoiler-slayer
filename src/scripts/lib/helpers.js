@@ -1,3 +1,8 @@
+const d = document;
+const byId = d.getElementById.bind(document);
+const byQS = d.querySelectorAll.bind(document);
+const byQSOne = d.querySelector.bind(document);
+
 var helpers = (function() {
     var nullFunc = function() {};
 

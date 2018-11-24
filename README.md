@@ -41,7 +41,7 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - [ ] Settings import from gists
 - [X] Better way to add new site input in settings (tables are too slow for some reason)
 - [ ] Opt-in analytics?
-- [ ] Remove jQuery req?
+- [X] Remove jQuery req
 - [ ] Add one-click legacy mode
 - [ ] FF mobile?
 - [ ] Categorize / tag sites and spoilers to allow export of single collection settings like Harry Potter
@@ -49,6 +49,8 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - [X] Don't block if parent has been glamoured and revealed.
 - [X] Set global transition-duration time injected as setting, built into injected CSS and then use that value as a timeout to remove revealed and glamoured-active instead of waiting on unreliable animationend / transitionend
 - [X] Add "global" mode that blocks full unknown sites if the body text matches any spoilers. (Not needed. Can just use body as the selector.)
+- [ ] Don't redraw entire lists when adding / deleting
+- [ ] Add flashes to newly added content instead of inputs on options page
 
 
 ### Known Bugs

@@ -35,7 +35,7 @@
         "<all_urls>"
       ],
       "css": ["styles/content.css"],
-      "js":  ["scripts/vendor/jquery.min.js", "scripts/lib/msgApi.js", "scripts/lib/helpers.js", "scripts/content.js"]
+      "js":  ["scripts/lib/msgApi.js", "scripts/lib/helpers.js", "scripts/content.js"]
     }
   ],
   "permissions": [
