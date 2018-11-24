@@ -21,7 +21,7 @@ d.addEventListener('keyup', (event) => {
 
     byId('open-options-page').addEventListener('click', openOptionsPage);
     byQS('.open-page').forEach((el) => {
-        addEventListener('click', (e) => {
+        el.addEventListener('click', (e) => {
             e.preventDefault();
             let page = e.target.getAttribute('href');
             if (page) {
@@ -35,30 +35,28 @@ d.addEventListener('keyup', (event) => {
     try {
         let tab = await getActiveTab();
         let url = new URL(tab.url);
-        d.getElementById('current-site-display').innerText = '@ ' + url.hostname;
-        d.getElementById('current-site').value = url.hostname;
+        byId('current-site-display').innerText = '@ ' + url.hostname;
+        byId('current-site').value = url.hostname;
     } catch (e) {
         console.log(e);
-        d.getElementById('current-site').value = '@ unknown';
+        byId('current-site').value = '@ unknown';
     }
 
-    d.getElementById('quick-add-spoiler-form').addEventListener('submit', saveQuickAddSpoiler);
-    d.getElementById('quick-add-selector-form').addEventListener('submit', saveQuickAddSelector);
+    byId('quick-add-spoiler-form').addEventListener('submit', saveQuickAddSpoiler);
+    byId('quick-add-selector-form').addEventListener('submit', saveQuickAddSelector);
 
     // toggle widths
-    d.getElementById('spoiler').addEventListener('focus', (e) => {
+    byId('spoiler').addEventListener('focus', (e) => {
         widen('spoiler');
     });
+    byId('spoiler').addEventListener('blur', unwiden);
 
-    d.getElementById('spoiler').addEventListener('blur', unwiden);
-
-    d.getElementById('selector').addEventListener('focus', (e) => {
+    byId('selector').addEventListener('focus', (e) => {
         widen('selector');
     });
+    byId('selector').addEventListener('blur', unwiden);
 
-    d.getElementById('selector').addEventListener('blur', unwiden);
-
-    d.getElementById('selector').addEventListener('keyup', helpers.debounce((e) => {
+    byId('selector').addEventListener('keyup', helpers.debounce((e) => {
         cmd('highlightElementsInActiveTab', e.target.value);
     }), 300);
 
@@ -73,8 +71,8 @@ d.addEventListener('keyup', (event) => {
 function widen(id) {
     let other = id === 'spoiler' ? 'selector' : 'spoiler';
 
-    let idEl = d.getElementById(`quick-add-${id}-content`).classList;
-    let otherEl = d.getElementById(`quick-add-${other}-content`).classList;
+    let idEl = byId(`quick-add-${id}-content`).classList;
+    let otherEl = byId(`quick-add-${other}-content`).classList;
 
     idEl.add('active');
     idEl.remove('inactive');
@@ -84,8 +82,8 @@ function widen(id) {
 }
 
 function unwiden() {
-    let spoiler = d.getElementById('quick-add-spoiler-content').classList;
-    let selector = d.getElementById('quick-add-selector-content').classList;
+    let spoiler = byId('quick-add-spoiler-content').classList;
+    let selector = byId('quick-add-selector-content').classList;
 
     spoiler.remove('active');
     spoiler.remove('inactive');
@@ -139,7 +137,7 @@ async function getActiveTab() {
 async function saveQuickAddSpoiler(e) {
     e.preventDefault();
     var form = e.target;
-    var input = d.getElementById('spoiler');
+    var input = byId('spoiler');
     var spoilers = input.value.trim().split(',');
     var cleaned = [];
 
@@ -173,8 +171,8 @@ async function saveQuickAddSpoiler(e) {
 async function saveQuickAddSelector(e) {
     e.preventDefault();
     var form = e.target;
-    var selectorInput = d.getElementById('selector');
-    var siteInput = d.getElementById('current-site');
+    var selectorInput = byId('selector');
+    var siteInput = byId('current-site');
 
     if (!selectorInput.value || !siteInput.value) {
         helpers.addFlash(selectorInput, 'fail');
