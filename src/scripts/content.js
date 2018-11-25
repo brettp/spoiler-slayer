@@ -12,15 +12,16 @@ async function init(settings) {
         for (let el of active) {
             el.classList.remove('spoiler-blocker-selector-preview');
         }
-
-        if (msg.data.selector) {
-            try {
-                let items = document.querySelectorAll(msg.data.selector);
-                for (let el of items) {
-                    el.classList.add('spoiler-blocker-selector-preview');
+        if (msg && msg.cmd) {
+            if (msg.cmd == 'highlightElements' && msg.data.selector) {
+                try {
+                    let items = document.querySelectorAll(msg.data.selector);
+                    for (let el of items) {
+                        el.classList.add('spoiler-blocker-selector-preview');
+                    }
+                } catch (e) {
+                    res(e);
                 }
-            } catch (e) {
-                res(e);
             }
         }
     });
