@@ -11,7 +11,7 @@
   "browser_action": {
     "default_icon": "assets/icons/icon128.png",
     "default_popup": "popup.html",
-    "default_title": "Game of Spoils Lite"
+    "default_title": "Spoilers Slayer"
   },
 
   "icons": {

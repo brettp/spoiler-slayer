@@ -23,6 +23,7 @@
 
     .spoiler-blocker-spoiler-info {
         position: absolute;
+        width: fit-content;
         transition-duration: var(--transition-duration);
         animation: fade-in var(--transition-duration) ease-in-out;
 

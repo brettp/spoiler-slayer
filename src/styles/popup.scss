@@ -166,6 +166,12 @@ textarea {
         display: flex;
         text-align: center;
 
+        &.sliders > .col {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
         .col {
             flex: 5 0 0px;
 
@@ -174,6 +180,9 @@ textarea {
                 border: 1px dashed $grey;
                 transition-duration: 0.5s;
                 min-height: 164px;
+                display: flex;
+                justify-content: center;
+                align-items: stretch;
 
                 img {
                     -khtml-user-select: none;
@@ -181,6 +190,8 @@ textarea {
                     -moz-user-select: none;
                     -webkit-user-select: none;
                     user-select: none;
+                    max-height: 128px;
+                    max-width: 128px;
                 }
             }
         }

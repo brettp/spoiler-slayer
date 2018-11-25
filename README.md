@@ -1,4 +1,4 @@
-# Spoiler Slayer
+# Spoilers Slayer
 An open-source browser extension to block spoilers.
 
 Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils).

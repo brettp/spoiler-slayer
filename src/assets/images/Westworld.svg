@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg4190"
+   version="1.1"
+   inkscape:version="0.92.2 5c3e80d, 2017-08-06"
+   width="360.54547"
+   height="193.82706"
+   viewBox="0 0 360.54547 193.82706"
+   sodipodi:docname="Westworld_Logo.svg">
+  <metadata
+     id="metadata3788">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs3786" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1656"
+     inkscape:window-height="1009"
+     id="namedview3784"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="2.2"
+     inkscape:cx="179.6845"
+     inkscape:cy="97.5867"
+     inkscape:window-x="25"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg4190" />
+  <path
+     style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.35543406"
+     d="M 103.01299,193.82706 35.241285,0 H 0 l 67.771701,193.82706 z m 189.76077,0 L 360.54546,0 H 326.65961 L 258.8879,193.82706 Z M 179.94575,67.601693 214.39578,159.94121 h 34.73131 L 306.73473,0 H 272.84888 L 231.96912,105.72385 204.52535,31.174983 H 155.57409 L 127.07152,105.72385 87.832131,0 H 52.59084 l 56.76943,159.94121 h 36.81157 z"
+     id="path3781"
+     inkscape:connector-curvature="0" />
+</svg>

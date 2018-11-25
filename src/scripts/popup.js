@@ -1,3 +1,35 @@
+const examples = [
+    {
+        'text': 'Jon Snow is Arya!',
+        'image': 'blind_stark.png',
+        'spoiler': 'Arya'
+    },
+    {
+        'text': 'Ron is Dumbledore!',
+        'image': 'Deathly_Hallows_Sign.svg',
+        'spoiler': 'Dumbledore'
+    },
+    {
+        'text': 'Teddy eats canned goods!',
+        'image': 'Westworld.svg',
+        'spoiler': 'Teddy'
+    },
+    {
+        'text': 'Steve Rodgers likes Bucky Barnes!',
+        'image': 'Avengers.svg',
+        'spoiler': 'Steve Rodgers'
+    },
+    {
+        'text': 'The 13th Doctor lives here!',
+        'image': 'Tardis.svg',
+        'spoiler': '13th Doctor'
+    }
+];
+
+// changing the example while the popup is open is too distracting
+// pick one and use it per popup instance
+const exampleInfo = examples[Math.floor(Math.random() * examples.length)];
+
 d.addEventListener('keydown', (event) => {
     if (event.key && event.key.toLowerCase() == 'alt') {
         d.body.classList.add('debug-active');
@@ -195,16 +227,26 @@ async function saveQuickAddSelector(e) {
 }
 
 async function updateExample() {
-    let template = byId('content-template').content;
+    let template = byId('example-template').content;
     let ex = template.cloneNode(true);
-    ex.querySelector('div').classList.add('spoiler-blocker-glamoured');
+    let container = byId('example');
 
-    let wrapper = byId('example').querySelector('div');
+    let wrapper = container.querySelector('div');
+
+    // if remove spoilers is enabled
+    if (!wrapper) {
+        wrapper = d.createElement('div');
+        container.appendChild(wrapper);
+    }
+
+    ex.querySelector('.content').innerText = exampleInfo.text;
+    ex.querySelector('img').setAttribute('src', `assets/images/${exampleInfo.image}`);
+
     wrapper.replaceWith(ex);
 
     if (await getSetting('blockingEnabled')) {
         let settings = await cmd('getSettings');
-        blockElement(byQSOne('.spoiler-blocker-glamoured'), 'Dumbledore', settings, false);
+        blockElement(byQSOne('.spoiler-blocker-glamoured'), exampleInfo.spoiler, settings, false);
     }
 }
 
