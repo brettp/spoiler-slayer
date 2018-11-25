@@ -20,7 +20,8 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - - [X] Disable animations checkbox
 - [X] Quick add spoiler phrase on popup
 - [X] Quick add site on popup?
-- [ ] New example image
+- [X] New example image
+- [ ] New icon
 - [X] Less awful advanced settings interface
 - - [ ] Better text explaining what to do
 - - [X] Checkbox to mark spoilers as regexp
@@ -51,6 +52,7 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - [X] Add "global" mode that blocks full unknown sites if the body text matches any spoilers. (Not needed. Can just use body as the selector.)
 - [ ] Don't redraw entire lists when adding / deleting
 - [ ] Add flashes to newly added content instead of inputs on options page
+- [ ] Localization
 
 
 ### Known Bugs
@@ -64,6 +66,7 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - [X] Reddit's up and down arrows don't change color for glamoured content. Probably need to move all the content back to its real parent on reveal.
 - [X] The spoiler info pops out instead of fades on reveal in FF
 - [X] position: static elements don't work great
+- [ ] Changing the badge to all lifetime and all session acts weird until page reload
 
 ### How to build from source
 1. Clone the repo.

@@ -113,9 +113,10 @@
                             <div class="help">
                                 <i class="icon">?</i>
                                 <span class="help-text">
-                                    <i class="icon">?</i> Add words or phrases separated by commas,
-                                    then push enter to save to your block list. <br />Use the
-                                    advanced options to edit, remove, or create complex regex
+                                    Add words or phrases separated by commas, then push enter to save
+                                    to your block list.
+                                     <br />
+                                     Use the advanced options to edit, remove, or create complex regex
                                     entries.
                                 </span>
                             </div>
@@ -138,11 +139,12 @@
                             <div class="help">
                                 <i class="icon">?</i>
                                 <span class="help-text">
-                                    <i class="icon">?</i> Add a CSS selector that targets parts of
-                                    the page that might contains spoilers on the current site.
+                                    Add a CSS selector that targets elements on
+                                    the page that might contains spoilers.
                                     Elements will be highlighted when you enter a valid selector.
-                                    For best performance, be as specific as possible. <br />Use the
-                                    advanced options to edit or remove the selector or site.
+                                    For best performance, be as specific as possible.
+                                    <br />
+                                    Use the advanced options to edit or remove the selector.
                                 </span>
                             </div>
                         </label>
@@ -164,15 +166,19 @@
                 </div>
             </div>
             <div class="left">
-                <!-- <a href="#quick-add-site-content" id="quick-add-site">Add site</a> -->
+                <ul class="menu-h anti-debug">
+                    <li class="">
+                        <span id="block-count">Lots of spoilers blocked</span>
+                    </li>
+                </ul>
             </div>
             <div class="right">
                 <ul class="menu-h">
                     <li class="debug">
-                        <label
-                            ><input type="checkbox" name="disableOnDocReady" value="1" />No doc
-                            ready</label
-                        >
+                        <label>
+                            <input type="checkbox" name="disableOnDocReady" value="1" />
+                            No doc ready
+                        </label>
                     </li>
                     <li class="debug">
                         <label><input type="checkbox" name="debug" />Log msgs</label>

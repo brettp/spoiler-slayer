@@ -15,6 +15,10 @@ body.debug-active {
     .debug {
         display: initial !important;
     }
+
+    .anti-debug {
+        display: none !important;
+    }
 }
 
 a {
@@ -412,16 +416,9 @@ ol {
     padding: 12px;
     pointer-events: none;
     background-color: white;
-    text-align: left;
+    text-align: justify;
     transition: opacity 0.25s;
     box-shadow: 0 0 15px black;
-
-    .icon {
-        float: left;
-        font-size: 3em;
-        margin: 0;
-        margin-right: 0.25em;
-    }
 
     &:hover {
         opacity: 1;
@@ -441,7 +438,6 @@ label:focus {
     float: right;
     font-size: small;
     padding-top: 1em;
-    color: #000088;
 
     a {
         text-decoration: none;

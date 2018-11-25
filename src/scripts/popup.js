@@ -92,12 +92,17 @@ d.addEventListener('keyup', (event) => {
         cmd('highlightElementsInActiveTab', e.target.value);
     }), 300);
 
+    let blocked = settings.lifetimeBlockedCount.total;
+    let text = blocked == 1 ? ' spoiler blocked' : ' spoilers blocked';
+
+    byId('block-count').innerText = new Number(blocked).toLocaleString() + text;
+
     // clear preview styles when closed
     // this just fires off a disconnect event in the background script when the popup is closed
     chrome.runtime.connect({name: "spoilers-blocker"});
 
     updateStyles();
-    updateExample();
+    updateExample(settings);
 })();
 
 function widen(id) {
@@ -226,7 +231,7 @@ async function saveQuickAddSelector(e) {
     return false;
 }
 
-async function updateExample() {
+async function updateExample(settings = null) {
     let template = byId('example-template').content;
     let ex = template.cloneNode(true);
     let container = byId('example');
@@ -244,8 +249,11 @@ async function updateExample() {
 
     wrapper.replaceWith(ex);
 
-    if (await getSetting('blockingEnabled')) {
-        let settings = await cmd('getSettings');
+    if (!settings) {
+        settings = await cmd('getSettings');
+    }
+
+    if (settings.blockingEnabled) {
         blockElement(byQSOne('.spoiler-blocker-glamoured'), exampleInfo.spoiler, settings, false);
     }
 }

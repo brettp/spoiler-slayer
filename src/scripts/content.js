@@ -146,7 +146,7 @@ async function searchForAndBlockSpoilers(selector, check_parent, settings) {
     let blockedCount = 0;
 
     if (items.length > 0) {
-        items.forEach((async (el) => {
+        for (let el of items) {
             if (el.classList.contains('spoiler-blocker-glamoured') ||
                 (check_parent && ancestorHasGlamour(el))) {
                 return;
@@ -170,7 +170,7 @@ async function searchForAndBlockSpoilers(selector, check_parent, settings) {
                     blockElement(el, spoilers[0], settings);
                 }
             }
-        }));
+        }
     }
 
     if (blockedCount) {
