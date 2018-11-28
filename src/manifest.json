@@ -43,6 +43,7 @@
     "activeTab",
     "storage",
     "downloads",
+    "alarms",
     "https://*.github.com/",
     "https://*.gitlab.com/"
   ],
