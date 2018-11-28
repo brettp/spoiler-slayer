@@ -1,4 +1,4 @@
-# Spoilers Slayer
+# Spoiler Slayer
 An open-source browser extension to block spoilers.
 
 Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils).
@@ -39,7 +39,7 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - [X] Live update for settings changes (use on change event)
 - - [X] Live updates for no-fx changes
 - [X] Settings import and export
-- [ ] Settings import from gists
+- [X] Settings import from gists
 - [X] Better way to add new site input in settings (tables are too slow for some reason)
 - [ ] Opt-in analytics?
 - [X] Remove jQuery req
@@ -53,6 +53,10 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - [ ] Don't redraw entire lists when adding / deleting
 - [ ] Add flashes to newly added content instead of inputs on options page
 - [ ] Localization
+- [ ] Don't try to sync settings if too large
+- [ ] Use native form validation
+- [X] Convert option sections to components
+- [ ] Use real classes instead of generic objects for spoilers, sites, and subs
 
 
 ### Known Bugs

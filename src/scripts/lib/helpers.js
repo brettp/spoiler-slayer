@@ -143,16 +143,23 @@ var helpers = (function() {
     }
 
     // remove warning classes on quick adds
-    function addFlash(el, type) {
-        el.addEventListener(
-            'animationend', e => {
-                el.classList.remove('save-fail');
-                el.classList.remove('save-success');
-            },
-            {once: true}
-        );
+    function addFlash(els, type) {
+        if (typeof els.nodeName !== 'undefined') {
+            els = [els];
+        }
 
-        el.classList.add(`save-${type}`);
+        for (let el of els) {
+            el.addEventListener(
+                'animationend', e => {
+                    el.classList.remove('save-fail');
+                    el.classList.remove('save-success');
+                    el.classList.remove('save-pending');
+                },
+                {once: true}
+            );
+
+            el.classList.add(`save-${type}`);
+        }
     }
 
     function getNearest(type, el) {
@@ -162,6 +169,47 @@ var helpers = (function() {
             }
             el = el.parentNode;
         }
+    }
+
+    function httpGet(url, buster=true) {
+        if (buster) {
+            if (!url.includes('?')) {
+                url += '?';
+            }
+
+            url += '&cacheBuster=' + Date.now();
+        }
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", url);
+            xhr.onload = () => {
+                // if there's a redirect to an insecure / blocked site it sets to 0
+                if (xhr.status < 100 || xhr.status >= 400) {
+                    return reject(xhr.statusText);
+                }
+                return resolve(xhr.responseText);
+            }
+            xhr.onerror = () => reject(xhr.statusText);
+            try {
+                xhr.send();
+            } catch (e) {
+                // this doesn't catch CSP errors. There doesn't seem to be a way to.
+                reject(e);
+            }
+        });
+    }
+
+    function toBool(v) {
+        return (
+            v !== null &&
+            v !== 'undefined' &&
+            v !== undefined &&
+            v !== false &&
+            v !== 'false' &&
+            v !== 'FALSE' &&
+            v !== 0 &&
+            v !== '0'
+        );
     }
 
     return {
@@ -175,5 +223,59 @@ var helpers = (function() {
         friendlyNum: friendlyNum,
         addFlash: addFlash,
         getNearest: getNearest,
+        httpGet: httpGet,
+        toBool: toBool
     };
 })();
+
+class Subscription {
+    async update() {
+        this.lastUpdateAttempt = Date.now();
+
+        try {
+            // don't use await here so we can return a value (can't pass promises through msg api)
+            let text = await helpers.httpGet(this.rawUrl);
+            let remoteInfo = JSON.parse(text);
+            this.content = remoteInfo;
+            this.lastUpdate = Date.now();
+            this.lastUpdateSuccess = true;
+
+            return true;
+        } catch (e) {
+            this.lastUpdateSuccess = false;
+            console.log(e);
+
+            return false;
+        }
+    }
+
+    static factory(info) {
+        const props = [
+            'rawUrl',
+            'content',
+            'url',
+            'useSites',
+            'useSpoilers',
+            'lastUpdate',
+            'lastUpdateAttempt',
+            'lastUpdateSuccess'
+        ];
+
+        let sub = new Subscription();
+
+        for (const prop of props) {
+            sub[prop] = info[prop];
+        }
+
+        if (sub.url[sub.url.length - 1] != '/') {
+            sub.url += '/';
+        }
+
+        if (!sub.rawUrl && sub.url) {
+            sub.rawUrl = sub.url + 'raw';
+        }
+
+        return sub;
+
+    }
+}

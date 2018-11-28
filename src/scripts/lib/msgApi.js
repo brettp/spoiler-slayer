@@ -42,8 +42,8 @@ async function saveSettings(settings) {
     return await cmd('saveSettings', settings);
 }
 
-function cmd(cmd, data) {
-    return msg({
+async function cmd(cmd, data) {
+    return await msg({
         cmd: cmd,
         data: data,
     });

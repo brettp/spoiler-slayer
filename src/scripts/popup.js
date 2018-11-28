@@ -10,12 +10,12 @@ const examples = [
         'spoiler': 'Dumbledore'
     },
     {
-        'text': 'Teddy eats canned goods!',
+        'text': 'Teddy Flood eats canned goods!',
         'image': 'Westworld.svg',
-        'spoiler': 'Teddy'
+        'spoiler': 'Teddy Flood'
     },
     {
-        'text': 'Steve Rodgers likes Bucky Barnes!',
+        'text': 'Bucky Barnes likes Steve Rodgers!',
         'image': 'Avengers.svg',
         'spoiler': 'Steve Rodgers'
     },
@@ -23,6 +23,11 @@ const examples = [
         'text': 'The 13th Doctor lives here!',
         'image': 'Tardis.svg',
         'spoiler': '13th Doctor'
+    },
+    {
+        'text': 'Jean-Luc gets a promotion!',
+        'image': 'Star_Trek.svg',
+        'spoiler': 'Jean-Luc'
     }
 ];
 

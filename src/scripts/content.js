@@ -90,7 +90,7 @@ async function updateStyles() {
 }
 
 function initiateSpoilerBlocking(selector_string, settings) {
-    // searchForAndBlockSpoilers(selector_string, false, settings);
+    searchForAndBlockSpoilers(selector_string, false, settings);
     var observer = new window.MutationObserver(helpers.debounce(function(muts, obs) {
         searchForAndBlockSpoilers(selector_string, true, settings);
         // let fire = false;

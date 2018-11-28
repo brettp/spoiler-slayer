@@ -27,7 +27,7 @@ class CmdHandler {
     }
 
     shouldBlock(url) {
-        return this.settings.blockingEnabled && this.settings.spoilers.length > 0 && this.validUrl(url);
+        return this.settings.blockingEnabled && this.settings.spoilersRegex && this.validUrl(url);
     }
 
     getSelectors(url) {
@@ -243,6 +243,27 @@ class CmdHandler {
             data: { selector }
         });
     }
+
+    async refreshSubscriptions() {
+        let success = true;
+        let subs = [];
+
+        for (let info of this.settings.subscriptions) {
+            if (!info.rawUrl) {
+                continue;
+            }
+
+            let sub = Subscription.factory(info);
+            let updated = await sub.update();
+            if (!updated) {
+                success = false;
+            }
+            subs.push(sub);
+        }
+
+        this.settings.subscriptions = subs;
+        return success ? this.settings.subscriptions : false;
+    }
 }
 
 function debugMsg(req, res) {
@@ -293,7 +314,15 @@ async function init() {
         if (settings.debug) {
             debugMsg(req, res);
         }
-        cb(res);
+        if (res instanceof Promise) {
+            res.then(v => {
+                console.log("resolved");
+                cb(v);
+            })
+        } else {
+            cb(res);
+        }
+
         return true;
     });
 

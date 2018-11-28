@@ -4,7 +4,7 @@
     "type": "git",
     "url": "git@github.com:brettp/game-of-spoils.git"
   },
-  "version": "1.0.0-pre1",
+  "version": "1.0.0",
   "description": "",
   "main": "gulpfile.js",
   "devDependencies": {

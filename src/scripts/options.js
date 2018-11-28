@@ -1,14 +1,48 @@
 async function init() {
     populateFromSettings();
 
+    // check validity
+    for (let el of byQS('input')) {
+        el.addEventListener('invalid', (e) => {
+            if (e.target.dataset.validationError) {
+                e.target.setCustomValidity(e.target.dataset.validationError);
+            } else {
+                e.target.dataset.validationError('');
+            }
+            helpers.addFlash(e.target, 'fail');
+        });
+    }
+
     // add forms and icons
     byId('new-spoiler').addEventListener('submit', (e) => onNewSubmit(e, 'spoilers'));
     byId('plus-spoiler').addEventListener('click', (e) => onNewSubmit(e, 'spoilers'));
+
     byId('new-site').addEventListener('submit', (e) => onNewSubmit(e, 'sites'));
     byId('plus-site').addEventListener('click', (e) => onNewSubmit(e, 'sites'));
 
-    // delete icons
-    d.body.addEventListener('click', onRemoveClick);
+    byId('new-subscription').addEventListener('submit', (e) => onNewSubmit(e, 'subscriptions'));
+    byId('plus-subscription').addEventListener('click', (e) => onNewSubmit(e, 'subscriptions'));
+    byId('refresh-subscriptions').addEventListener('click', async (e) => {
+        e.preventDefault();
+        e.target.classList.add('active');
+
+        let result = await cmd('refreshSubscriptions');
+
+        if (result) {
+            await renderList(result, 'subscriptions', true);
+            helpers.addFlash(byId('subscriptions-settings'), 'success');
+        } else {
+            helpers.addFlash(byId('subscriptions-settings'), 'fail');
+        }
+
+        // feels better with at least a second to spin
+        e.target.classList.add('last');
+        e.target.addEventListener('animationend', (e) => {
+            e.stopPropagation();
+            e.target.classList.remove('active');
+            e.target.classList.remove('last');
+        }, {once: true});
+    });
 
     // footer links
     byId('reset-spoilers').addEventListener('click', resetToOgSpoilers);
@@ -19,40 +53,15 @@ async function init() {
     byId('clear-settings').addEventListener('click', clearSettings);
 }
 
-async function onExistingSpoilerInput(e) {
-    onGenericInput(e, 'spoilers');
-}
-
-async function onExistingSiteInput(e) {
-    onGenericInput(e, 'sites');
-}
-
-function onGenericInput(e, type) {
-    const target = e.target;
-    let data = [];
-
-    if (target.nodeName !== 'INPUT') {
-        return;
-    }
-
-    let list = type === 'spoilers' ? byId('existing-spoilers') : byId('existing-sites');
-
-    list.querySelectorAll('li').forEach(el  => {
-        data.push(containerToDatum(el));
-    });
-
-    setSetting(type, data);
-}
-
 function containerToDatum(container) {
     let values = {};
     let inputs = container.querySelectorAll('input');
 
     inputs.forEach(el => {
         if (el.type !== 'submit') {
-            values[el.name] = el.type === 'checkbox' ? el.getAttribute('checked') || false : el.value;
+            values[el.name] = el.type === 'checkbox' ? el.checked || false : el.value;
         }
-    })
+    });
 
     return values;
 }
@@ -62,45 +71,21 @@ async function populateFromSettings(clear = false) {
 
     renderList(settings.spoilers, 'spoilers', clear);
     renderList(settings.sites, 'sites', clear);
+    renderList(settings.subscriptions, 'subscriptions', clear);
 }
 
-function renderList(data, type, clear = false) {
-    const template = byId(type.substring(0, type.length - 1)).content;
-    let list = byId(type);
+async function renderList(data, type, clear = false) {
+    const container = byId(type);
 
     if (clear) {
-        let newSL = list.cloneNode(false);
-        list.replaceWith(newSL);
-        list = newSL;
+        container.removeChild(container.children[0]);
     }
 
-    for (let i in data) {
-        let datum = data[i];
-
-        let li = d.createElement('li');
-        li.dataset.id = i;
-        li.dataset.type = type;
-
-        let el = template.cloneNode(true);
-        let reInput = el.querySelector('regex-input');
-
-        if (type == 'spoilers') {
-            // reInput.setAttribute('name', 'spoiler');
-            reInput.setAttribute('value', datum.spoiler);
-            reInput.setAttribute('is-regex', datum.isRegex || false);
-        } else {
-            // reInput.setAttribute('name', 'site');
-            reInput.setAttribute('value', datum.urlRegex);
-            reInput.setAttribute('is-regex', datum.isRegex || false);
-
-            let sI = el.querySelector('input[type=text]');
-            sI.value = datum.selector;
-        }
-
-        list.appendChild(li);
-        li.appendChild(el);
-        li.addEventListener('change', type == 'spoilers' ? onExistingSpoilerInput : onExistingSiteInput);
-    }
+    let list = d.createElement('ul', {is: `spoilers-blocker-list`});
+    list.setAttribute('settings-name', type);
+    list.setAttribute('list-item-element-name', type.substring(0, type.length - 1) + '-item');
+    list.items = data;
+    container.appendChild(list);
 }
 
 async function resetToOgSites(e) {
@@ -129,43 +114,44 @@ async function reset(e) {
     }
 }
 
-async function onRemoveClick(e) {
-    const target = e.target;
-
-    if (!target.classList.contains('delete-item')) {
-        return;
-    }
-    let row = helpers.getNearest('li', target);
-
-    let id = row.dataset.id;
-    let type = row.dataset.type;
-
-    if (!id || !type) {
-        return;
-    }
-
-    let data = await getSetting(type);
-    data.splice(id, 1);
-    await setSetting(type, data);
-    renderList(data, type, true);
-}
-
 async function onNewSubmit(e, type) {
     e.preventDefault();
-
     let form = helpers.getNearest('form', e.target);
     let datum = containerToDatum(form);
+    let data = await getSetting(type);
+
     if (datum.length < 1) {
         helpers.addFlash(form, 'fail');
         return;
     }
     let checks = [];
 
-    if (type === 'spoilers') {
-        checks.push('spoiler');
-    } else {
-        checks.push('selector');
-        checks.push('urlRegex');
+    switch (type) {
+        case 'spoilers':
+            checks.push('spoiler');
+            break;
+
+        case 'sites':
+            checks.push('selector');
+            checks.push('urlRegex');
+        break;
+
+        case 'subscriptions':
+            if (!datum.url) {
+                helpers.addFlash(form.querySelectorAll('[type=url]'), 'fail');
+                return;
+            }
+
+            // normalize to always have slash
+            if (datum.url[datum.url.length - 1] != '/') {
+                datum.url += '/';
+            }
+
+            if (!datum.useSpoilers && !datum.useSites) {
+                helpers.addFlash(form.querySelectorAll('[type=checkbox]'), 'fail');
+                return;
+            }
+        break;
     }
 
     for (let name of checks) {
@@ -175,16 +161,43 @@ async function onNewSubmit(e, type) {
         }
     }
 
-    const data = await getSetting(type);
-    data.unshift(datum);
-    await setSetting(type, data);
+    switch (type) {
+        case 'subscriptions':
+            helpers.addFlash(form, 'pending');
+
+            try {
+                // gh and gl both append /raw
+                let rawUrl = datum.url + 'raw';
+
+                let text = await helpers.httpGet(rawUrl);
+                let remoteInfo = JSON.parse(text);
+
+                helpers.addFlash(form, 'success');
+                datum.rawUrl = rawUrl;
+                datum.content = remoteInfo;
+            } catch (e) {
+                console.log(e);
+                helpers.addFlash(form, 'fail');
+                return;
+            }
+            // fall through
+
+        default:
+            data.unshift(datum);
+            await setSetting(type, data);
+            break;
+    }
 
     helpers.addFlash(form, 'success');
 
     // reset doesn't work completely with web components, so do it manually too
     form.reset();
-    form.querySelector('regex-input').reset();
-    form.querySelector('[type=text]').focus();
+    let reEl = form.querySelector('regex-input');
+    if (reEl) {
+        reEl.reset();
+    }
+
+    form.querySelector('input').focus();
 
     renderList(data, type, true);
 }
@@ -198,6 +211,9 @@ async function importSettings(e) {
         reader.readAsBinaryString(file);
         reader.onloadend = async function() {
             let obj = JSON.parse(this.result);
+            if (obj.__exportVersion != 1) {
+                alert("Mismatched import version!");
+            }
             let settings = await cmd('getSettings');
 
             // @todo validate!
@@ -240,6 +256,8 @@ async function exportSettings(section = 'all') {
             delete info.spoilers;
             break;
     }
+
+    info.__exportVersion = 1;
 
     let json = JSON.stringify(info, null, 2);
 

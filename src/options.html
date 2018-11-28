@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>Spoilers Slayer</title>
+        <title>Spoiler Slayer</title>
         <link href="/styles/popup.css" rel="stylesheet" />
     </head>
     <body id="options">
@@ -10,16 +10,17 @@
             <label class="supports-regex">
                 <span class="regex-marker">/</span>
                 <input autocomplete="off" type="text" name="spoiler" />
-                <span class="regex-marker">/ig <i class="regex-error icon solid">!</i> </span>
+                <span class="regex-marker">/ig<i class="regex-error icon solid">!</i></span>
             </label>
 
-            <label> <input type="checkbox" name="isRegex" value="1" /> <code>/re/</code> </label>
+            <label class="regex-checkbox"><input type="checkbox" name="isRegex" value="1" /><code>/re/</code></label>
         </template>
 
         <template id="spoiler">
             <div class="row spoiler-row">
                 <a class="fader inline-icon delete-item">✖️</a>
                 <regex-input name="spoiler"></regex-input>
+                <!-- <a class="inline-icon fader">🏷️</a> -->
             </div>
         </template>
 
@@ -39,13 +40,45 @@
             </div>
         </template>
 
-        <h2 id="title">Spoilers Slayer</h2>
+        <template id="subscription">
+            <div class="row subscription-row">
+                <details>
+                    <summary>
+                        <a class="fader inline-icon expander">►</a>
+                        <h3 class="export-name">Unnamed Subscription</h3>
+                        <label class="no-click">
+                            <input type="checkbox" name="useSpoilers">Spoilers
+                             (<span class="spoilers-count">-</span>)
+                        </label>
+                        <label class="no-click">
+                            <input type="checkbox" name="useSites">Sites
+                             (<span class="sites-count">-</span>)
+                        </label>
+                    </summary>
+                    <div class="subscription-content">
+                        <div class="middle">
+                            <a class="fader inline-icon delete-item">✖️</a>
+                            <a class="subscription-url" href="#" target="_blank">Invalid</a>
+                        </div>
+                        <div class="subscription-spoilers none">
+                            <h4>Spoilers</h4>
+                            <div class="col-2 subscription-spoilers-content"></div>
+                        </div>
+                        <div class="subscription-sites none">
+                            <h4>Sites &amp; Selectors</h4>
+                            <div class="subscription-sites-content"></div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+        </template>
+
+        <h2 id="title">Spoiler Slayer</h2>
         <hr />
         <section id="spoilers-settings">
             <h2>Spoilers</h2>
             <p>Add words to block. Can be RegEx if you know how!</p>
             <form class="new-entry" id="new-spoiler" data-type="spoilers">
-                <input type="submit" class="none" />
                 <div class="row spoiler-row">
                     <a class="inline-icon fader" id="plus-spoiler">➕</a>
                     <regex-input
@@ -54,17 +87,17 @@
                         regex-placeholder="west ?world">
                     </regex-input>
                 </div>
+                <input type="submit" class="none" />
             </form>
             <form id="existing-spoilers" data-type="spoilers">
-                <ol class="col-2" id="spoilers"></ol>
+                <div id="spoilers"></div>
             </form>
         </section>
 
-        <section class="sites-settings">
+        <section id="sites-settings">
             <h2>Sites &amp; Selectors</h2>
             <p>Add sites to block (regex supported) and a selector for that site</p>
             <form class="new-entry" id="new-site" data-type="sites">
-                <input type="submit" class="none" />
                 <div class="row site-row">
                     <a class="inline-icon fader" id="plus-site">➕</a>
                     <label class="selector-input">
@@ -82,11 +115,54 @@
                         regex-placeholder="reddit.*doctor.*who.*">
                     </regex-input>
                 </div>
+                <input type="submit" class="none" />
             </form>
             <form id="existing-sites" data-type="sites">
                 <ol id="sites"></ol>
             </form>
         </section>
+
+        <section id="subscriptions-settings">
+            <h2>Subscriptions<a href="#" id="refresh-subscriptions" class="spinner">↻</a></h2>
+            <p>
+                Subscribe to public spoilers lists that stay fresh with new spoilers, sites, and selectors
+                <br />
+                <small>
+                    Must be a <a target="_blank" href="https://gist.github.com/search?q=%23spoiler-slayer">GitHub gist</a> or
+                    <a target="_blank" href="https://gitlab.com/search?search=%23spoiler-slayer&snippets=true">GitLab snippet</a>.
+                    Only add sources you trust!
+                </small>
+            </p>
+            <form class="new-entry" id="new-subscription" data-type="subscriptions">
+                <div class="row subscription-row">
+                    <a class="inline-icon fader" id="plus-subscription">➕</a>
+                    <label class="url">
+                        <input
+                            name="url"
+                            type="url"
+                            autocomplete="off"
+                            required
+                            pattern="^https://.*\.?git(hub|lab)\.com/.*"
+                            placeholder="https://gist.github.com/brettp/0e3e61b22c930b429670ac94de605c57/"
+                            data-validation-error="Use a GitHub gist or GitLab snippet URL"
+                        />
+                    </label>
+                    <label>
+                        <input type="checkbox" checked="checked" name="useSpoilers"> Spoilers
+                    </label>
+                    <label>
+                        <input type="checkbox" name="useSites"> Sites
+                    </label>
+                    <input type="submit" class="none" />
+                </div>
+            </form>
+
+            <form id="existing-subscriptions" data-type="subscriptions">
+                <ol id='subscriptions'></ol>
+            </form>
+
+        </section>
+
         <footer>
             <form class="none">
                 <input type="file" id='import-files'/>

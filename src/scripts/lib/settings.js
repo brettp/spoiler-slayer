@@ -15,6 +15,7 @@ class Settings {
             badgeDisplay: 'pageload',
             sites: [],
             spoilers: [],
+            subscriptions: [],
             lifetimeBlockedCount: {
                 total: 0,
                 hosts: {},
@@ -29,7 +30,26 @@ class Settings {
     }
 
     get compiledSettings() {
-        return ['allSitesRegex', 'sitesInfo', 'compiledSitesAndSelectors', 'transitionDurationSecs'];
+        return [
+            'allSitesRegex',
+            'compiledSitesAndSelectors',
+            'transitionDurationSecs',
+            'mergedSpoilers',
+            'mergedSites',
+        ];
+    }
+
+    /**
+     * Defines which settings need recompiled when a setting changes.
+     * changed_setting: [settings to recompile]
+     */
+    get compiledSettingsInfo() {
+        return {
+            sites: ['allSitesRegex', 'compiledSitesAndSelectors'],
+            spoilers: ['spoilersRegex'],
+            transitionDuration: ['transitionDurationSecs'],
+            subscriptions: ['mergedSpoilers', 'mergedSites', 'allSitesRegex', 'compiledSitesAndSelectors', 'spoilersRegex']
+        };
     }
 
     /**
@@ -43,35 +63,22 @@ class Settings {
         return settings;
     }
 
-    /**
-     * Defines which settings need recompiled when a setting changes.
-     * changed_setting: [settings to recompile]
-     */
-    get compiledSettingsInfo() {
-        return {
-            sites: ['allSitesRegex', 'sitesInfo', 'compiledSitesAndSelectors'],
-            spoilers: ['spoilersRegex'],
-            transitionDuration: ['transitionDurationSecs'],
-        };
-    }
-
     constructor(saved) {
         if (saved && Object.keys(saved).length < 1) {
             saved = Settings.defaultSettings;
-        }
-
-        if (!saved.sites) {
-            saved.sites = [];
-        }
-
-        if (!saved.spoilers) {
-            saved.spoilers = [];
+        } else {
+            // make sure we have defaults
+            saved = {...Settings.defaultSettings, ...saved};
         }
 
         this.cached = saved;
 
         // make all settings accessible as normal props
         for (let k in saved) {
+            if (this.compiledSettings.includes(k)) {
+                continue;
+            }
+
             Object.defineProperty(this, k, {
                 get() {
                     return this.cached[k];
@@ -152,13 +159,37 @@ class Settings {
         }
     }
 
+    mergedSpoilersCompiler() {
+        let spoilers = this.cached.spoilers;
+
+        for (let sub of this.subscriptions) {
+            if (sub.useSpoilers && sub.content && sub.content.spoilers.length > 0) {
+                spoilers = spoilers.concat(sub.content.spoilers);
+            }
+        }
+
+        return spoilers;
+    }
+
+    mergedSitesCompiler() {
+        let sites = this.cached.sites;
+
+        for (let sub of this.subscriptions) {
+            if (sub.useSites && sub.content && sub.content.sites.length > 0) {
+                sites = sites.concat(sub.content.sites);
+            }
+        }
+
+        return sites;
+    }
+
     spoilersRegexCompiler() {
         var spoiler_strs = [];
-        if (!this.spoilers) {
+        if (!this.mergedSpoilers) {
             return false;
         }
 
-        for (let info of this.spoilers) {
+        for (let info of this.mergedSpoilers) {
             let spoiler = helpers.getRegexStr(info.spoiler, info.isRegex);
 
             if (spoiler) {
@@ -172,7 +203,7 @@ class Settings {
     allSitesRegexCompiler() {
         let urls = [];
 
-        for (let info of this.sites) {
+        for (let info of this.mergedSites) {
             let regex = helpers.getRegexStr(info.urlRegex, info.isRegex);
             urls.push(regex);
         }
@@ -184,7 +215,7 @@ class Settings {
     compiledSitesAndSelectorsCompiler() {
         let val = [];
 
-        for (let info of this.sites) {
+        for (let info of this.mergedSites) {
             val.push({
                 urlRegex: new RegExp(helpers.getRegexStr(info.urlRegex, info.isRegex), 'iu'),
                 selector: info.selector,
