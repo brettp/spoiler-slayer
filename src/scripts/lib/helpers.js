@@ -189,7 +189,8 @@ var helpers = (function() {
                 }
                 return resolve(xhr.responseText);
             }
-            xhr.onerror = () => reject(xhr.statusText);
+            xhr.onerror = () => reject(xhr.status === 0 ? 'Not connected to internet or connection refused by server.' : xhr.responseText);
+
             try {
                 xhr.send();
             } catch (e) {
@@ -212,6 +213,40 @@ var helpers = (function() {
         );
     }
 
+    function castIfNeeded(data) {
+        if (typeof data === 'string') {
+            let lc = data.toLowerCase();
+
+            if (lc === 'false') {
+                return false;
+            } else if (lc === 'true') {
+                return true;
+            }
+        }
+
+        return data;
+    }
+
+    function objsToModels(objs, type) {
+        let modelClass;
+
+        switch (type) {
+            case 'spoilers':
+                modelClass = Spoiler;
+                break;
+
+            case 'sites':
+                modelClass = Site;
+                break;
+
+            case 'subscriptions':
+                modelClass = Subscription;
+                break;
+        }
+
+        return objs.map(d => modelClass.factory(d));
+    }
+
     return {
         nullFunc: nullFunc,
         debounce: debounce,
@@ -224,58 +259,8 @@ var helpers = (function() {
         addFlash: addFlash,
         getNearest: getNearest,
         httpGet: httpGet,
-        toBool: toBool
+        toBool: toBool,
+        castIfNeeded: castIfNeeded,
+        objsToModels: objsToModels
     };
 })();
-
-class Subscription {
-    async update() {
-        this.lastUpdateAttempt = Date.now();
-
-        try {
-            // don't use await here so we can return a value (can't pass promises through msg api)
-            let text = await helpers.httpGet(this.rawUrl);
-            let remoteInfo = JSON.parse(text);
-            this.content = remoteInfo;
-            this.lastUpdate = Date.now();
-            this.lastUpdateSuccess = true;
-
-            return true;
-        } catch (e) {
-            this.lastUpdateSuccess = false;
-            console.log(e);
-
-            return false;
-        }
-    }
-
-    static factory(info) {
-        const props = [
-            'rawUrl',
-            'content',
-            'url',
-            'useSites',
-            'useSpoilers',
-            'lastUpdate',
-            'lastUpdateAttempt',
-            'lastUpdateSuccess'
-        ];
-
-        let sub = new Subscription();
-
-        for (const prop of props) {
-            sub[prop] = info[prop];
-        }
-
-        if (sub.url[sub.url.length - 1] != '/') {
-            sub.url += '/';
-        }
-
-        if (!sub.rawUrl && sub.url) {
-            sub.rawUrl = sub.url + 'raw';
-        }
-
-        return sub;
-
-    }
-}

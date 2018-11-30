@@ -45,7 +45,11 @@
                 <details>
                     <summary>
                         <a class="fader inline-icon expander">►</a>
-                        <h3 class="export-name">Unnamed Subscription</h3>
+                        <h3>
+                            <span class="update-failed none pulse icon">!</span>
+                            <span class="export-name">Unnamed Subscription</span>
+                        </h3>
+                        <time class="last-updated">Never</time>
                         <label class="no-click">
                             <input type="checkbox" name="useSpoilers">Spoilers
                              (<span class="spoilers-count">-</span>)
@@ -60,6 +64,10 @@
                             <a class="fader inline-icon delete-item">✖️</a>
                             <a class="subscription-url" href="#" target="_blank">Invalid</a>
                         </div>
+                        <div class="update-failed-banner none">
+                            <p>Failed to update! Last attempt <time class="last-update-attempt">Never</time></p>
+                            <pre class="update-failed-text">Unspecified error</pre>
+                        </div>
                         <div class="subscription-spoilers none">
                             <h4>Spoilers</h4>
                             <div class="col-2 subscription-spoilers-content"></div>
@@ -73,12 +81,79 @@
             </div>
         </template>
 
-        <h2 id="title">Spoiler Slayer</h2>
+        <h1 id="title">Spoiler Slayer</h1>
         <hr />
-        <section id="spoilers-settings">
-            <h2>Spoilers</h2>
-            <p>Add words to block. Can be RegEx if you know how!</p>
-            <form class="new-entry" id="new-spoiler" data-type="spoilers">
+
+        <section id="subscriptions-settings" data-type="subscriptions">
+            <header>
+                <h2>Subscriptions</h2>
+                <ul class="left toolbar">
+                        <li><a title="Remove all subscriptions" href="#" class="toolbar-action fader remove-all">✖️</a></li>
+                        <li><a title="Import subscriptions from a file" href="#" class="toolbar-action fader import">⇪</a></li>
+                        <li><a title="Export subscriptions to a file" href="#" class="toolbar-action fader export">⇪</a></li>
+                    <li><a href="#" id="refresh-subscriptions" class="fader spinner">↻</a></li>
+                </ul>
+            </header>
+            <p>
+                Subscribe to public spoilers lists that stay fresh with new spoilers, sites, and selectors
+                <br />
+                <small>
+                    Must be a <a target="_blank" href="https://gist.github.com/search?q=%23spoiler-slayer">GitHub gist</a> or
+                    <a target="_blank" href="https://gitlab.com/search?search=%23spoiler-slayer&snippets=true">GitLab snippet</a>.
+                    Only add trusted sources!
+                </small>
+            </p>
+            <form class="new-entry" id="new-subscription">
+                <div class="row subscription-row">
+                    <a class="inline-icon fader" id="plus-subscription">➕</a>
+                    <label class="url">
+                        <input
+                            name="url"
+                            type="url"
+                            autocomplete="off"
+                            required
+                            xpattern="^https://.*\.?git(hub|lab)\.com/.*"
+                            placeholder="https://gist.github.com/brettp/0e3e61b22c930b429670ac94de605c57/"
+                            data-validation-error="Use a GitHub gist or GitLab snippet URL"
+                        />
+                    </label>
+                    <label>
+                        <input type="checkbox" checked="checked" name="useSpoilers"> Spoilers
+                    </label>
+                    <label>
+                        <input type="checkbox" name="useSites"> Sites
+                    </label>
+                    <input type="submit" class="none" />
+                </div>
+                <div class="update-failed-banner none">
+                    <p>Failed to add subscription:</p>
+                    <pre class="update-failed-text">Unspecified error</pre>
+                </div>
+            </form>
+
+            <form id="existing-subscriptions">
+                <ol id='subscriptions'></ol>
+            </form>
+        </section>
+
+        <section id="spoilers-settings" data-type="spoilers">
+            <header>
+                <h2>Spoilers</h2>
+                <ul class="left toolbar">
+                    <li><a title="Remove all spoilers" href="#" class="toolbar-action fader remove-all">✖️</a></li>
+                    <li><a title="Import spoilers from a file" href="#" class="toolbar-action fader import">⇪</a></li>
+                    <li><a title="Export spoilers to a file" href="#" class="toolbar-action fader export">⇪</a></li>
+                </ul>
+            </header>
+            <p>
+                Add words and phrases to block
+                <br />
+                <small>
+                    Spoilers are matched by the exact entire word, case insensitive. "GoT" will match "got" but not "gotcha".
+                    Check <code>/re/</code> to enable <a href="https://www.regular-expressions.info/">regex</a> for more flexible matching.
+                </small>
+            </p>
+            <form class="new-entry" id="new-spoiler">
                 <div class="row spoiler-row">
                     <a class="inline-icon fader" id="plus-spoiler">➕</a>
                     <regex-input
@@ -89,15 +164,22 @@
                 </div>
                 <input type="submit" class="none" />
             </form>
-            <form id="existing-spoilers" data-type="spoilers">
+            <form id="existing-spoilers">
                 <div id="spoilers"></div>
             </form>
         </section>
 
-        <section id="sites-settings">
-            <h2>Sites &amp; Selectors</h2>
+        <section id="sites-settings" data-type="sites">
+            <header>
+                <h2>Sites &amp; Selectors</h2>
+                <ul class="left toolbar">
+                    <li><a title="Remove all sites &amp; selectors" href="#" class="toolbar-action fader remove-all">✖️</a></li>
+                    <li><a title="Import sites &amp; selectors from a file" href="#" class="toolbar-action fader import">⇪</a></li>
+                    <li><a title="Export sites &amp; selectors to a file" href="#" class="toolbar-action fader export">⇪</a></li>
+                </ul>
+            </header>
             <p>Add sites to block (regex supported) and a selector for that site</p>
-            <form class="new-entry" id="new-site" data-type="sites">
+            <form class="new-entry" id="new-site">
                 <div class="row site-row">
                     <a class="inline-icon fader" id="plus-site">➕</a>
                     <label class="selector-input">
@@ -117,50 +199,9 @@
                 </div>
                 <input type="submit" class="none" />
             </form>
-            <form id="existing-sites" data-type="sites">
+            <form id="existing-sites">
                 <ol id="sites"></ol>
             </form>
-        </section>
-
-        <section id="subscriptions-settings">
-            <h2>Subscriptions<a href="#" id="refresh-subscriptions" class="spinner">↻</a></h2>
-            <p>
-                Subscribe to public spoilers lists that stay fresh with new spoilers, sites, and selectors
-                <br />
-                <small>
-                    Must be a <a target="_blank" href="https://gist.github.com/search?q=%23spoiler-slayer">GitHub gist</a> or
-                    <a target="_blank" href="https://gitlab.com/search?search=%23spoiler-slayer&snippets=true">GitLab snippet</a>.
-                    Only add sources you trust!
-                </small>
-            </p>
-            <form class="new-entry" id="new-subscription" data-type="subscriptions">
-                <div class="row subscription-row">
-                    <a class="inline-icon fader" id="plus-subscription">➕</a>
-                    <label class="url">
-                        <input
-                            name="url"
-                            type="url"
-                            autocomplete="off"
-                            required
-                            pattern="^https://.*\.?git(hub|lab)\.com/.*"
-                            placeholder="https://gist.github.com/brettp/0e3e61b22c930b429670ac94de605c57/"
-                            data-validation-error="Use a GitHub gist or GitLab snippet URL"
-                        />
-                    </label>
-                    <label>
-                        <input type="checkbox" checked="checked" name="useSpoilers"> Spoilers
-                    </label>
-                    <label>
-                        <input type="checkbox" name="useSites"> Sites
-                    </label>
-                    <input type="submit" class="none" />
-                </div>
-            </form>
-
-            <form id="existing-subscriptions" data-type="subscriptions">
-                <ol id='subscriptions'></ol>
-            </form>
-
         </section>
 
         <footer>
@@ -181,11 +222,18 @@
                     <li><a href="#" id="clear-settings">Clear settings</a></li>
                 </ul>
             </div>
+            <br /><br />
+            <p class="clear-both">
+                <small>
+                    Created by Brett Profitt as <a href="">open source software</a>. <span>Version 1.0.0.0</span>
+                </small>
+            </p>
         </footer>
 
         <script src="/scripts/lib/helpers.js"></script>
         <script src="/scripts/lib/msgApi.js"></script>
         <script src="/scripts/lib/settings.js"></script>
+        <script src="/scripts/lib/models.js"></script>
         <script src="/scripts/lib/components.js"></script>
         <script src="/scripts/lib/ogSettings.js"></script>
         <script src="/scripts/options.js"></script>

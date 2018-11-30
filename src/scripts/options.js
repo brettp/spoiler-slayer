@@ -2,16 +2,18 @@ async function init() {
     populateFromSettings();
 
     // check validity
-    for (let el of byQS('input')) {
-        el.addEventListener('invalid', (e) => {
-            if (e.target.dataset.validationError) {
-                e.target.setCustomValidity(e.target.dataset.validationError);
-            } else {
-                e.target.dataset.validationError('');
-            }
-            helpers.addFlash(e.target, 'fail');
-        });
-    }
+    // this doesn't work quite right
+    // for (let el of byQS('input')) {
+    //     el.addEventListener('invalid', (e) => {
+    //         console.log('invalid', e);
+    //         if (e.target.dataset.validationError) {
+    //             e.target.setCustomValidity(e.target.dataset.validationError);
+    //         } else {
+    //             e.target.dataset.validationError('');
+    //         }
+    //         helpers.addFlash(e.target, 'fail');
+    //     });
+    // }
 
     // add forms and icons
     byId('new-spoiler').addEventListener('submit', (e) => onNewSubmit(e, 'spoilers'));
@@ -22,26 +24,41 @@ async function init() {
 
     byId('new-subscription').addEventListener('submit', (e) => onNewSubmit(e, 'subscriptions'));
     byId('plus-subscription').addEventListener('click', (e) => onNewSubmit(e, 'subscriptions'));
-    byId('refresh-subscriptions').addEventListener('click', async (e) => {
-        e.preventDefault();
-        e.target.classList.add('active');
+    byId('refresh-subscriptions').addEventListener('click', refreshSubscriptions);
 
-        let result = await cmd('refreshSubscriptions');
-
-        if (result) {
-            await renderList(result, 'subscriptions', true);
-            helpers.addFlash(byId('subscriptions-settings'), 'success');
-        } else {
-            helpers.addFlash(byId('subscriptions-settings'), 'fail');
+    // toolbar links
+    d.body.addEventListener('click', async e => {
+        const target = e.target;
+        if (!target.classList.contains('toolbar-action')) {
+            return;
         }
 
-        // feels better with at least a second to spin
-        e.target.classList.add('last');
-        e.target.addEventListener('animationend', (e) => {
-            e.stopPropagation();
-            e.target.classList.remove('active');
-            e.target.classList.remove('last');
-        }, {once: true});
+        const section = helpers.getNearest('section', target);
+        const type = section.dataset.type;
+
+        if (!type) {
+            return;
+        }
+
+        e.preventDefault();
+
+        switch (true) {
+            case target.classList.contains('remove-all'):
+                if (!confirm(`Clear all ${type}?`)) {
+                    return;
+                }
+                await setSetting(type, []);
+                break;
+
+            case target.classList.contains('import'):
+                byId('import-files').click()
+                break;
+            case target.classList.contains('export'):
+                await exportSettings(type);
+                break;
+        }
+
+        populateFromSettings(true);
     });
 
     // footer links
@@ -51,6 +68,28 @@ async function init() {
     byId('import').addEventListener('click', e => byId('import-files').click());
     byId('import-files').addEventListener('change', importSettings);
     byId('clear-settings').addEventListener('click', clearSettings);
+}
+
+async function refreshSubscriptions(e) {
+    e.preventDefault();
+    e.target.classList.add('active');
+
+    let result = await cmd('refreshSubscriptions');
+
+    if (result) {
+        await renderList(result, 'subscriptions', true);
+        helpers.addFlash(byId('subscriptions-settings'), 'success');
+    } else {
+        helpers.addFlash(byId('subscriptions-settings'), 'fail');
+    }
+
+    // feels better with at least a second to spin
+    e.target.classList.add('last');
+    e.target.addEventListener('animationend', (e) => {
+        e.stopPropagation();
+        e.target.classList.remove('active');
+        e.target.classList.remove('last');
+    }, {once: true});
 }
 
 function containerToDatum(container) {
@@ -84,7 +123,8 @@ async function renderList(data, type, clear = false) {
     let list = d.createElement('ul', {is: `spoilers-blocker-list`});
     list.setAttribute('settings-name', type);
     list.setAttribute('list-item-element-name', type.substring(0, type.length - 1) + '-item');
-    list.items = data;
+
+    list.items = helpers.objsToModels(data, type);
     container.appendChild(list);
 }
 
@@ -142,11 +182,6 @@ async function onNewSubmit(e, type) {
                 return;
             }
 
-            // normalize to always have slash
-            if (datum.url[datum.url.length - 1] != '/') {
-                datum.url += '/';
-            }
-
             if (!datum.useSpoilers && !datum.useSites) {
                 helpers.addFlash(form.querySelectorAll('[type=checkbox]'), 'fail');
                 return;
@@ -163,20 +198,15 @@ async function onNewSubmit(e, type) {
 
     switch (type) {
         case 'subscriptions':
+            datum = Subscription.factory(datum);
             helpers.addFlash(form, 'pending');
 
-            try {
-                // gh and gl both append /raw
-                let rawUrl = datum.url + 'raw';
+            if (!await datum.update()) {
+                if (datum.lastError) {
+                    form.querySelector('.update-failed-text').innerText = datum.lastError;
+                    form.querySelector('.update-failed-banner').classList.remove('none');
+                }
 
-                let text = await helpers.httpGet(rawUrl);
-                let remoteInfo = JSON.parse(text);
-
-                helpers.addFlash(form, 'success');
-                datum.rawUrl = rawUrl;
-                datum.content = remoteInfo;
-            } catch (e) {
-                console.log(e);
                 helpers.addFlash(form, 'fail');
                 return;
             }
@@ -189,6 +219,9 @@ async function onNewSubmit(e, type) {
     }
 
     helpers.addFlash(form, 'success');
+    if (type === 'subscriptions') {
+        form.querySelector('.update-failed-banner').classList.add('none');
+    }
 
     // reset doesn't work completely with web components, so do it manually too
     form.reset();
@@ -235,29 +268,27 @@ async function importSettings(e) {
 
 async function exportSettings(section = 'all') {
     let settings = await cmd('getSettings');
-    let info;
+    let info = {};
 
     switch (section) {
         case 'all':
             info = settings;
             break;
 
-        case 'sites':
-            info = {sites: settings.sites};
-            break;
-
-        case 'spoilers':
-            info = {spoilers: settings.spoilers};
-            break;
-
         case 'settings':
             info = {...settings};
             delete info.sites;
             delete info.spoilers;
+            delete info.subscriptions
+            break;
+
+        default:
+            info[section] = settings[section];
             break;
     }
 
     info.__exportVersion = 1;
+    info.exportName = 'Unnamed';
 
     let json = JSON.stringify(info, null, 2);
 
@@ -265,10 +296,13 @@ async function exportSettings(section = 'all') {
         type: 'application/json',
     });
 
+    let sectionCaps = section[0].toUpperCase() + section.substring(1);
+
     let now = new Date();
     // dates in JS are awful.
+    let date = now.toISOString().split('T')[0];
     // let filename = now.toISOString().replace('T', '-').replace('Z', ' ').replace(':', );
-    let filename = 'Spoiler Settings ' + now.toISOString().split('T')[0] + '.json';
+    let filename = `Spoiler Slayer ${sectionCaps} - ${date}.json`;
     var url = URL.createObjectURL(file);
 
     chrome.downloads.download({
@@ -280,7 +314,7 @@ async function exportSettings(section = 'all') {
 
 async function clearSettings(e) {
     e.preventDefault();
-    if (confirm('Are you use you want to reset all settings?')) {
+    if (confirm('Reset all settings?')) {
         let defaults = await cmd('getDefaultSettings');
         await cmd('saveSettings', defaults);
         populateFromSettings(true);

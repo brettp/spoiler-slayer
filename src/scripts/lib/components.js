@@ -14,24 +14,14 @@ class SpoilerBlockerElement extends HTMLElement {
             throw `Missing element with an id of ${templateId} in class ${this.constructor.name}`
         }
 
-        this.baseItem = {};
+        this.model = {};
         this.template = templateEl.content;
         this._unattachedEl = this.template.cloneNode(true);
+        this._appended = false;
         this.innerInputs = {};
 
         for (let input of this._unattachedEl.querySelectorAll('input, textarea, regex-input')) {
             this.innerInputs[input.getAttribute('name')] = input;
-        }
-
-        // reverse map for quicker lookup later
-        this.serializeMapReverse = {};
-
-        if (this.serializeMap) {
-            for (const [k, v] of Object.entries(this.serializeMap)) {
-                if (typeof v === 'string') {
-                    this.serializeMapReverse[v] = k;
-                }
-            }
         }
     }
 
@@ -45,35 +35,16 @@ class SpoilerBlockerElement extends HTMLElement {
      * Return the correct ref to the element depending on if it's been attached
      */
     get element() {
-        return this._appended ? this:  this._unattachedEl;
+        return this._appended ? this : this._unattachedEl;
     }
 
-    connectedCallback() {
-        this.render();
-    }
-
-    render() {
-        if (!this._appended) {
-            this.appendChild(this._unattachedEl);
-            this._appended = true;
-        }
-
-        this._originalValues = {};
-
-        for (let attr of this.getAttributeNames()) {
-            let val = this.getAttribute(attr);
-            this._originalValues[attr] = val;
-        }
-
-        this.addEventListener('change', this.updateAttributes.bind(this));
-    }
-
-    updateAttributes(e) {
+    updateModelOnChange(e) {
         const target = e.target;
-        if (this.serializeMapReverse.hasOwnProperty(target.name)) {
-            const name = this.serializeMapReverse[target.name];
-            this[name] = target.type === 'checkbox' ? target.checked : target.value;
+        if (this.model.constructor.mappedProps.includes(target.name)) {
+            this.model[target.name] = target.type === 'checkbox' ? target.checked : target.value;
         }
+
+        this.updateAttributesFromModel();
     }
 
     get byQS() {
@@ -92,52 +63,42 @@ class SpoilerBlockerElement extends HTMLElement {
         return helpers.toBool(this.getAttribute(name));
     }
 
-    serialize() {
-        let obj;
+    attachModel(model) {
+        if (!model instanceof SpoilerBlockerModel) {
+            throw `Invalid model type '${model.constructor.name}' in ${this.constructor.name}`;
+        }
+        this.model = model;
+        this.updateAttributesFromModel();
+    }
 
-        obj = {};
+    updateAttributesFromModel() {
         if (this.serializeMap) {
-            for (const [elName, itemName] of Object.entries(this.serializeMap)) {
-                obj[itemName] = this.getAttribute(elName);
-            }
-        }
-
-        if (this.propertiesMap) {
-            for (const [elName, itemName] of Object.entries(this.propertiesMap)) {
-                obj[itemName] = this[elName];
-            }
-        }
-
-        if (this.settingsItemClass) {
-            obj = this.settingsItemClass.factory(obj);
-        }
-
-        return obj;
-    }
-
-    deserialize(info) {
-        this.baseItem = info;
-
-        if (this.serializeMap) {
-            for (const [elName, itemName] of Object.entries(this.serializeMap)) {
-                this.setAttribute(elName, info[itemName]);
+            for (const [attrName, modelName] of Object.entries(this.serializeMap)) {
+                this.setAttribute(attrName, this.model[modelName]);
             }
         }
     }
 
-    setProperties(item) {
-        if (this.propertiesMap) {
-            for (const [elName, itemName] of Object.entries(this.propertiesMap)) {
-                this[elName] = item[itemName];
-            }
-        }
+    connectedCallback() {
+        this.render();
     }
 
-    /**
-     * Keep attributes in sync with real values
-     */
-    attributeChangedCallback(name, oldV, newV) {
-        this[name] = newV;
+    onAppend() {}
+
+    render() {
+        if (!this._appended) {
+            this._appended = true;
+            this.appendChild(this._unattachedEl);
+            this.addEventListener('change', this.updateModelOnChange.bind(this));
+            this.onAppend();
+        }
+
+        this._originalValues = {};
+
+        for (let attr of this.getAttributeNames()) {
+            let val = this.getAttribute(attr);
+            this._originalValues[attr] = val;
+        }
     }
 }
 
@@ -149,14 +110,15 @@ class SpoilerBlockerList extends HTMLUListElement {
     constructor() {
         super();
         this.items = [];
-        this.itemElements = [];
+        this.elements = [];
 
         this.addEventListener('change', this.save.bind(this));
         this.addEventListener('click', this.handleRemoveClick.bind(this));
     }
 
-    add(info) {
-        this.items.push(info);
+    // @todo probably better to use native funcs on the array
+    add(model) {
+        this.items.push(model);
     }
 
     remove(id) {
@@ -173,18 +135,7 @@ class SpoilerBlockerList extends HTMLUListElement {
             return false;
         }
 
-        this.listToItems();
         setSetting(name, this.items);
-    }
-
-    listToItems() {
-        let newItems = [];
-
-        for (const el of this.itemElements) {
-            newItems.push(el.serialize());
-        }
-
-        this.items = newItems;
     }
 
     handleRemoveClick(e) {
@@ -205,11 +156,11 @@ class SpoilerBlockerList extends HTMLUListElement {
 
         e.preventDefault();
 
-
         if (li.customElement) {
-            let index = this.itemElements.indexOf(li.customElement);
+            let index = this.elements.indexOf(li.customElement);
             if (index >= 0) {
-                this.itemElements.splice(index, 1);
+                this.elements.splice(index, 1);
+                this.items.splice(index, 1);
             }
         }
 
@@ -227,10 +178,8 @@ class SpoilerBlockerList extends HTMLUListElement {
             for (const item of this.items) {
                 let li = d.createElement('li');
                 let el = d.createElement(name);
+                el.attachModel(item);
                 li.customElement = el;
-
-                el.deserialize(item);
-                el.setProperties(item);
 
                 if (helpers.toBool(this.getAttribute('disabled'))) {
                     el.setAttribute('disabled', true);
@@ -238,7 +187,7 @@ class SpoilerBlockerList extends HTMLUListElement {
 
                 this.appendChild(li);
                 li.appendChild(el);
-                this.itemElements.push(el);
+                this.elements.push(el);
             }
         }
     }
@@ -398,8 +347,12 @@ class SpoilerItem extends SaveableItem {
         };
     }
 
+    get modelClass() {
+        return Spoiler;
+    }
+
     attributeChangedCallback(name, oldV, newV) {
-        super.attributeChangedCallback(...arguments);
+        // super.attributeChangedCallback(...arguments);
 
         this.innerInputs['spoiler'].setAttribute(name, newV);
 
@@ -436,12 +389,17 @@ class SiteItem extends SaveableItem {
         };
     }
 
+    get modelClass() {
+        return Site;
+    }
+
     attributeChangedCallback(name, oldV, newV) {
-        super.attributeChangedCallback(...arguments);
+        // super.attributeChangedCallback(...arguments);
         switch (name) {
             case 'url-regex':
                 this.innerInputs['urlRegex'].setAttribute('value', newV);
                 break;
+
             case 'is-regex':
                 this.innerInputs['urlRegex'].setAttribute(name, newV);
                 break;
@@ -485,18 +443,16 @@ class SubscriptionItem extends SaveableItem {
         };
     }
 
-    get propertiesMap() {
-        return {
-            'content': 'content'
-        }
-    }
-
-    get settingsItemClass() {
+    get modelClass() {
         return Subscription;
     }
 
     attributeChangedCallback(name, oldV, newV) {
-        super.attributeChangedCallback(...arguments);
+        // super.attributeChangedCallback(...arguments);
+
+        if (oldV === newV) {
+            return;
+        }
         switch (name) {
             case 'url-value':
                 // slots are more complicated because you have to define the elements
@@ -532,43 +488,15 @@ class SubscriptionItem extends SaveableItem {
 
             this.element.querySelector('.delete-item').classList.add('none');
         }
+
+        if (this._appended) {
+            this.render();
+        }
     }
 
-    render() {
-        super.render();
-
-        this.byQSOne('.export-name').innerText = this.content.exportName;
-
-        // update metadata
-        // @todo time last updated
-        this.byQSOne('.spoilers-count').innerText = this.content.spoilers.length;
-        this.byQSOne('.sites-count').innerText = this.content.sites.length;
-
-        // add spoilers
-        if (this.getAttributeBool('use-spoilers')) {
-            this.byQSOne('.subscription-spoilers').classList.remove('none');
-
-            let spoilers = new SpoilerBlockerList();
-            spoilers.setAttribute('list-item-element-name', 'spoiler-item');
-            spoilers.setAttribute('disabled', true);
-            spoilers.items = this.content.spoilers;
-            this.byQSOne('.subscription-spoilers-content').append(spoilers);
-        }
-
-        // add sites
-        if (this.getAttributeBool('use-sites')) {
-            this.byQSOne('.subscription-sites').classList.remove('none');
-
-            let sites = new SpoilerBlockerList();
-            sites.setAttribute('list-item-element-name', 'site-item');
-            sites.setAttribute('disabled', true);
-            sites.items = this.content.sites;
-            this.byQSOne('.subscription-sites-content').append(sites);
-        }
-
+    onAppend() {
         // don't let label clicks open summary
-        // for (const el of this.querySelectorAll('summary')) {
-        for (let el of this.querySelectorAll('.no-click')) {
+        for (const el of this.querySelectorAll('.no-click')) {
             el.addEventListener('click', (e) => {
                 if (e.target == e.currentTarget && e.target.nodeName === 'LABEL') {
                     e.stopPropagation();
@@ -582,7 +510,7 @@ class SubscriptionItem extends SaveableItem {
         // add a close attribute to fire off an animation
         // once the animation ends, actually close it
         // we can't use the toggle element because it fires after the state change
-        for (let el of this.byQS('summary')) {
+        for (const el of this.byQS('summary')) {
             el.addEventListener('click', e => {
                 if (e.currentTarget.nodeName !== 'SUMMARY' || e.target.nodeName === 'INPUT') {
                     return;
@@ -607,6 +535,75 @@ class SubscriptionItem extends SaveableItem {
                 e.stopPropagation();
             });
         }
+    }
+
+    renderSubList(active, type) {
+        if (active && this.model.content[type]) {
+            // remove old list
+            for (const ul of this.byQS(`.subscription-${type}-content > ul`)) {
+                ul.parentElement.removeChild(ul);
+            }
+
+            this.byQSOne(`.subscription-${type}`).classList.remove('none');
+
+            let list = new SpoilerBlockerList();
+            list.setAttribute('list-item-element-name', `${type.substring(0, type.length - 1)}-item`);
+            list.setAttribute('disabled', true);
+            list.items = this.model.content[type];
+
+            this.byQSOne(`.subscription-${type}-content`).append(list);
+        } else {
+            this.byQSOne(`.subscription-${type}`).classList.add('none');
+        }
+    }
+
+    render() {
+        super.render();
+        let now = new Date();
+
+        if (this.model.lastUpdate) {
+            let update = new Date(this.model.lastUpdate);
+            let time = this.byQSOne('.last-updated');
+
+            time.setAttribute('datetime', update);
+
+            time.innerText = update.toLocaleDateString() == now.toLocaleDateString() ?
+                update.toLocaleTimeString() :
+                update.toLocaleString();
+        }
+
+        if (!this.model.lastUpdateSuccess) {
+            this.byQSOne('.update-failed').classList.remove('none');
+            this.byQSOne('.update-failed-banner').classList.remove('none');
+
+            if (this.model.lastUpdateAttempt) {
+                let attempt = new Date(this.model.lastUpdateAttempt);
+                let time = this.byQSOne('.last-update-attempt');
+
+                time.setAttribute('datetime', attempt);
+
+                time.innerText = attempt.toLocaleDateString() == now.toLocaleDateString() ?
+                    attempt.toLocaleTimeString() :
+                    attempt.toLocaleString();
+            }
+
+            if (this.model.lastError) {
+                this.byQSOne('.update-failed-text').innerText = this.model.lastError;
+            }
+        }
+
+        if (!this.model.content) {
+            return;
+        }
+
+        // update metadata
+        // @todo time last updated
+        this.byQSOne('.export-name').innerText = this.model.content.exportName;
+        this.byQSOne('.spoilers-count').innerText = this.model.content.spoilers ? this.model.content.spoilers.length : 0;
+        this.byQSOne('.sites-count').innerText = this.model.content.sites ? this.model.content.sites.length : 0;
+
+        this.renderSubList(this.model.useSpoilers, 'spoilers');
+        this.renderSubList(this.model.useSites, 'sites');
     }
 }
 

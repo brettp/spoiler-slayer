@@ -249,7 +249,7 @@ class CmdHandler {
         let subs = [];
 
         for (let info of this.settings.subscriptions) {
-            if (!info.rawUrl) {
+            if (!info) {
                 continue;
             }
 
@@ -316,7 +316,6 @@ async function init() {
         }
         if (res instanceof Promise) {
             res.then(v => {
-                console.log("resolved");
                 cb(v);
             })
         } else {

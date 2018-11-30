@@ -50,6 +50,10 @@ a {
     align-items: center;
 }
 
+.clear-both {
+    clear: both;
+}
+
 label.checkbox {
     // font family required for FF to correctly render align-items: center;
     font-family: Arial; // my name is HELVETICA
@@ -115,7 +119,7 @@ textarea {
         text-align: center;
     }
 
-    h2 {
+    h1 {
         font-size: 125%;
         text-align: center;
         margin: 0 auto;
@@ -261,7 +265,11 @@ textarea {
 // options page
 #options {
     section {
-        padding: 1em;
+        padding: 0 1em;
+
+        header + p {
+            margin-top: 0;
+        }
     }
 
     margin: auto;
@@ -300,6 +308,24 @@ textarea {
         }
 
         &.subscription-row {
+            h3 {
+                margin-left: .75em;
+                flex: 1;
+                cursor: pointer;
+            }
+
+            label {
+                display: flex;
+                align-items: center;
+                margin: 0 .5em;
+                &.url {
+                    flex: 1;
+                }
+                input {
+                    flex: 1;
+                }
+            }
+
             details {
                 flex: 1;
                 padding: 0;
@@ -311,7 +337,7 @@ textarea {
                 }
 
                 &[open].closing .subscription-content {
-                    animation: font-shrink-and-fade-out .25s;
+                    animation: font-shrink-and-fade-out .1s;
                 }
 
                 .subscription-content {
@@ -337,9 +363,14 @@ textarea {
                     &::-webkit-details-marker {
                         display: none;
                     }
+
+                    .update-failed {
+                        border-color: inherit;
+                        color: inherit;
+                    }
                 }
 
-                &[open] {
+                &[open]:not(.closing) {
                     border: 1px dashed $grey;
 
                     .expander {
@@ -351,31 +382,20 @@ textarea {
                     outline: none;
                 }
             }
-        }
 
-        &.subscription-row {
-            h3 {
-                margin-left: .75em;
-                flex: 1;
-                cursor: pointer;
-            }
-            label {
-                display: flex;
-                align-items: center;
-                margin: 0 .5em;
-                &.url {
-                    flex: 1;
-                }
-                input {
-                    flex: 1;
-                }
+            .last-updated {
+                font-style: italic;
+                color: $grey;
             }
         }
     }
-}
 
-.test {
-    animation: font-grow-and-fade-in 1s reverse;
+    #new-subscription {
+        .update-failed-banner {
+            padding: 0 2em;
+            text-align: left;
+        }
+    }
 }
 
 // adapted from https://codepen.io/morewry/pen/gbJvy
@@ -610,16 +630,16 @@ ol {
 }
 
 .spinner {
-    position: absolute;
     width: 1em;
     height: 1em;
     // center the rotation to the middle of the arrow
-    transform-origin: 50% 64%;
+    transform-origin: 43% 64%;
     color: inherit;
     text-decoration: none;
 
     &.active {
         animation: spin 1s infinite;
+        opacity: 1;
 
         &.last {
             animation-iteration-count: 1;
@@ -627,12 +647,46 @@ ol {
     }
 }
 
+.pulse {
+    animation: pulse-opacity 0.75s alternate infinite;
+}
+
 section {
     border: 1px dashed $grey;
     margin: 2em 0;
+    position: relative;
 
-    h2 {
-        margin-top: 0;
+    header {
+        position: relative;
+        display: flex;
+        justify-content: center;
+    }
+
+    h1, h2 {
+        margin-top: .5em;
+    }
+
+    .toolbar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding: 0;
+        margin: 0;
+        height: 1em;
+        font-size: 125%;
+        display: inline-flex;
+        align-items: flex-start;
+        justify-content: flex-end;
+
+        li {
+            margin: auto .25em;
+            display: inline-flex;
+
+            a {
+                color: inherit;
+                text-decoration: none;
+            }
+        }
     }
 }
 
@@ -663,6 +717,16 @@ section {
 @keyframes spin {
     to {
         transform: rotate(360deg);
+    }
+}
+
+@keyframes pulse-opacity {
+    from {
+        opacity: .25;
+    }
+
+    to {
+        opacity: 1;
     }
 }
 
@@ -739,7 +803,7 @@ regex-input {
         width: 1em;
         height: 1em;
         padding: 0;
-        margin: auto;
+        margin: auto auto auto .25em;
         font-weight: 700;
         font-size: 1em;
         font-family: system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif;
@@ -774,4 +838,9 @@ regex-input {
             display: none !important;
         }
     }
+}
+
+.export {
+    transform: rotate(180deg);
+    transform-origin: 50% 55%;
 }

@@ -26,7 +26,7 @@
     "open_in_tab": true
   },
   "background": {
-    "scripts": ["scripts/lib/msgApi.js", "scripts/lib/helpers.js", "scripts/lib/settings.js", "scripts/background.js"]
+    "scripts": ["scripts/lib/msgApi.js", "scripts/lib/helpers.js", "scripts/lib/models.js", "scripts/lib/settings.js", "scripts/background.js"]
   },
 
   "content_scripts": [
