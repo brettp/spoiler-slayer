@@ -27,47 +27,52 @@ async function init() {
     byId('refresh-subscriptions').addEventListener('click', refreshSubscriptions);
 
     // toolbar links
-    d.body.addEventListener('click', async e => {
-        const target = e.target;
-        if (!target.classList.contains('toolbar-action')) {
-            return;
-        }
-
-        const section = helpers.getNearest('section', target);
-        const type = section.dataset.type;
-
-        if (!type) {
-            return;
-        }
-
-        e.preventDefault();
-
-        switch (true) {
-            case target.classList.contains('remove-all'):
-                if (!confirm(`Clear all ${type}?`)) {
-                    return;
-                }
-                await setSetting(type, []);
-                break;
-
-            case target.classList.contains('import'):
-                byId('import-files').click()
-                break;
-            case target.classList.contains('export'):
-                await exportSettings(type);
-                break;
-        }
-
-        populateFromSettings(true);
-    });
+    d.body.addEventListener('click', handleToolbarClick);
 
     // footer links
-    byId('reset-spoilers').addEventListener('click', resetToOgSpoilers);
-    byId('reset-sites').addEventListener('click', resetToOgSites);
+    // byId('reset-spoilers').addEventListener('click', resetToOgSpoilers);
+    // byId('reset-sites').addEventListener('click', resetToOgSites);
+    byId('export-settings').addEventListener('click', e => exportSettings('settings'));
     byId('export').addEventListener('click', e => exportSettings('all'));
     byId('import').addEventListener('click', e => byId('import-files').click());
     byId('import-files').addEventListener('change', importSettings);
     byId('clear-settings').addEventListener('click', clearSettings);
+
+    byId('version').innerText = chrome.runtime.getManifest().version;
+}
+
+async function handleToolbarClick(e) {
+    const target = e.target;
+    if (!target.classList.contains('toolbar-action')) {
+        return;
+    }
+
+    const section = helpers.getNearest('section', target);
+    const type = section.dataset.type;
+
+    if (!type) {
+        return;
+    }
+
+    e.preventDefault();
+
+    switch (true) {
+        case target.classList.contains('remove-all'):
+            if (!confirm(`Clear all ${type}?`)) {
+                return;
+            }
+            await setSetting(type, []);
+            break;
+
+        case target.classList.contains('import'):
+            byId('import-files').click()
+            break;
+        case target.classList.contains('export'):
+            await exportSettings(type);
+            break;
+    }
+
+    populateFromSettings(true);
 }
 
 async function refreshSubscriptions(e) {
@@ -276,10 +281,15 @@ async function exportSettings(section = 'all') {
             break;
 
         case 'settings':
-            info = {...settings};
+            info = {};
+            let defaults = Settings.defaultSettings;
+            for (const [k, v] of Object.entries(defaults)) {
+                info[k] = settings[k];
+            }
+
             delete info.sites;
             delete info.spoilers;
-            delete info.subscriptions
+            delete info.subscriptions;
             break;
 
         default:

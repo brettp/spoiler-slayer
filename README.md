@@ -58,6 +58,7 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - [X] Convert option sections to components
 - [ ] Use real classes instead of generic objects for spoilers, sites, and subs
 - [ ] Don't export subscription contents?
+- [ ] Add tests
 
 
 ### Known Bugs

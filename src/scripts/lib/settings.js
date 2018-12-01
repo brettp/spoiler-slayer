@@ -71,7 +71,10 @@ class Settings {
             saved = {...Settings.defaultSettings, ...saved};
         }
 
-        this.cached = saved;
+        Object.defineProperty(this, 'cached', {
+            value: saved,
+            enumerable: false
+        })
 
         // make all settings accessible as normal props
         for (let k in saved) {
@@ -86,6 +89,7 @@ class Settings {
                 set(v) {
                     this.set(k, v);
                 },
+                enumerable: true
             });
         }
 
@@ -138,12 +142,14 @@ class Settings {
                     value: val,
                     configurable: true,
                     writeable: false,
+                    enumerable: false,
                 });
 
                 return val;
             },
             configurable: true,
             writeable: false,
+            enumerable: false
         });
     }
 
