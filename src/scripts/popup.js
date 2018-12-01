@@ -56,13 +56,17 @@ d.addEventListener('keyup', (event) => {
 
     d.body.addEventListener('change', saveSetting);
 
-    byId('open-options-page').addEventListener('click', openOptionsPage);
+    byId('open-options-page').addEventListener('click', e => {
+        e.preventDefault();
+        helpers.openOptionsPage();
+    });
+
     byQS('.open-page').forEach((el) => {
         el.addEventListener('click', (e) => {
             e.preventDefault();
             let page = e.target.getAttribute('href');
             if (page) {
-                openPage(page);
+                helpers.openPage(page);
             }
 
             return false;
@@ -74,10 +78,35 @@ d.addEventListener('keyup', (event) => {
         let url = new URL(tab.url);
         byId('current-site-display').innerText = '@ ' + url.hostname;
         byId('current-site').value = url.hostname;
+
+        // prompt to add subscription
+        if (helpers.isSubscribableUrl(url)) {
+            byId('settings').classList.add('none');
+            const subscribe = byId('subscribe');
+
+            subscribe.classList.remove('none');
+
+            let sub = Subscription.factory({
+                url: url
+            });
+
+            let subEl = new SubscriptionItem();
+            subEl.attachModel(sub);
+            await sub.update();
+
+            subscribe.querySelector('form').appendChild(subEl);
+            console.log(sub);
+        }
     } catch (e) {
         console.log(e);
         byId('current-site').value = '@ unknown';
     }
+
+    byId('dismiss').addEventListener('click', e => {
+        e.preventDefault();
+        byId('settings').classList.remove('none');
+        byId('subscribe').classList.add('none');
+    });
 
     byId('quick-add-spoiler-form').addEventListener('submit', saveQuickAddSpoiler);
     byId('quick-add-selector-form').addEventListener('submit', saveQuickAddSelector);
@@ -263,24 +292,6 @@ async function updateExample(settings = null) {
     }
 }
 
-function openOptionsPage(e) {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (chrome.runtime.openOptionsPage) {
-        chrome.runtime.openOptionsPage(helpers.nullFunc);
-    } else {
-        openPage('options.html');
-    }
-
-    return false;
-}
-
-function openPage(page) {
-    window.open(chrome.runtime.getURL(page));
-    return false;
-}
-
 function initInputs(settings) {
     let inputs = {};
     for (let type of ['input', 'select', 'range', 'textarea']) {
@@ -296,7 +307,7 @@ function initInputs(settings) {
 
     inputs.blockingEnabled.addEventListener('input', () => {
         for (const [name, input] of Object.entries(inputs)) {
-            if (!['blockingEnabled', 'selector', 'spoiler', 'current-site'].includes(name)) {
+            if (!['blockingEnabled', 'selector', 'spoiler', 'current-site', 'useSpoilers', 'useSites'].includes(name)) {
                 input.disabled = !inputs.blockingEnabled.checked;
             }
         }

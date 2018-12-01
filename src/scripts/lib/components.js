@@ -11,7 +11,7 @@ class SpoilerBlockerElement extends HTMLElement {
         let templateEl = document.getElementById(templateId);
 
         if (!templateEl) {
-            throw `Missing element with an id of ${templateId} in class ${this.constructor.name}`
+            throw `Missing template element with an id of ${templateId} in class ${this.constructor.name}`
         }
 
         this.model = {};
@@ -609,3 +609,128 @@ class SubscriptionItem extends SaveableItem {
 
 SubscriptionItem.observedAttributes = ['use-sites', 'use-spoilers', 'url-value', 'disabled'];
 customElements.define('subscription-item', SubscriptionItem);
+
+
+class CustomIcon extends HTMLElement {
+    constructor() {
+        super();
+
+        let iconAttr = this.getAttribute('icon');
+        if (iconAttr) {
+            switch (iconAttr) {
+                case "delete":
+                    this.icon = '✖️';
+                    break;
+
+                case "add":
+                    this.icon = '➕';
+                    break;
+
+                case "download":
+                    this.icon = '⇪';
+                    this.classList.add('r180');
+                    break;
+
+                case "upload":
+                    this.icon = '⇪';
+                    break;
+
+                case "reload":
+                    this.icon = '↻'
+                    break;
+
+                case "tip":
+                    this.icon = '💡';
+                    break;
+            }
+        } else {
+            this.icon = this.innerText.trim();
+        }
+
+        this.attachShadow({
+            mode: "open"
+        });
+
+        const template = document.createElement('i');
+        if (this.getAttribute('icon')) {
+            template.classList.add(this.getAttribute('icon'));
+        }
+        template.innerText = this.icon;
+
+        const style = document.createElement('style');
+        this.shadowRoot.appendChild(style);
+
+        // fix for FF's weird short fonts
+        // let transformOrigin = '50% 64.25%';
+        let transformOrigin = '44% 51.25%';
+        if (/firefox/i.test(navigator.userAgent)) {
+            transformOrigin = '31% 63%';
+        }
+
+        style.innerText = `
+:host {
+    display: inline-flex;
+    position: relative;
+    width: 1em;
+    height: 1em;
+    font-size: 1em;
+    pointer-events: none;
+    filter: grayscale(100%);
+}
+
+i {
+    display: inline-flex;
+    line-height: 1em;
+    height: 1em;
+    width: 1em;
+    font-style: initial;
+}
+
+i.reload {
+    vertical-align: bottom;
+    transform-origin: ${transformOrigin};
+}
+
+i.upload {
+    vertical-align: text-top;
+}
+
+:host(.spin) > i {
+    animation: spin 1s infinite;
+}
+
+:host(.r180) > i {
+	transform: rotate(180deg);
+}
+
+:host(.r180.spin) > i {
+    transform: inherit;
+}
+
+:host(.end-animation) > i {
+    animation-iteration-count: 1;
+}
+
+@keyframes spin {
+	to {
+    	transform: rotate(360deg);
+    }
+}
+`.replace(/[\n\r]/g, '');
+
+        this.shadowRoot.appendChild(template);
+        this.classList.add('active');
+    }
+
+    endAnimation() {
+        this.classList.add('end-animation');
+
+        this.shadowRoot.addEventListener('animationend', e => {
+            e.stopPropagation();
+            this.classList.remove('spin');
+            this.classList.remove('end-animation');
+        }, {once: true});
+    }
+}
+
+customElements.define('custom-icon', CustomIcon);

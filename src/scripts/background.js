@@ -334,16 +334,21 @@ async function init() {
         });
     });
 
-
     // update subs once a day (@todo if enabled)
     chrome.alarms.create('autoRefreshSubscriptions', {
         delayInMinutes: 1,
-        periodInMinutes: 60 * 4
+        periodInMinutes: 60 * 1
     });
 
     chrome.alarms.onAlarm.addListener((alarm) => {
         if (alarm.name === 'autoRefreshSubscriptions') {
             cmdHandler.refreshSubscriptions();
+        }
+    });
+
+    chrome.runtime.onInstalled.addListener(details => {
+        if (details.reason === 'install') {
+            helpers.openOptionsPage();
         }
     });
 

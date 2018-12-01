@@ -1,0 +1,90 @@
+.fader {
+    opacity: 0.25;
+    transition: opacity 0.25s;
+
+    &:hover {
+        opacity: 1;
+    }
+}
+
+.pulse {
+    animation: pulse-opacity 0.75s alternate infinite;
+}
+
+@keyframes flash-fade {
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes pulse-success {
+    to {
+        box-shadow: 0 0 25px green;
+    }
+}
+
+@keyframes pulse-fail {
+    to {
+        box-shadow: 0 0 25px red;
+    }
+}
+
+@keyframes pulse-pending {
+    to {
+        box-shadow: 0 0 25px orange;
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pulse-opacity {
+    from {
+        opacity: .25;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+// adapted from https://codepen.io/morewry/pen/gbJvy
+@keyframes font-grow-and-fade-in {
+    0% {
+        font-size: 0;
+        opacity: 0;
+    }
+
+    50% {
+        font-size: 1em;
+        opacity: 0;
+    }
+
+    100% {
+        font-size: 1em;
+        opacity: 1;
+    }
+}
+
+@keyframes font-shrink-and-fade-out {
+    0% {
+        font-size: 1em;
+        opacity: 1;
+    }
+
+    50% {
+        font-size: 1em;
+        opacity: 0;
+    }
+
+    100% {
+        font-size: 0;
+        opacity: 0;
+    }
+}

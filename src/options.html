@@ -22,25 +22,57 @@
         <section id="subscriptions-settings" data-type="subscriptions">
             <header>
                 <h2>Subscriptions</h2>
-                <ul class="left toolbar">
-                        <li><a title="Remove all subscriptions" href="#" class="toolbar-action fader remove-all">✖️</a></li>
-                        <li><a title="Import subscriptions from a file" href="#" class="toolbar-action fader import">⇪</a></li>
-                        <li><a title="Export subscriptions to a file" href="#" class="toolbar-action fader export">⇪</a></li>
-                    <li><a href="#" id="refresh-subscriptions" class="fader spinner">↻</a></li>
+                <ul class="toolbar">
+                    <li>
+                        <a title="Remove all subscriptions" href="#" class="toolbar-action fader remove-all">
+                            <custom-icon icon="delete"></custom-icon>
+                        </a>
+                    </li>
+                    <li>
+                        <a title="Import subscriptions from a file" href="#" class="toolbar-action fader import">
+                            <custom-icon icon="upload"></custom-icon>
+                        </a>
+                    </li>
+                    <li>
+                        <a title="Export subscriptions to a file" href="#" class="toolbar-action fader export">
+                            <custom-icon icon="download"></custom-icon>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" id="refresh-subscriptions" class="fader">
+                            <custom-icon icon='reload'></custom-icon>
+                        </a>
+                    </li>
                 </ul>
             </header>
             <p>
                 Subscribe to public spoilers lists that stay fresh with new spoilers, sites, and selectors
                 <br />
+                <div class='tip'>
+                    <p>
+                        <custom-icon icon="tip"></custom-icon>
+                        The best way to use Spoiler Slayer is to subscribe to public, user-created lists
+                        that are hosted on <a target="_blank" href="https://gist.github.com">GitHub Gists</a> or
+                        <a target="_blank" href="http://gitlab.com">GitLab Snippets</a>. They can be updated by the owner
+                        any time there are new spoilers to block. Spoiler Slayer automatically updates subscriptions once an hour.
+                        <br /><br />
+                        To find lists, search
+                        <a target="_blank" href="https://gist.github.com/search?q=%23spoiler-slayer">GitHub</a> or
+                        <a target="_blank" href="https://gitlab.com/search?search=%23spoiler-slayer&snippets=true">GitLab</a>
+                        for <code>#spoiler-slayer</code>. When you're on the list's page, click the Spoiler Slayer icon
+                        <img src="assets/icons/icon48.png" class="toolbar-icon-example" alt="stake icon" />
+                        to subscribe.
+                    </p>
+                </div>
                 <small>
-                    Must be a <a target="_blank" href="https://gist.github.com/search?q=%23spoiler-slayer">GitHub gist</a> or
+                    Find lists on <a target="_blank" href="https://gist.github.com/search?q=%23spoiler-slayer">GitHub gist</a> or
                     <a target="_blank" href="https://gitlab.com/search?search=%23spoiler-slayer&snippets=true">GitLab snippet</a>.
                     Only add trusted sources!
                 </small>
             </p>
             <form class="new-entry" id="new-subscription">
                 <div class="row subscription-row">
-                    <a class="inline-icon fader" id="plus-subscription">➕</a>
+                    <a class="fader" id="plus-subscription"><custom-icon icon="add"></custom-icon></a>
                     <label class="url">
                         <input
                             name="url"
@@ -88,7 +120,7 @@
                             </summary>
                             <div class="subscription-content">
                                 <div class="middle">
-                                    <a class="fader inline-icon delete-item">✖️</a>
+                                    <a class="fader delete-item"><custom-icon icon="delete"></custom-icon></a>
                                     <a class="subscription-url" href="#" target="_blank">Invalid</a>
                                 </div>
                                 <div class="update-failed-banner none">
@@ -114,10 +146,22 @@
         <section id="spoilers-settings" data-type="spoilers">
             <header>
                 <h2>Spoilers</h2>
-                <ul class="left toolbar">
-                    <li><a title="Remove all spoilers" href="#" class="toolbar-action fader remove-all">✖️</a></li>
-                    <li><a title="Import spoilers from a file" href="#" class="toolbar-action fader import">⇪</a></li>
-                    <li><a title="Export spoilers to a file" href="#" class="toolbar-action fader export">⇪</a></li>
+                <ul class="toolbar">
+                    <li>
+                        <a title="Remove all spoilers" href="#" class="toolbar-action fader remove-all">
+                            <custom-icon icon="delete"></custom-icon>
+                        </a>
+                    </li>
+                    <li>
+                        <a title="Import spoilers from a file" href="#" class="toolbar-action fader import">
+                            <custom-icon icon="upload"></custom-icon>
+                        </a>
+                    </li>
+                    <li>
+                        <a title="Export spoilers to a file" href="#" class="toolbar-action fader export">
+                            <custom-icon icon="download"></custom-icon>
+                        </a>
+                    </li>
                 </ul>
             </header>
             <p>
@@ -130,7 +174,7 @@
             </p>
             <form class="new-entry" id="new-spoiler">
                 <div class="row spoiler-row">
-                    <a class="inline-icon fader" id="plus-spoiler">➕</a>
+                    <a class="inline-icon fader" id="plus-spoiler"><custom-icon icon="add"></custom-icon></a>
                     <regex-input
                         name="spoiler"
                         placeholder="teddy flood"
@@ -140,9 +184,9 @@
                 <input type="submit" class="none" />
             </form>
             <form id="existing-spoilers">
-                    <template id="spoiler">
-                        <div class="row spoiler-row">
-                        <a class="fader inline-icon delete-item">✖️</a>
+                <template id="spoiler">
+                    <div class="row spoiler-row">
+                        <a class="fader delete-item"><custom-icon icon="delete"></custom-icon></a>
                         <regex-input name="spoiler"></regex-input>
                         <!-- <a class="inline-icon fader">🏷️</a> -->
                     </div>
@@ -154,16 +198,28 @@
         <section id="sites-settings" data-type="sites">
             <header>
                 <h2>Sites &amp; Selectors</h2>
-                <ul class="left toolbar">
-                    <li><a title="Remove all sites &amp; selectors" href="#" class="toolbar-action fader remove-all">✖️</a></li>
-                    <li><a title="Import sites &amp; selectors from a file" href="#" class="toolbar-action fader import">⇪</a></li>
-                    <li><a title="Export sites &amp; selectors to a file" href="#" class="toolbar-action fader export">⇪</a></li>
+                <ul class="toolbar">
+                    <li>
+                        <a title="Remove all sites &amp; selectors" href="#" class="toolbar-action fader remove-all">
+                            <custom-icon icon="delete"></custom-icon>
+                        </a>
+                    </li>
+                    <li>
+                        <a title="Import sites &amp; selectors from a file" href="#" class="toolbar-action fader import">
+                            <custom-icon icon="upload"></custom-icon>
+                        </a>
+                    </li>
+                    <li>
+                        <a title="Export sites &amp; selectors to a file" href="#" class="toolbar-action fader export">
+                            <custom-icon icon="download"></custom-icon>
+                        </a>
+                    </li>
                 </ul>
             </header>
             <p>Add sites to block (regex supported) and a selector for that site</p>
             <form class="new-entry" id="new-site">
                 <div class="row site-row">
-                    <a class="inline-icon fader" id="plus-site">➕</a>
+                    <a class="inline-icon fader" id="plus-site"><custom-icon icon="add"></custom-icon></a>
                     <label class="selector-input">
                         <input
                             name="selector"
@@ -182,10 +238,9 @@
                 <input type="submit" class="none" />
             </form>
             <form id="existing-sites">
-
-            <template id="site">
+                <template id="site">
                     <div class="row site-row">
-                        <a class="fader inline-icon delete-item">✖️</a>
+                        <a class="fader delete-item"><custom-icon icon="delete"></custom-icon></a>
                         <label class="selector-input">
                             <input
                                 name="selector"

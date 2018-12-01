@@ -38,6 +38,12 @@ async function init() {
     byId('import-files').addEventListener('change', importSettings);
     byId('clear-settings').addEventListener('click', clearSettings);
 
+    const showTips = getSetting('showTips');
+    if (showTips) {
+        for (const tip of byQS('.tip')) {
+            tip.classList.remove('none');
+        }
+    }
     byId('version').innerText = chrome.runtime.getManifest().version;
 }
 
@@ -77,7 +83,8 @@ async function handleToolbarClick(e) {
 
 async function refreshSubscriptions(e) {
     e.preventDefault();
-    e.target.classList.add('active');
+    const icon = e.target.querySelector('custom-icon');
+    icon.classList.add('spin');
 
     let result = await cmd('refreshSubscriptions');
 
@@ -89,12 +96,7 @@ async function refreshSubscriptions(e) {
     }
 
     // feels better with at least a second to spin
-    e.target.classList.add('last');
-    e.target.addEventListener('animationend', (e) => {
-        e.stopPropagation();
-        e.target.classList.remove('active');
-        e.target.classList.remove('last');
-    }, {once: true});
+    icon.endAnimation();
 }
 
 function containerToDatum(container) {
@@ -182,7 +184,7 @@ async function onNewSubmit(e, type) {
         break;
 
         case 'subscriptions':
-            if (!datum.url) {
+            if (!datum.url || !helpers.isSubscribableUrl(datum.url)) {
                 helpers.addFlash(form.querySelectorAll('[type=url]'), 'fail');
                 return;
             }

@@ -247,6 +247,29 @@ var helpers = (function() {
         return objs.map(d => modelClass.factory(d));
     }
 
+
+    function openOptionsPage() {
+        if (chrome.runtime.openOptionsPage) {
+            chrome.runtime.openOptionsPage(helpers.nullFunc);
+        } else {
+            openPage('options.html');
+        }
+
+        return false;
+    }
+
+    function openPage(page) {
+        window.open(chrome.runtime.getURL(page));
+        return false;
+    }
+
+    function isSubscribableUrl(url) {
+        return (
+            /https:\/\/gist\.github\.com/.test(url) ||
+            /https:\/\/(www\.)?gitlab\.com\/snippets/.test(url)
+        );
+    }
+
     return {
         nullFunc: nullFunc,
         debounce: debounce,
@@ -261,6 +284,9 @@ var helpers = (function() {
         httpGet: httpGet,
         toBool: toBool,
         castIfNeeded: castIfNeeded,
-        objsToModels: objsToModels
+        objsToModels: objsToModels,
+        openOptionsPage: openOptionsPage,
+        openPage: openPage,
+        isSubscribableUrl: isSubscribableUrl
     };
 })();

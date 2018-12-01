@@ -1,6 +1,7 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
+        <meta charset="utf-8" />
         <title>Spoiler Slayer</title>
         <link rel="stylesheet" type="text/css" href="styles/popup.css" />
         <link rel="stylesheet" type="text/css" href="styles/content.css" />
@@ -21,10 +22,71 @@
     </head>
 
     <body id="popup">
+
+            <form id="existing-subscriptions">
+                    <template id="subscription">
+                        <div class="row subscription-row">
+                            <details>
+                                <summary>
+                                    <a class="fader inline-icon expander">a</a>
+                                    <h3>
+                                        <span class="update-failed none pulse icon">!</span>
+                                        <span class="export-name">Unnamed Subscription</span>
+                                    </h3>
+                                    <time class="last-updated">Never</time>
+                                    <label class="no-click">
+                                        <input type="checkbox" name="useSpoilers">Spoilers
+                                        (<span class="spoilers-count">-</span>)
+                                    </label>
+                                    <label class="no-click">
+                                        <input type="checkbox" name="useSites">Sites
+                                        (<span class="sites-count">-</span>)
+                                    </label>
+                                </summary>
+                                <div class="subscription-content">
+                                    <div class="middle">
+                                        <a class="fader inline-icon delete-item"></a>
+                                        <a class="subscription-url" href="#" target="_blank">Invalid</a>
+                                    </div>
+                                    <div class="update-failed-banner none">
+                                        <p>Failed to update! Last attempt <time class="last-update-attempt">Never</time></p>
+                                        <pre class="update-failed-text">Unspecified error</pre>
+                                    </div>
+                                    <div class="subscription-spoilers none">
+                                        <h4>Spoilers</h4>
+                                        <div class="col-2 subscription-spoilers-content"></div>
+                                    </div>
+                                    <div class="subscription-sites none">
+                                        <h4>Sites &amp; Selectors</h4>
+                                        <div class="subscription-sites-content"></div>
+                                    </div>
+                                </div>
+                            </details>
+                        </div>
+                    </template>
+                    <ol id='subscriptions'></ol>
+                </form>
         <!-- <img class="badge-example" src="assets/icons/icon48.png" /> -->
         <h1>Spoiler Slayer</h1>
         <hr />
-        <div class="settings">
+        <div id="subscribe" class="xnone">
+            Subscribe to this list?
+            <custom-icon icon="reload" class="spin"></custom-icon>
+
+            <form>
+                <!-- <label>
+                    <input type="checkbox" name="useSpoilers" />
+                    Spoilers (<span class="spoilers-count">-</span>)
+                </label>
+                <label>
+                    <input type="checkbox" name="useSites" />
+                    Sites (<span class="sites-count">-</span>)
+                </label> -->
+            </form>
+
+            <a href="#" id="dismiss" class="right">No thanks</a>
+        </div>
+        <div id="settings">
             <ul>
                 <li>
                     <label class="checkbox">
@@ -196,6 +258,8 @@
         <script src="scripts/lib/msgApi.js" type="text/javascript"></script>
         <script src="scripts/lib/helpers.js" type="text/javascript"></script>
         <script src="scripts/lib/settings.js" type="text/javascript"></script>
+        <script src="scripts/lib/models.js" type="text/javascript"></script>
+        <script src="scripts/lib/components.js" type="text/javascript"></script>
         <script src="scripts/content.js" type="text/javascript"></script>
         <script src="scripts/popup.js" type="text/javascript"></script>
     </body>

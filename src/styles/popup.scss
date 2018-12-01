@@ -1,5 +1,7 @@
 $grey: #cecece;
 
+@import url(animations.css);
+
 body {
     font-family: Arial;
     font-size: 100%;
@@ -204,7 +206,7 @@ textarea {
                     -moz-user-select: none;
                     -webkit-user-select: none;
                     user-select: none;
-                    max-height: 128px;
+                    max-height: 112px;
                     max-width: 128px;
                 }
             }
@@ -317,7 +319,12 @@ textarea {
             label {
                 display: flex;
                 align-items: center;
-                margin: 0 .5em;
+                margin: 0;
+
+                &:nth-of-type(2) {
+                    margin: 0 .5em;
+                }
+
                 &.url {
                     flex: 1;
                 }
@@ -398,70 +405,40 @@ textarea {
     }
 }
 
-// adapted from https://codepen.io/morewry/pen/gbJvy
-@keyframes font-grow-and-fade-in {
-    0% {
-        font-size: 0;
-        opacity: 0;
-    }
-
-    50% {
-        font-size: 1em;
-        opacity: 0;
-    }
-
-    100% {
-        font-size: 1em;
-        opacity: 1;
-    }
-}
-
-@keyframes font-shrink-and-fade-out {
-    0% {
-        font-size: 1em;
-        opacity: 1;
-    }
-
-    50% {
-        font-size: 1em;
-        opacity: 0;
-    }
-
-    100% {
-        font-size: 0;
-        opacity: 0;
-    }
-}
-
 subscription-item h4 {
     margin-bottom: 0;
 }
 
 .inline-icon {
+    font-style: inherit;
     display: inline;
     filter: grayscale(100%);
 }
 
-table {
-    width: 100%;
-    text-align: center;
-
-    tr td:first-of-type,
-    tr th:first-of-type {
-        width: 1em;
-    }
-
-    tr td {
-        padding: 0.5em;
-    }
-
-    input {
-        width: 95%;
-    }
-}
-
 .col-2 {
     columns: 2;
+}
+
+.tip {
+    border: 1px dashed black;
+    padding: 1em;
+    margin: 1em 0;
+
+    [icon=tip] {
+        font-size: 250%;
+        margin: 0 .25em;
+        float: left;
+    }
+
+    p {
+        padding: 0;
+        margin: 0;
+        text-align: justify;
+    }
+
+    .toolbar-icon-example {
+        height: 1em;
+    }
 }
 
 ul,
@@ -620,37 +597,6 @@ ol {
     list-style: none;
 }
 
-.fader {
-    opacity: 0.25;
-    transition: opacity 0.25s;
-
-    &:hover {
-        opacity: 1;
-    }
-}
-
-.spinner {
-    width: 1em;
-    height: 1em;
-    // center the rotation to the middle of the arrow
-    transform-origin: 43% 64%;
-    color: inherit;
-    text-decoration: none;
-
-    &.active {
-        animation: spin 1s infinite;
-        opacity: 1;
-
-        &.last {
-            animation-iteration-count: 1;
-        }
-    }
-}
-
-.pulse {
-    animation: pulse-opacity 0.75s alternate infinite;
-}
-
 section {
     border: 1px dashed $grey;
     margin: 2em 0;
@@ -680,53 +626,12 @@ section {
 
         li {
             margin: auto .25em;
-            display: inline-flex;
 
             a {
                 color: inherit;
                 text-decoration: none;
             }
         }
-    }
-}
-
-@keyframes flash-fade {
-    to {
-        opacity: 0;
-    }
-}
-
-@keyframes pulse-success {
-    to {
-        box-shadow: 0 0 25px green;
-    }
-}
-
-@keyframes pulse-fail {
-    to {
-        box-shadow: 0 0 25px red;
-    }
-}
-
-@keyframes pulse-pending {
-    to {
-        box-shadow: 0 0 25px orange;
-    }
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-@keyframes pulse-opacity {
-    from {
-        opacity: .25;
-    }
-
-    to {
-        opacity: 1;
     }
 }
 
@@ -840,7 +745,15 @@ regex-input {
     }
 }
 
-.export {
-    transform: rotate(180deg);
-    transform-origin: 50% 55%;
+#subscribe .loading {
+    display: inline-flex;
+}
+
+
+custom-icon {
+    display: none;
+}
+
+custom-icon.active {
+    display: initial;
 }

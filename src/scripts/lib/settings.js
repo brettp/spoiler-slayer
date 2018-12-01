@@ -4,6 +4,7 @@ class Settings {
      */
     static get defaultSettings() {
         return {
+            hideTips: false,
             blockingEnabled: true,
             destroySpoilers: false,
             showSpecificSpoiler: true,
