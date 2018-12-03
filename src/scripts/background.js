@@ -238,7 +238,7 @@ class CmdHandler {
 
     async highlightElementsInActiveTab(selector) {
         let tab = await _getActiveTabInfo();
-        chrome.tabs.sendMessage(tab.id, {
+        return chrome.tabs.sendMessage(tab.id, {
             cmd: 'highlightElements',
             data: { selector }
         });

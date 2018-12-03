@@ -80,23 +80,7 @@ d.addEventListener('keyup', (event) => {
         byId('current-site').value = url.hostname;
 
         // prompt to add subscription
-        if (helpers.isSubscribableUrl(url)) {
-            byId('settings').classList.add('none');
-            const subscribe = byId('subscribe');
-
-            subscribe.classList.remove('none');
-
-            let sub = Subscription.factory({
-                url: url
-            });
-
-            let subEl = new SubscriptionItem();
-            subEl.attachModel(sub);
-            await sub.update();
-
-            subscribe.querySelector('form').appendChild(subEl);
-            console.log(sub);
-        }
+        initSubscription(url);
     } catch (e) {
         console.log(e);
         byId('current-site').value = '@ unknown';
@@ -112,17 +96,17 @@ d.addEventListener('keyup', (event) => {
     byId('quick-add-selector-form').addEventListener('submit', saveQuickAddSelector);
 
     // toggle widths
-    byId('spoiler').addEventListener('focus', (e) => {
+    byId('new-spoiler').addEventListener('focus', (e) => {
         widen('spoiler');
     });
-    byId('spoiler').addEventListener('blur', unwiden);
+    byId('new-spoiler').addEventListener('blur', unwiden);
 
-    byId('selector').addEventListener('focus', (e) => {
+    byId('new-selector').addEventListener('focus', (e) => {
         widen('selector');
     });
-    byId('selector').addEventListener('blur', unwiden);
+    byId('new-selector').addEventListener('blur', unwiden);
 
-    byId('selector').addEventListener('keyup', helpers.debounce((e) => {
+    byId('new-selector').addEventListener('keyup', helpers.debounce((e) => {
         cmd('highlightElementsInActiveTab', e.target.value);
     }), 300);
 
@@ -208,7 +192,7 @@ async function getActiveTab() {
 async function saveQuickAddSpoiler(e) {
     e.preventDefault();
     var form = e.target;
-    var input = byId('spoiler');
+    var input = byId('new-spoiler');
     var spoilers = input.value.trim().split(',');
     var cleaned = [];
 
@@ -242,7 +226,7 @@ async function saveQuickAddSpoiler(e) {
 async function saveQuickAddSelector(e) {
     e.preventDefault();
     var form = e.target;
-    var selectorInput = byId('selector');
+    var selectorInput = byId('new-selector');
     var siteInput = byId('current-site');
 
     if (!selectorInput.value || !siteInput.value) {
@@ -307,7 +291,7 @@ function initInputs(settings) {
 
     inputs.blockingEnabled.addEventListener('input', () => {
         for (const [name, input] of Object.entries(inputs)) {
-            if (!['blockingEnabled', 'selector', 'spoiler', 'current-site', 'useSpoilers', 'useSites'].includes(name)) {
+            if (!['blockingEnabled', 'new-selector', 'new-spoiler', 'current-site', 'useSpoilers', 'useSites'].includes(name)) {
                 input.disabled = !inputs.blockingEnabled.checked;
             }
         }
@@ -342,4 +326,132 @@ function initInputs(settings) {
             input.dispatchEvent(event);
         }
     }
+}
+
+async function initSubscription(url) {
+    const subscribe = byId('subscribe');
+    const icon = subscribe.querySelector('custom-icon');
+
+    if (Subscription.isGitHubRevision(url) && !Subscription.isGitHubRawUrl(url)) {
+        cmd('highlightElementsInActiveTab', '.file-actions > a.btn');
+        byQSOne('.github-rev-not-raw').classList.remove('none');
+        byId('new-subscription').classList.add('none');
+        subscribe.classList.remove('none');
+        icon.remove();
+
+        byId('dismiss').innerText = 'Settings';
+        return;
+    } else if (!Subscription.isSubscribableUrl(url)) {
+        byId('settings').classList.remove('none');
+        return;
+    }
+
+    let subscriptions = helpers.objsToModels(await getSetting('subscriptions'), 'subscriptions');
+    subscribe.classList.remove('none');
+
+    let sub = Subscription.factory({
+        url: url
+    });
+    let newSub = true;
+
+    if (!await sub.update()) {
+        subscribe.querySelector('.update-failed-banner').classList.remove('none');
+        subscribe.querySelector('.update-failed-text').innerText = sub.lastError;
+        byId('new-subscription').classList.add('none');
+
+        icon.remove();
+        byId('dismiss').innerText = 'Settings';
+        return;
+    }
+
+    if (Subscription.isGitHubRevision(url)) {
+        let warning = subscribe.querySelector('.github-rev-warning');
+        warning.classList.remove('none');
+
+        warning.querySelector('a').href = Subscription.getGitHubCurrentUrl(sub.url);
+    }
+
+    icon.remove();
+    byId('new-subscription').classList.remove('none');
+
+    if (sub.content.exportName) {
+        subscribe.querySelector('.list-name').innerText = sub.content.exportName;
+    }
+    subscribe.querySelector('.spoilers-count').innerText = sub.spoilers.length;
+    subscribe.querySelector('.sites-count').innerText = sub.sites.length;
+
+    // see if it's already subscribed to
+    for (const tempSub of subscriptions) {
+        if (tempSub.url == sub.url) {
+            sub = tempSub;
+            newSub = false;
+            subscribe.querySelector('[name=subscribe]').setAttribute('checked', ' ');
+
+            if (sub.useSpoilers) {
+                byQSOne('[name=useSpoilers]').setAttribute('checked', ' ');
+            }
+            if (sub.useSites) {
+                byQSOne('[name=useSites]').setAttribute('checked', ' ');
+            }
+
+            subscribe.querySelector('[name=useSpoilers]').addEventListener('input',
+                e => saveQuickAddSubscription(e, subscriptions, sub));
+
+            subscribe.querySelector('[name=useSites]').addEventListener('input',
+                e => saveQuickAddSubscription(e, subscriptions, sub));
+            break;
+        }
+    }
+
+    if (newSub) {
+        if (sub.spoilers.length > 0) {
+            subscribe.querySelector(`[name=useSpoilers]`).setAttribute('checked', ' ');
+        }
+        if (sub.sites.length > 0) {
+            subscribe.querySelector(`[name=useSites]`).setAttribute('checked', ' ');
+        }
+    }
+
+    // previews
+    for (const type of ['spoilers', 'sites']) {
+        if (sub[type] && sub[type].length > 0) {
+            const list = subscribe.querySelector(`.${type}`);
+
+            for (let i = 0; i < 4 && i < sub[type].length; i++) {
+                let item = sub[type][i];
+                let li = d.createElement('li');
+                li.innerText = type === 'spoilers' ? item.spoiler : item.urlRegex;
+                list.appendChild(li);
+            }
+
+            // add ... or the 5th element if only 5 total
+            if (sub[type].length == 5) {
+                let item = sub[type][4];
+                let li = d.createElement('li');
+                li.innerText = type === 'spoilers' ? item.spoiler : item.urlRegex;
+                list.appendChild(li);
+            } else if (sub[type].length > 5) {
+                let li = d.createElement('li');
+                li.innerText = '...and ' + (sub[type].length - 5) + ' more';
+                list.appendChild(li);
+            }
+        }
+    }
+
+    subscribe.querySelector('[name=subscribe]').addEventListener('input',
+        e => saveQuickAddSubscription(e, subscriptions, sub));
+}
+
+async function saveQuickAddSubscription(e, subscriptions, sub) {
+    sub.useSpoilers = byQSOne('[name=useSpoilers]').checked;
+    sub.useSites = byQSOne('[name=useSites]').checked;
+
+    if (byQSOne('[name=subscribe]').checked) {
+        subscriptions.unshift(sub);
+    } else {
+        let i = subscriptions.indexOf(sub);
+        subscriptions.splice(i, 1);
+    }
+
+    setSetting('subscriptions', subscriptions);
 }

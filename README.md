@@ -45,7 +45,7 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - [X] Remove jQuery req
 - [ ] Add one-click legacy mode
 - [ ] FF mobile?
-- [ ] Categorize / tag sites and spoilers to allow export of single collection settings like Harry Potter
+- [X] Categorize / tag sites and spoilers to allow export of single collection settings like Harry Potter (possible with exports)
 - [ ] Sort sites alphabetically
 - [X] Don't block if parent has been glamoured and revealed.
 - [X] Set global transition-duration time injected as setting, built into injected CSS and then use that value as a timeout to remove revealed and glamoured-active instead of waiting on unreliable animationend / transitionend
@@ -56,7 +56,8 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - [ ] Don't try to sync settings if too large
 - [ ] Use native form validation
 - [X] Convert option sections to components
-- [ ] Use real classes instead of generic objects for spoilers, sites, and subs
+- [X] Use real classes instead of generic objects for spoilers, sites, and subs
+- [ ] Clean up popup / content CSS
 - [ ] Don't export subscription contents?
 - [ ] Add tests
 

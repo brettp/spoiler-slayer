@@ -263,13 +263,6 @@ var helpers = (function() {
         return false;
     }
 
-    function isSubscribableUrl(url) {
-        return (
-            /https:\/\/gist\.github\.com/.test(url) ||
-            /https:\/\/(www\.)?gitlab\.com\/snippets/.test(url)
-        );
-    }
-
     return {
         nullFunc: nullFunc,
         debounce: debounce,
@@ -287,6 +280,5 @@ var helpers = (function() {
         objsToModels: objsToModels,
         openOptionsPage: openOptionsPage,
         openPage: openPage,
-        isSubscribableUrl: isSubscribableUrl
     };
 })();

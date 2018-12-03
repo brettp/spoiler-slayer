@@ -117,10 +117,6 @@ textarea {
         margin-left: 1em;
     }
 
-    .centered {
-        text-align: center;
-    }
-
     h1 {
         font-size: 125%;
         text-align: center;
@@ -130,6 +126,11 @@ textarea {
             margin-right: 0.25em;
             height: 1em;
         }
+    }
+
+    h2 {
+        font-size: 100%;
+        text-align: left;
     }
 
     ul {
@@ -283,6 +284,11 @@ textarea {
         justify-content: space-between;
         align-items: center;
 
+        custom-icon {
+            vertical-align: -webkit-baseline-middle;
+            vertical-align: -moz-middle-with-baseline;
+        }
+
         input[type='text'] {
             box-sizing: border-box;
         }
@@ -349,6 +355,10 @@ textarea {
 
                 .subscription-content {
                     padding: .5em 2em;
+
+                    .row {
+                        justify-content: flex-start;
+                    }
                 }
 
                 summary {
@@ -391,6 +401,7 @@ textarea {
             }
 
             .last-updated {
+                padding-right: .5em;
                 font-style: italic;
                 color: $grey;
             }
@@ -420,6 +431,7 @@ subscription-item h4 {
 }
 
 .tip {
+    position: relative;
     border: 1px dashed black;
     padding: 1em;
     margin: 1em 0;
@@ -434,10 +446,17 @@ subscription-item h4 {
         padding: 0;
         margin: 0;
         text-align: justify;
+        line-height: normal;
     }
 
     .toolbar-icon-example {
-        height: 1em;
+        height: .9em;
+    }
+
+    .hide-tips {
+        position: absolute;
+        right: 0;
+        top: 0;
     }
 }
 
@@ -745,10 +764,50 @@ regex-input {
     }
 }
 
-#subscribe .loading {
-    display: inline-flex;
+#subscribe {
+    h2 {
+        line-height: 1em;
+    }
+
+    h4 {
+        margin: 0 auto;
+    }
+
+    .subscription-preview {
+        display: flex;
+        justify-content: space-around;
+
+        div {
+            flex: 1;
+            width: 50%;
+        }
+    }
+
+    ul {
+        word-break: break-all;
+        white-space: nowrap;;
+
+        li {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin: 0 1.5em 0 1em;
+            line-height: 1.25em;
+        }
+    }
+
+    .tip {
+        padding: .25em;
+    }
+
+    .update-failed-text {
+        white-space: normal;
+    }
 }
 
+.subscription-url {
+    word-break: break-all;
+    padding: 1em;
+}
 
 custom-icon {
     display: none;

@@ -13,6 +13,7 @@
                 height: 100%;
             }
             h2.spoiler-blocker-spoiler-info {
+                text-align: center !important;
                 position: absolute;
                 left: 50%;
                 transform: translateX(-50%);
@@ -22,71 +23,79 @@
     </head>
 
     <body id="popup">
-
-            <form id="existing-subscriptions">
-                    <template id="subscription">
-                        <div class="row subscription-row">
-                            <details>
-                                <summary>
-                                    <a class="fader inline-icon expander">a</a>
-                                    <h3>
-                                        <span class="update-failed none pulse icon">!</span>
-                                        <span class="export-name">Unnamed Subscription</span>
-                                    </h3>
-                                    <time class="last-updated">Never</time>
-                                    <label class="no-click">
-                                        <input type="checkbox" name="useSpoilers">Spoilers
-                                        (<span class="spoilers-count">-</span>)
-                                    </label>
-                                    <label class="no-click">
-                                        <input type="checkbox" name="useSites">Sites
-                                        (<span class="sites-count">-</span>)
-                                    </label>
-                                </summary>
-                                <div class="subscription-content">
-                                    <div class="middle">
-                                        <a class="fader inline-icon delete-item"></a>
-                                        <a class="subscription-url" href="#" target="_blank">Invalid</a>
-                                    </div>
-                                    <div class="update-failed-banner none">
-                                        <p>Failed to update! Last attempt <time class="last-update-attempt">Never</time></p>
-                                        <pre class="update-failed-text">Unspecified error</pre>
-                                    </div>
-                                    <div class="subscription-spoilers none">
-                                        <h4>Spoilers</h4>
-                                        <div class="col-2 subscription-spoilers-content"></div>
-                                    </div>
-                                    <div class="subscription-sites none">
-                                        <h4>Sites &amp; Selectors</h4>
-                                        <div class="subscription-sites-content"></div>
-                                    </div>
-                                </div>
-                            </details>
-                        </div>
-                    </template>
-                    <ol id='subscriptions'></ol>
-                </form>
         <!-- <img class="badge-example" src="assets/icons/icon48.png" /> -->
         <h1>Spoiler Slayer</h1>
         <hr />
-        <div id="subscribe" class="xnone">
-            Subscribe to this list?
-            <custom-icon icon="reload" class="spin"></custom-icon>
+        <div id="subscribe" class="none">
+            <h1><custom-icon icon="reload" class="loading spin"></custom-icon></h1>
 
-            <form>
-                <!-- <label>
-                    <input type="checkbox" name="useSpoilers" />
-                    Spoilers (<span class="spoilers-count">-</span>)
-                </label>
-                <label>
-                    <input type="checkbox" name="useSites" />
-                    Sites (<span class="sites-count">-</span>)
-                </label> -->
+            <form id='new-subscription' class='none'>
+                <h3>Found list:
+                    <span class="list-name">Unnamed List</span>
+                </h3>
+
+                <div class="tip github-rev-warning none">
+                    <p>
+                        <custom-icon icon="tip"></custom-icon>
+                        This is a revision of a list that will never change or update.
+                        Use the <a href="" target="_blank">latest version</a> instead for a list that updates.
+                    </p>
+                </div>
+
+                <h2>
+                    <label>
+                        <input type="checkbox" name="subscribe" />
+                        Subscribed to this list
+                    </label>
+                </h2>
+
+                <div class="subscription-preview">
+                    <div>
+                        <h4>
+                            <label>
+                                <input type="checkbox" name="useSpoilers" class="no-auto-save" />
+                                Spoilers (<span class="spoilers-count">-</span>)
+                            </label>
+                        </h4>
+                        <ul class='spoilers indent'></ul>
+                    </div>
+                    <div>
+                        <h4>
+                            <label>
+                                <input type="checkbox" name="useSites" class="no-auto-save" />
+                                Sites &amp; Selectors (<span class="sites-count">-</span>)
+                            </label>
+                        </h4>
+                        <ul class='sites indent'></ul>
+                    </div>
+                </div>
+                <input type="hidden" name="url" />
+                <input type="submit" class="none" />
+
+                <small>
+                    <br />
+                    Remember to only subscribe to lists you trust! Lists can be updated at any time by their author.
+                </small>
             </form>
+
+            <div class="update-failed-banner none">
+                <h2>Invalid list</h2>
+                <pre class="update-failed-text">Unspecified error</pre>
+            </div>
+
+            <div class="github-rev-not-raw none">
+                <h2>Unsupported GitHub revision</h2>
+                <p>
+                    To use this list, please close this menu and click the "raw" button
+                    near the top right of the page (flashing), then click the Spoilers Blocker
+                    icon again.
+                </p>
+            </div>
 
             <a href="#" id="dismiss" class="right">No thanks</a>
         </div>
-        <div id="settings">
+
+        <div id="settings" class="none">
             <ul>
                 <li>
                     <label class="checkbox">
@@ -108,8 +117,8 @@
                 </li>
                 <li class="indent">
                     <label class="checkbox">
-                        <input class="popup-setting" type="checkbox" name="warnBeforeReveal" /> Warn
-                        before revealing a spoiler
+                        <input class="popup-setting" type="checkbox" name="warnBeforeReveal" />
+                        Warn before revealing a spoiler
                     </label>
                 </li>
                 <li>
@@ -191,7 +200,7 @@
                                     autocomplete="off"
                                     type="text"
                                     name="spoiler"
-                                    id="spoiler"
+                                    id="new-spoiler"
                                     placeholder="dumbledore, maisie williams, jean-luc picard"
                                 />
                             </form>
@@ -217,7 +226,7 @@
                                 class="no-auto-save"
                                 autocomplete="off"
                                 type="text"
-                                id="selector"
+                                id="new-selector"
                                 name="selector"
                                 placeholder="section > article"
                             />

@@ -10,7 +10,7 @@ class SpoilerBlockerElement extends HTMLElement {
 
         let templateEl = document.getElementById(templateId);
 
-        if (!templateEl) {
+        if (!templateEl || templateEl.nodeName !== 'TEMPLATE') {
             throw `Missing template element with an id of ${templateId} in class ${this.constructor.name}`
         }
 
@@ -297,23 +297,23 @@ class RegexInput extends SpoilerBlockerElement {
         }
     }
 
-    attributeChangedCallback(name, oldV, newV) {
-        if (oldV === newV) {
+    attributeChangedCallback(name, was, is) {
+        if (was === is) {
             return;
         }
 
         switch (name) {
             case 'is-regex':
-                this.setIsRegex(newV);
+                this.setIsRegex(is);
                 break;
 
             case 'value':
             case 'name':
-                this.setTextInputAttr(name, newV || '');
+                this.setTextInputAttr(name, is || '');
                 break;
 
             case 'disabled':
-                if (newV) {
+                if (is) {
                     this.checkboxInput.setAttribute('disabled', true);
                     this.setTextInputAttr('disabled', true);
                 } else {
@@ -351,13 +351,13 @@ class SpoilerItem extends SaveableItem {
         return Spoiler;
     }
 
-    attributeChangedCallback(name, oldV, newV) {
+    attributeChangedCallback(name, was, is) {
         // super.attributeChangedCallback(...arguments);
 
-        this.innerInputs['spoiler'].setAttribute(name, newV);
+        this.innerInputs['spoiler'].setAttribute(name, is);
 
         if (name === 'disabled') {
-            if (helpers.toBool(newV)) {
+            if (helpers.toBool(is)) {
                 this.element.querySelector('.delete-item').classList.add('none');
             } else {
                 this.element.querySelector('.delete-item').classList.remove('none');
@@ -393,24 +393,24 @@ class SiteItem extends SaveableItem {
         return Site;
     }
 
-    attributeChangedCallback(name, oldV, newV) {
+    attributeChangedCallback(name, was, is) {
         // super.attributeChangedCallback(...arguments);
         switch (name) {
             case 'url-regex':
-                this.innerInputs['urlRegex'].setAttribute('value', newV);
+                this.innerInputs['urlRegex'].setAttribute('value', is);
                 break;
 
             case 'is-regex':
-                this.innerInputs['urlRegex'].setAttribute(name, newV);
+                this.innerInputs['urlRegex'].setAttribute(name, is);
                 break;
 
             case 'selector-value':
-                this.innerInputs['selector'].setAttribute('value', newV);
+                this.innerInputs['selector'].setAttribute('value', is);
                 break;
         }
 
         if (name === 'disabled') {
-            if (helpers.toBool(newV)) {
+            if (helpers.toBool(is)) {
                 for (const [name, input] of Object.entries(this.innerInputs)) {
                     input.setAttribute('disabled', true);
                 }
@@ -447,21 +447,21 @@ class SubscriptionItem extends SaveableItem {
         return Subscription;
     }
 
-    attributeChangedCallback(name, oldV, newV) {
+    attributeChangedCallback(name, was, is) {
         // super.attributeChangedCallback(...arguments);
 
-        if (oldV === newV) {
+        if (was === is) {
             return;
         }
         switch (name) {
             case 'url-value':
                 // slots are more complicated because you have to define the elements
-                this.byQSOne('.subscription-url').innerText = newV;
-                this.byQSOne('.subscription-url').setAttribute('href', newV);
+                this.byQSOne('.subscription-url').innerText = is;
+                this.byQSOne('.subscription-url').setAttribute('href', is);
                 break;
 
             case 'use-spoilers':
-                if (helpers.toBool(newV)) {
+                if (helpers.toBool(is)) {
                     this.innerInputs['useSpoilers'].setAttribute('checked', true);
                 } else {
                     this.innerInputs['useSpoilers'].removeAttribute('checked');
@@ -469,7 +469,7 @@ class SubscriptionItem extends SaveableItem {
                 break;
 
             case 'use-sites':
-                if (helpers.toBool(newV)) {
+                if (helpers.toBool(is)) {
                     this.innerInputs['useSites'].setAttribute('checked', true);
                 } else {
                     this.innerInputs['useSites'].removeAttribute('checked');
@@ -479,7 +479,7 @@ class SubscriptionItem extends SaveableItem {
 
         if (name === 'disabled') {
             for (let input of this.innerInputs) {
-                if (helpers.toBool(newV)) {
+                if (helpers.toBool(is)) {
                     input.setAttribute('disabled', 'disabled');
                 } else {
                     input.removeAttribute('disabled');
@@ -615,48 +615,11 @@ class CustomIcon extends HTMLElement {
     constructor() {
         super();
 
-        let iconAttr = this.getAttribute('icon');
-        if (iconAttr) {
-            switch (iconAttr) {
-                case "delete":
-                    this.icon = '✖️';
-                    break;
-
-                case "add":
-                    this.icon = '➕';
-                    break;
-
-                case "download":
-                    this.icon = '⇪';
-                    this.classList.add('r180');
-                    break;
-
-                case "upload":
-                    this.icon = '⇪';
-                    break;
-
-                case "reload":
-                    this.icon = '↻'
-                    break;
-
-                case "tip":
-                    this.icon = '💡';
-                    break;
-            }
-        } else {
-            this.icon = this.innerText.trim();
-        }
-
         this.attachShadow({
             mode: "open"
         });
 
         const template = document.createElement('i');
-        if (this.getAttribute('icon')) {
-            template.classList.add(this.getAttribute('icon'));
-        }
-        template.innerText = this.icon;
-
         const style = document.createElement('style');
         this.shadowRoot.appendChild(style);
 
@@ -722,6 +685,55 @@ i.upload {
         this.classList.add('active');
     }
 
+    renderIcon() {
+        let iconAttr = this.getAttribute('icon');
+        let icon;
+
+        if (iconAttr) {
+            switch (iconAttr) {
+                case "delete":
+                    icon = '✖️';
+                    break;
+
+                case "add":
+                    icon = '➕';
+                    break;
+
+                case "download":
+                    icon = '⇪';
+                    this.classList.add('r180');
+                    break;
+
+                case "upload":
+                    icon = '⇪';
+                    break;
+
+                case "reload":
+                    icon = '↻'
+                    break;
+
+                case "tip":
+                    icon = '💡';
+                    break;
+
+                case 'ok':
+                    icon = '✔️'
+            }
+        } else {
+            icon = this.innerText.trim();
+        }
+
+        if (this.getAttribute('icon')) {
+            this.shadowRoot.querySelector('i').classList = iconAttr;
+        }
+
+        this.shadowRoot.querySelector('i').innerText = icon;
+    }
+
+    connectedCallback() {
+        this.renderIcon();
+    }
+
     endAnimation() {
         this.classList.add('end-animation');
 
@@ -731,6 +743,13 @@ i.upload {
             this.classList.remove('end-animation');
         }, {once: true});
     }
+
+    attributeChangedCallback(name, was, is) {
+        if (name === 'icon' && was !== 'is') {
+            this.renderIcon();
+        }
+    }
 }
 
+CustomIcon.observedAttributes = ['icon'];
 customElements.define('custom-icon', CustomIcon);

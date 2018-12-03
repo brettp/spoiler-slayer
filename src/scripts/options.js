@@ -184,7 +184,7 @@ async function onNewSubmit(e, type) {
         break;
 
         case 'subscriptions':
-            if (!datum.url || !helpers.isSubscribableUrl(datum.url)) {
+            if (!datum.url || !Subscription.isSubscribableUrl(datum.url)) {
                 helpers.addFlash(form.querySelectorAll('[type=url]'), 'fail');
                 return;
             }
