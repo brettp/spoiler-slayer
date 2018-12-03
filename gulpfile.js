@@ -47,13 +47,13 @@ gulp.task('html', function() {
 gulp.task('js', function() {
     del('build/*/scripts/*.js');
 
-    gulp.src('src/scripts/*.js')
+    gulp.src(['src/scripts/*.js', '!src/scripts/*.test.js'])
         .pipe(gulp.dest('build/chrome/scripts/'))
         .pipe(gulp.dest('build/firefox/scripts/'));
 
     del('build/*/scripts/lib/*.js');
 
-    gulp.src('src/scripts/lib/*.js')
+    gulp.src(['src/scripts/lib/*.js', '!src/scripts/lib/*.test.js'])
         .pipe(gulp.dest('build/chrome/scripts/lib/'))
         .pipe(gulp.dest('build/firefox/scripts/lib/'));
 });
