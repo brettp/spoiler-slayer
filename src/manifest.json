@@ -9,16 +9,19 @@
   "homepage_url": "https://www.github.com/brettp/game-of-spoils",
 
   "browser_action": {
-    "default_icon": "assets/icons/icon128.png",
+    "default_icon": "assets/icons/battered-axe-32.png",
     "default_popup": "popup.html",
     "default_title": "Spoiler Slayer"
   },
 
   "icons": {
-    "16":  "assets/icons/icon16.png",
-    "19":  "assets/icons/icon16.png",
-    "48":  "assets/icons/icon48.png",
-    "128": "assets/icons/icon128.png"
+    "16":  "assets/icons/battered-axe-16.png",
+    "32":  "assets/icons/battered-axe-32.png",
+    "48":  "assets/icons/battered-axe-48.png",
+    "64":  "assets/icons/battered-axe-64.png",
+    "96":  "assets/icons/battered-axe-96.png",
+    "128":  "assets/icons/battered-axe-128.png",
+    "256":  "assets/icons/battered-axe-256.png"
   },
 
   "options_ui": {
@@ -35,6 +38,7 @@
       "matches": [
         "<all_urls>"
       ],
+      "run_at": "document_idle",
       "css": ["styles/content.css"],
       "js":  ["scripts/lib/msgApi.js", "scripts/lib/helpers.js", "scripts/content.js"]
     }

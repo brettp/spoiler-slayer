@@ -22,6 +22,11 @@ chrome.runtime.onMessage.addListener((msg, sender, res) => {
     }
 });
 
+document.addEventListener('DOMContentLoaded', e => {
+    console.log('loaded one', e);
+    // init(settings);
+} , false);
+
 async function init(settings) {
     let url = window.location.href.toLowerCase();
     let shouldBlock = await cmd('shouldBlock', url);
@@ -41,15 +46,22 @@ async function init(settings) {
     cmd('resetBadgePageCount');
     let settings = await cmd('getSettings');
 
+    // Using document_idle, so we will always fire after doc ready.
     // wait until onload
+    init(settings);
+
+    // alternative approach for using document_start. Maybe be faster?
     // @todo can get rid of this since using mutations observers?
     // Probably no. Some sites (reddit) update formatting on doc ready
-    if (settings.disableOnDocReady) {
-        console.log("Not waiting for doc ready");
-        init(settings);
-    } else {
-        document.addEventListener('DOMContentLoaded', e => init(settings), false);
-    }
+    // if (settings.disableOnDocReady) {
+    //     console.log("Not waiting for doc ready");
+    //     init(settings);
+    // } else {
+    //     document.addEventListener('DOMContentLoaded', e => {
+    //         console.log(e);
+    //         init(settings);
+    //     } , false);
+    // }
 })();
 
 chrome.storage.onChanged.addListener((changes, namespace) => {
