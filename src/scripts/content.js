@@ -39,7 +39,9 @@ async function init(settings) {
     updateStyles();
 
     let selector = await cmd('getSelectors', url);
-    initiateSpoilerBlocking(selector, settings);
+    if (selector) {
+        initiateSpoilerBlocking(selector, settings);
+    }
 }
 
 (async () => {
