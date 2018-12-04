@@ -38,12 +38,25 @@ async function init() {
     byId('import-files').addEventListener('change', importSettings);
     byId('clear-settings').addEventListener('click', clearSettings);
 
-    const showTips = getSetting('showTips');
-    if (showTips) {
-        for (const tip of byQS('.tip')) {
-            tip.classList.remove('none');
+    const hideTips = byId('hideTips');
+    hideTips.addEventListener('click', e => {
+        setSetting('hideTips', e.target.checked);
+        if (e.target.checked) {
+            d.body.classList.add('hide-tips');
+        } else {
+            d.body.classList.remove('hide-tips');
         }
+    });
+
+    for (const link of byQS('.set-hide-tips')) {
+        link.addEventListener('click', e => {
+            e.preventDefault();
+            setSetting('hideTips', true);
+            d.body.classList.add('hide-tips');
+            byId('hideTips').setAttribute('checked', ' ');
+        });
     }
+
     byId('version').innerText = chrome.runtime.getManifest().version;
 }
 
@@ -118,6 +131,15 @@ async function populateFromSettings(clear = false) {
     renderList(settings.spoilers, 'spoilers', clear);
     renderList(settings.sites, 'sites', clear);
     renderList(settings.subscriptions, 'subscriptions', clear);
+
+    const hideTips = byId('hideTips');
+
+    if (settings.hideTips) {
+        d.body.classList.add('hide-tips');
+        hideTips.setAttribute('checked', ' ');
+    } else {
+        hideTips.removeAttribute('checked');
+    }
 }
 
 async function renderList(data, type, clear = false) {
@@ -300,7 +322,8 @@ async function exportSettings(section = 'all') {
     }
 
     info.__exportVersion = 1;
-    info.exportName = 'Unnamed';
+    info.exportName = 'Unnamed List';
+    info.comment = '';
 
     let json = JSON.stringify(info, null, 2);
 

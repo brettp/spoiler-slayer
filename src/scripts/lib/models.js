@@ -3,7 +3,9 @@ class SpoilerBlockerModel {
         let obj = new this();
 
         for (const prop of this.mappedProps) {
-            obj[prop] = info[prop];
+            if (info.hasOwnProperty(prop)) {
+                obj[prop] = info[prop];
+            }
         }
 
         return obj;
@@ -95,6 +97,14 @@ class Subscription extends SpoilerBlockerModel {
         });
 
         return sites;
+    }
+
+    get exportName() {
+        return this.content && this.content.exportName ? this.content.exportName : 'Unnamed List';
+    }
+
+    get comment() {
+        return this.content && this.content.comment ? this.content.comment : '';
     }
 
     static isGitHubRawUrl(url) {
@@ -254,7 +264,8 @@ class Subscription extends SpoilerBlockerModel {
             'lastUpdate',
             'lastUpdateAttempt',
             'lastUpdateSuccess',
-            'lastError'
+            'lastError',
+            'comment'
         ];
     }
 

@@ -22,11 +22,6 @@ chrome.runtime.onMessage.addListener((msg, sender, res) => {
     }
 });
 
-document.addEventListener('DOMContentLoaded', e => {
-    console.log('loaded one', e);
-    // init(settings);
-} , false);
-
 async function init(settings) {
     let url = window.location.href.toLowerCase();
     let shouldBlock = await cmd('shouldBlock', url);

@@ -48,31 +48,28 @@
             <p>
                 Subscribe to public spoilers lists that stay fresh with new spoilers, sites, and selectors
                 <br />
-                <div class='tip'>
-                    <a title="Hide tips" href="#" class="fader hide-tips">
-                        <custom-icon icon="delete"></custom-icon>
-                    </a>
-                    <p>
-                        <custom-icon icon="tip"></custom-icon>
-                        The best way to use Spoiler Slayer is to subscribe to public, user-created lists
-                        that are hosted on <a target="_blank" href="https://gist.github.com">GitHub Gists</a> or
-                        <a target="_blank" href="http://gitlab.com">GitLab Snippets</a>. They can be updated by the owner
-                        any time there are new spoilers to block. Spoiler Slayer automatically updates subscriptions once an hour.
-                        <br /><br />
-                        To find lists, search
-                        <a target="_blank" href="https://gist.github.com/search?q=%23spoiler-slayer">GitHub</a> or
-                        <a target="_blank" href="https://gitlab.com/search?search=%23spoiler-slayer&snippets=true">GitLab</a>
-                        for <code>#spoiler-slayer</code>. When you're on the list's page, click the Spoiler Slayer icon
-                        <img src="assets/icons/icon48.png" class="toolbar-icon-example" alt="stake icon" />
-                        to subscribe.
-                    </p>
-                </div>
                 <small>
-                    Find lists on <a target="_blank" href="https://gist.github.com/search?q=%23spoiler-slayer">GitHub gist</a> or
-                    <a target="_blank" href="https://gitlab.com/search?search=%23spoiler-slayer&snippets=true">GitLab snippet</a>.
+                    Find lists on <a target="_blank" href="https://gist.github.com/search?q=%23spoiler-slayer">GitHub</a> or
+                    <a target="_blank" href="https://gitlab.com/search?search=%23spoiler-slayer&snippets=true">GitLab</a>.
                     Only add trusted sources!
                 </small>
             </p>
+            <div class='tip'>
+                <a title="Hide tips" href="#" class="fader set-hide-tips">
+                    <custom-icon icon="delete"></custom-icon>
+                </a>
+                <p>
+                    <custom-icon icon="tip"></custom-icon>
+                    The best way to use Spoiler Slayer is to subscribe to public, user-created lists.
+                    <br /><br />
+                    Search for <code>#spoiler-slayer</code> on
+                    <a target="_blank" href="https://gist.github.com/search?q=%23spoiler-slayer">GitHub</a> or
+                    <a target="_blank" href="https://gitlab.com/search?search=%23spoiler-slayer&snippets=true">GitLab</a>,
+                    pick a list, then click the Spoiler Slayer icon
+                    <img src="assets/icons/battered-axe-32.png" class="toolbar-icon-example" alt="battered axe" />
+                    in your browser's toolbar to subscribe. Alternatively, copy and paste the URL into the form below.
+                </p>
+            </div>
             <form class="new-entry" id="new-subscription">
                 <div class="row subscription-row">
                     <a class="fader" id="plus-subscription"><custom-icon icon="add"></custom-icon></a>
@@ -138,6 +135,10 @@
                                     <h4>Sites &amp; Selectors</h4>
                                     <div class="subscription-sites-content"></div>
                                 </div>
+                                <div class="comment none">
+                                    <h4>Author Comments</h4>
+                                    <p class="subscription-comment-content"></p>
+                                </div>
                             </div>
                         </details>
                     </div>
@@ -169,12 +170,20 @@
             </header>
             <p>
                 Add words and phrases to block
-                <br />
-                <small>
-                    Spoilers are matched by the exact entire word, case insensitive. "GoT" will match "got" but not "gotcha".
-                    Check <code>/re/</code> to enable <a href="https://www.regular-expressions.info/">regex</a> for more flexible matching.
-                </small>
             </p>
+
+            <div class='tip'>
+                <a title="Hide tips" href="#" class="fader set-hide-tips">
+                    <custom-icon icon="delete"></custom-icon>
+                </a>
+                <p>
+                    <custom-icon icon="tip"></custom-icon>
+                    Words and phrases are blocked by the exact entire word, case insensitively. "GoT" matches "got" but not "gotcha."
+                    <br /><br />
+                    Check <code>/re/</code> to enable <a href="https://www.regular-expressions.info/" target="_blank">regex</a> for more flexible matching.
+                </p>
+            </div>
+
             <form class="new-entry" id="new-spoiler">
                 <div class="row spoiler-row">
                     <a class="inline-icon fader" id="plus-spoiler"><custom-icon icon="add"></custom-icon></a>
@@ -219,7 +228,26 @@
                     </li>
                 </ul>
             </header>
-            <p>Add sites to block (regex supported) and a selector for that site</p>
+            <p>
+                Add sites and CSS selectors to enable blocking on that site
+            </p>
+
+            <div class='tip'>
+                <a title="Hide tips" href="#" class="fader set-hide-tips">
+                    <custom-icon icon="delete"></custom-icon>
+                </a>
+                <p>
+                    <custom-icon icon="tip"></custom-icon>
+                    Spoiler Slayer only blocks spoilers on sites that are listed below or in subscriptions.
+                    <br /><br />
+                    A <a href="https://developer.mozilla.org/en-US/docs/Learn/CSS/Introduction_to_CSS/Selectors" target="_blank">CSS selector</a>
+                    describes which sections of the site to check for spoilers and are unique to each site. To test your selector,
+                    visit the site you want to block, click the Spoiler Slayer icon
+                    <img src="assets/icons/battered-axe-32.png" class="toolbar-icon-example" alt="battered axe" />
+                    in your browser's toolbar, then enter a selector under "Add Selector." Matching elements glow blue.
+                </p>
+            </div>
+
             <form class="new-entry" id="new-site">
                 <div class="row site-row">
                     <a class="inline-icon fader" id="plus-site"><custom-icon icon="add"></custom-icon></a>
@@ -270,11 +298,12 @@
                     <li><a href="#" id='export-settings'>Export Settings</a></li>
                     <li><a href="#" id='export'>Export all</a></li>
                     <li><a href="#" id='import'>Import</a></li>
+                    <li><a href="#" id="clear-settings">Clear settings</a></li>
                 </ul>
             </div>
             <div class="right">
                 <ul class="menu-h">
-                    <li><a href="#" id="clear-settings">Clear settings</a></li>
+                    <li><label for="hideTips"><input type="checkbox" id="hideTips" name="hideTips">Hide tips</label></li>
                 </ul>
             </div>
             <br /><br />

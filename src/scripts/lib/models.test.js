@@ -81,3 +81,22 @@ test('Normalizes URLs', () => {
         expect(models.Subscription.normalizeUrl(url)).toBe(expected);
     }
 });
+
+test('Returns Unnamed List', () => {
+    let sub = models.Subscription.factory({
+        url: 'https://gist.github.com/brettp/97b82250323d0b8b3e29e2c833da2354'
+    });
+
+    expect(sub.exportName).toBe('Unnamed List');
+});
+
+
+test('Returns Unnamed List after update', () => {
+    let sub = models.Subscription.factory({
+        url: 'https://gist.github.com/brettp/97b82250323d0b8b3e29e2c833da2354'
+    });
+
+    sub.update();
+
+    expect(sub.exportName).toBe('Unnamed List');
+});

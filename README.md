@@ -60,6 +60,7 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - [ ] Clean up popup / content CSS
 - [ ] Don't export subscription contents?
 - [ ] Add tests
+- [ ] Use CSS rules instead of JS to hide / show elements in popup and options (JS is slow.)
 
 
 ### Known Bugs

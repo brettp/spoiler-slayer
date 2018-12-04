@@ -439,19 +439,23 @@ async function initSubscription(url) {
     }
 
     subscribe.querySelector('[name=subscribe]').addEventListener('input',
-        e => saveQuickAddSubscription(e, subscriptions, sub));
+        e => saveQuickAddSubscription(e, subscriptions, sub, newSub));
 }
 
-async function saveQuickAddSubscription(e, subscriptions, sub) {
+async function saveQuickAddSubscription(e, subscriptions, sub, newSub) {
     sub.useSpoilers = byQSOne('[name=useSpoilers]').checked;
     sub.useSites = byQSOne('[name=useSites]').checked;
 
+    // only add sub if it's new
     if (byQSOne('[name=subscribe]').checked) {
-        subscriptions.unshift(sub);
+        if (newSub) {
+            subscriptions.unshift(sub);
+        }
     } else {
         let i = subscriptions.indexOf(sub);
         subscriptions.splice(i, 1);
     }
 
-    setSetting('subscriptions', subscriptions);
+    await setSetting('subscriptions', subscriptions);
+    helpers.addFlash(byId('new-subscription'), 'success');
 }

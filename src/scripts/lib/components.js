@@ -598,9 +598,13 @@ class SubscriptionItem extends SaveableItem {
 
         // update metadata
         // @todo time last updated
-        this.byQSOne('.export-name').innerText = this.model.content.exportName;
-        this.byQSOne('.spoilers-count').innerText = this.model.content.spoilers ? this.model.content.spoilers.length : 0;
-        this.byQSOne('.sites-count').innerText = this.model.content.sites ? this.model.content.sites.length : 0;
+        this.byQSOne('.export-name').innerText = this.model.exportName;
+        this.byQSOne('.spoilers-count').innerText = this.model.spoilers ? this.model.spoilers.length : 0;
+        this.byQSOne('.sites-count').innerText = this.model.sites ? this.model.sites.length : 0;
+        if (this.model.comment) {
+            this.byQSOne('.comment').classList.remove('none');
+            this.byQSOne('.subscription-comment-content').innerText = this.model.comment;
+        }
 
         this.renderSubList(this.model.useSpoilers, 'spoilers');
         this.renderSubList(this.model.useSites, 'sites');

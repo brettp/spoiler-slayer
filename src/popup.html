@@ -38,14 +38,14 @@
                     <p>
                         <custom-icon icon="tip"></custom-icon>
                         This is a revision of a list that will never change or update.
-                        Use the <a href="" target="_blank">latest version</a> instead for a list that updates.
+                        For a list that updates, try the <a href="" target="_blank">latest version</a> instead.
                     </p>
                 </div>
 
                 <h2>
                     <label>
-                        <input type="checkbox" name="subscribe" />
-                        Subscribed to this list
+                        <input type="checkbox" name="subscribe" class="no-auto-save" />
+                        Subscribed
                     </label>
                 </h2>
 
@@ -72,10 +72,11 @@
                 <input type="hidden" name="url" />
                 <input type="submit" class="none" />
 
-                <small>
-                    <br />
-                    Remember to only subscribe to lists you trust! Lists can be updated at any time by their author.
-                </small>
+                <p>
+                    <small>
+                        Remember to only subscribe to lists you trust! Lists can be updated at any time by their author.
+                    </small>
+                </p>
             </form>
 
             <div class="update-failed-banner none">

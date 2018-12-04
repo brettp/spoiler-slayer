@@ -430,6 +430,15 @@ subscription-item h4 {
     columns: 2;
 }
 
+body.hide-tips .tip {
+    display: none;
+}
+
+label[for=hideTips] {
+    display: flex;
+    align-items: center;
+}
+
 .tip {
     position: relative;
     border: 1px dashed black;
@@ -453,10 +462,14 @@ subscription-item h4 {
         height: .9em;
     }
 
-    .hide-tips {
+    .set-hide-tips {
         position: absolute;
         right: 0;
         top: 0;
+    }
+
+    code {
+        vertical-align: top;
     }
 }
 
@@ -801,6 +814,14 @@ regex-input {
 
     .update-failed-text {
         white-space: normal;
+    }
+
+    p {
+        line-height: normal;
+    }
+
+    .right {
+        padding-top: 0;
     }
 }
 
