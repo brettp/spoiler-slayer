@@ -118,11 +118,12 @@ class Subscription extends SpoilerBlockerModel {
         url = url.toString();
         return (
             (
-                /https:\/\/gist\.github\.com/.test(url) ||
-                /https:\/\/gist\.githubusercontent\.com/.test(url) ||
-                /https:\/\/(www\.)?gitlab\.com\/snippets/.test(url)
+                /https:\/\/gist\.github\.com/.test(url)
+                || /https:\/\/gist\.githubusercontent\.com/.test(url)
+                || /https:\/\/(www\.)?gitlab\.com\/snippets/.test(url)
             )
             && !/\/edit\/?$/.test(url)
+            && !/github.com\/([^\/]+)$/.test(url)
             && (!Subscription.isGitHubRevision(url) || Subscription.isGitHubRawUrl(url))
         );
     }

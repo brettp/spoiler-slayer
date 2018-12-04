@@ -47,7 +47,9 @@ test("Doesn't find unsubscribable URLs", () => {
     let urls = [
         'https://gist.github.com/brettp/0e3e61b22c930b429670ac94de605c57/5681c48ca7a3b06a3dd1d8b56372f47fb39e863a',
         'https://gist.github.com/brettp/0e3e61b22c930b429670ac94de605c57/5681c48ca7a3b06a3dd1d8b56372f47fb39e863a/',
-        'https://google.com'
+        'https://google.com',
+        'https://gist.github.com/brettp',
+        'https://gitlab.com/users/brett-profitt/snippets'
     ];
 
     for (const url of urls) {

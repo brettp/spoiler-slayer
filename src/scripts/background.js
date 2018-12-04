@@ -110,7 +110,26 @@ class CmdHandler {
     // when a tab is activated, see if the badge needs updated
     // based on the settings
     showCorrectBadgeCount(data, sender) {
-        let tab, url, prevC, newC, info = {};
+        let tab, url, prevC, newC;
+
+        // default to sender's tab, but allow settings to specify tab
+        // it has problems resolving the active tab when this is called from settings
+        if (data && data.tab) {
+            tab = data.tab;
+        } else {
+            if (!sender.tab) {
+                return;
+            }
+            tab = sender.tab;
+        }
+
+        if (!tab) {
+            return;
+        }
+
+        if (Subscription.isSubscribableUrl(tab.url)) {
+            return this.setBadgeText('+1', '#1fca23', tab.id);
+        }
 
         if (this.badgeDisplay == 'none') {
             return this.setBadgeText('');
@@ -121,19 +140,6 @@ class CmdHandler {
             // prevC = this.prevBlockedCounts.lifetime.total;
             newC = this.blockedCounts.lifetime.total;
         } else {
-            // default to sender's tab, but allow settings to specify tab
-            // it has problems resolving the active tab when this is called from settings
-            if (data && data.tab) {
-                tab = data.tab;
-            } else {
-                if (!sender.tab) {
-                    return;
-                }
-                tab = sender.tab;
-            }
-
-            info.tabId = tab.id;
-
             switch (this.settings.badgeDisplay) {
                 case 'lifeSite':
                     url = new URL(tab.url);
@@ -195,7 +201,7 @@ class CmdHandler {
         return _getActiveTabInfo();
     }
 
-    setBadgeText(text = 0) {
+    setBadgeText(text = 0, color = null, tabId = null) {
         if (!text || text == '') {
             text = 0;
         }
@@ -213,6 +219,18 @@ class CmdHandler {
 
         text.text = text.text.toString();
         chrome.browserAction.setBadgeText(text);
+
+        if (color) {
+            chrome.browserAction.setBadgeBackgroundColor({
+                color: color,
+                tabId: tabId
+            });
+        } else {
+            // there isn't a standardized way to reset the color
+            chrome.browserAction.setBadgeBackgroundColor({
+                color: /firefox/i.test(navigator.userAgent) ? null : '#12345600'
+            });
+        }
     }
 
     getVariableStyles() {
@@ -225,15 +243,10 @@ class CmdHandler {
 
     tabOnActivated(info) {
         var self = this;
-
-        // don't change if registered for site to prevent flash when changing tabs
-        if (this.settings.badgeDisplay != 'life') {
-            chrome.tabs.get(info.tabId, function(tabInfo) {
-                // put in same format as the sender obj
-                debugMsg({cmd: 'tabs.onActivated'}, tabInfo);
-                self.showCorrectBadgeCount(null, {tab: tabInfo});
-            });
-        }
+        chrome.tabs.get(info.tabId, function(tabInfo) {
+            debugMsg({cmd: 'tabs.onActivated'}, tabInfo);
+            self.showCorrectBadgeCount(null, {tab: tabInfo});
+        });
     }
 
     async highlightElementsInActiveTab(selector) {

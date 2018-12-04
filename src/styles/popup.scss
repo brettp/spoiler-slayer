@@ -837,3 +837,10 @@ custom-icon {
 custom-icon.active {
     display: initial;
 }
+
+blockquote {
+    padding: 0 0 0 .5em;
+    margin: .5em 0 1em 1em;
+    background-color: aliceblue;
+    border-left: 2px solid $grey;
+}
