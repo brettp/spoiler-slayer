@@ -129,6 +129,8 @@ class CmdHandler {
 
         if (Subscription.isSubscribableUrl(tab.url)) {
             return this.setBadgeText('+1', '#1fca23', tab.id);
+        } else if (Subscription.isGitHubRevision(tab.url)) {
+            return this.setBadgeText('+1', '#f2b52d', tab.id);
         }
 
         if (this.badgeDisplay == 'none') {
