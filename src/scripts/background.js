@@ -171,7 +171,7 @@ class CmdHandler {
             }
         }
 
-        this.setBadgeText(helpers.friendlyNum(newC));
+        this.setBadgeText(helpers.friendlyNum(newC), '', tab.id);
 
         // set timeout doesn't work in extensions
         // not sure how to do a count up timer from here...
@@ -220,6 +220,8 @@ class CmdHandler {
         }
 
         text.text = text.text.toString();
+        text.tabId = tabId;
+
         chrome.browserAction.setBadgeText(text);
 
         if (color) {
