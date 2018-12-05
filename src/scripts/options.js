@@ -53,7 +53,7 @@ async function init() {
             e.preventDefault();
             setSetting('hideTips', true);
             d.body.classList.add('hide-tips');
-            byId('hideTips').setAttribute('checked', ' ');
+            byId('hideTips').checked = true;
         });
     }
 
