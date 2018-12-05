@@ -100,6 +100,28 @@ textarea {
 }
 
 #popup {
+    &.settings-mode #subscribe {
+        display: none;
+    }
+
+    &.subscribe-mode {
+        #subscribe {
+            &.loaded {
+                custom-icon.loading.active {
+                    display: none;
+                }
+            }
+            &.loading {
+                #new-subscription {
+                    display: none;
+                }
+            }
+        }
+        #settings {
+            display: none;
+        }
+    }
+
     width: 400px;
     background-color: #fff;
     line-height: 1.75em;

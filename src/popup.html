@@ -26,12 +26,12 @@
         <!-- <img class="badge-example" src="assets/icons/icon48.png" /> -->
         <h1>Spoiler Slayer</h1>
         <hr />
-        <div id="subscribe" class="none">
+        <div id="subscribe"  class='loading'>
             <h1><custom-icon icon="reload" class="loading spin"></custom-icon></h1>
 
-            <form id='new-subscription' class='none'>
+            <form id='new-subscription'>
                 <h3>Found list:
-                    <span class="list-name">Unnamed List</span>
+                    <span id="list-name">Unnamed List</span>
                 </h3>
 
                 <div class="tip github-rev-warning none">
@@ -54,7 +54,7 @@
                         <h4>
                             <label>
                                 <input type="checkbox" name="useSpoilers" class="no-auto-save" />
-                                Spoilers (<span class="spoilers-count">-</span>)
+                                Spoilers (<span id="spoilers-count">-</span>)
                             </label>
                         </h4>
                         <ul class='spoilers indent'></ul>
@@ -63,7 +63,7 @@
                         <h4>
                             <label>
                                 <input type="checkbox" name="useSites" class="no-auto-save" />
-                                Sites &amp; Selectors (<span class="sites-count">-</span>)
+                                Sites &amp; Selectors (<span id="sites-count">-</span>)
                             </label>
                         </h4>
                         <ul class='sites indent'></ul>
@@ -96,7 +96,7 @@
             <a href="#" id="dismiss" class="right">No thanks</a>
         </div>
 
-        <div id="settings" class="none">
+        <div id="settings">
             <ul>
                 <li>
                     <label class="checkbox">

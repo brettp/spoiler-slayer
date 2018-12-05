@@ -31,22 +31,24 @@ const examples = [
     }
 ];
 
+const bodyClasses = d.body.classList;
+
 // changing the example while the popup is open is too distracting
 // pick one and use it per popup instance
 const exampleInfo = examples[Math.floor(Math.random() * examples.length)];
 
 d.addEventListener('keydown', (event) => {
     if (event.key && event.key.toLowerCase() == 'alt') {
-        d.body.classList.add('debug-active');
+        bodyClasses.add('debug-active');
     }
 });
 
 d.addEventListener('keyup', (event) => {
     if (event.key && event.key.toLowerCase() == 'alt') {
-        d.body.classList.remove('debug-active');
+        bodyClasses.remove('debug-active');
     } else {
         // someone wants to use the keyboard, so make sure outlines show up
-        d.body.classList.add('keyboard-user');
+        bodyClasses.add('keyboard-user');
     }
 });
 
@@ -88,8 +90,8 @@ d.addEventListener('keyup', (event) => {
 
     byId('dismiss').addEventListener('click', e => {
         e.preventDefault();
-        byId('settings').classList.remove('none');
-        byId('subscribe').classList.add('none');
+        bodyClasses.remove('subscribe-mode');
+        bodyClasses.add('settings-mode');
     });
 
     byId('quick-add-spoiler-form').addEventListener('submit', saveQuickAddSpoiler);
@@ -330,24 +332,26 @@ function initInputs(settings) {
 
 async function initSubscription(url) {
     const subscribe = byId('subscribe');
-    const icon = subscribe.querySelector('custom-icon');
 
     if (Subscription.isGitHubRevision(url) && !Subscription.isGitHubRawUrl(url)) {
+        bodyClasses.add('is-github-rev-not-raw');
         cmd('highlightElementsInActiveTab', '.file-actions > a.btn');
         byQSOne('.github-rev-not-raw').classList.remove('none');
         byId('new-subscription').classList.add('none');
-        subscribe.classList.remove('none');
-        icon.remove();
+
+        bodyClasses.add('subscribe-mode');
+        subscribe.classList.add('loaded');
 
         byId('dismiss').innerText = 'Settings';
         return;
     } else if (!Subscription.isSubscribableUrl(url)) {
-        byId('settings').classList.remove('none');
+        bodyClasses.add('settings-mode');
         return;
     }
 
+    bodyClasses.add('subscribe-mode');
+
     let subscriptions = helpers.objsToModels(await getSetting('subscriptions'), 'subscriptions');
-    subscribe.classList.remove('none');
 
     let sub = Subscription.factory({
         url: url
@@ -357,12 +361,15 @@ async function initSubscription(url) {
     if (!await sub.update()) {
         subscribe.querySelector('.update-failed-banner').classList.remove('none');
         subscribe.querySelector('.update-failed-text').innerText = sub.lastError;
-        byId('new-subscription').classList.add('none');
+        bodyClasses.add('loaded');
 
-        icon.remove();
+        byId('new-subscription').classList.add('none');
         byId('dismiss').innerText = 'Settings';
         return;
     }
+
+    subscribe.classList.remove('loading');
+    subscribe.classList.add('loaded');
 
     if (Subscription.isGitHubRevision(url)) {
         let warning = subscribe.querySelector('.github-rev-warning');
@@ -371,14 +378,11 @@ async function initSubscription(url) {
         warning.querySelector('a').href = Subscription.getGitHubCurrentUrl(sub.url);
     }
 
-    icon.remove();
-    byId('new-subscription').classList.remove('none');
-
     if (sub.content.exportName) {
-        subscribe.querySelector('.list-name').innerText = sub.content.exportName;
+        byId('list-name').innerText = sub.content.exportName;
     }
-    subscribe.querySelector('.spoilers-count').innerText = sub.spoilers.length;
-    subscribe.querySelector('.sites-count').innerText = sub.sites.length;
+    byId('spoilers-count').innerText = sub.spoilers.length;
+    byId('sites-count').innerText = sub.sites.length;
 
     // see if it's already subscribed to
     for (const tempSub of subscriptions) {
