@@ -170,7 +170,7 @@ class Settings {
         let spoilers = this.cached.spoilers;
 
         for (let sub of this.subscriptions) {
-            if (sub.useSpoilers && sub.content && sub.content.spoilers.length > 0) {
+            if (sub.useSpoilers && sub.content && sub.content.spoilers && sub.content.spoilers.length > 0) {
                 spoilers = spoilers.concat(sub.content.spoilers);
             }
         }
@@ -182,7 +182,7 @@ class Settings {
         let sites = this.cached.sites;
 
         for (let sub of this.subscriptions) {
-            if (sub.useSites && sub.content && sub.content.sites.length > 0) {
+            if (sub.useSites && sub.content && sub.content.sites && sub.content.sites.length > 0) {
                 sites = sites.concat(sub.content.sites);
             }
         }
