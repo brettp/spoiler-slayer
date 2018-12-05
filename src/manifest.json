@@ -9,7 +9,7 @@
   "homepage_url": "https://www.github.com/brettp/game-of-spoils",
 
   "browser_action": {
-    "default_icon": "assets/icons/battered-axe-32.png",
+    "default_icon": "assets/icons/battered-axe-48.png",
     "default_popup": "popup.html",
     "default_title": "Spoiler Slayer"
   },
