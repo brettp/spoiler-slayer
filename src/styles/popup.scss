@@ -289,6 +289,11 @@ textarea {
             vertical-align: -moz-middle-with-baseline;
         }
 
+        custom-icon[icon=delete],
+        custom-icon[icon=add] {
+            margin-right: .25em;
+        }
+
         input[type='text'] {
             box-sizing: border-box;
         }
@@ -459,13 +464,14 @@ label[for=hideTips] {
     }
 
     .toolbar-icon-example {
-        height: .9em;
+        height: 1em;
+        vertical-align: text-top;
     }
 
     .set-hide-tips {
         position: absolute;
-        right: 0;
-        top: 0;
+        right: .25em;
+        top: .25em;
     }
 
     code {
