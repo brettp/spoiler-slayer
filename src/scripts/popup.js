@@ -57,7 +57,7 @@ class PopupSettings {
         this.settings = settings;
         initInputs(settings);
 
-        d.body.addEventListener('change', this.saveSetting.bind());
+        d.body.addEventListener('change', this.saveSetting.bind(this));
 
         byId('open-options-page').addEventListener('click', e => {
             // e.preventDefault();
