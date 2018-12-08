@@ -261,6 +261,16 @@ var helpers = (function() {
         return false;
     }
 
+    function getBackgroundPage() {
+        return new Promise((res, rej) => {
+            try {
+                chrome.runtime.getBackgroundPage(page => res(page));
+            } catch (e) {
+                rej(e);
+            }
+        });
+    }
+
     return {
         nullFunc: nullFunc,
         debounce: debounce,
@@ -278,6 +288,7 @@ var helpers = (function() {
         objsToModels: objsToModels,
         openOptionsPage: openOptionsPage,
         openPage: openPage,
+        getBackgroundPage: getBackgroundPage
     };
 })();
 

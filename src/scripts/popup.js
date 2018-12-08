@@ -52,76 +52,190 @@ d.addEventListener('keyup', (event) => {
     }
 });
 
-(async function init() {
-    let settings = await cmd('getSettings');
-    initInputs(settings);
+class PopupSettings {
+    constructor(settings) {
+        this.settings = settings;
+        initInputs(settings);
 
-    d.body.addEventListener('change', saveSetting);
+        d.body.addEventListener('change', this.saveSetting.bind(this));
 
-    byId('open-options-page').addEventListener('click', e => {
-        // e.preventDefault();
-        helpers.openOptionsPage();
-        window.close();
-    });
-
-    byQS('.open-page').forEach((el) => {
-        el.addEventListener('click', (e) => {
-            e.preventDefault();
-            let page = e.target.getAttribute('href');
-            if (page) {
-                helpers.openPage(page);
-            }
+        byId('open-options-page').addEventListener('click', e => {
+            // e.preventDefault();
+            helpers.openOptionsPage();
+            window.close();
         });
-    });
 
-    try {
-        let tab = await getActiveTab();
-        let url = new URL(tab.url);
-        byId('current-site-display').innerText = '@ ' + url.hostname;
-        byId('current-site').value = url.hostname;
+        byQS('.open-page').forEach((el) => {
+            el.addEventListener('click', (e) => {
+                e.preventDefault();
+                let page = e.target.getAttribute('href');
+                if (page) {
+                    helpers.openPage(page);
+                }
+            });
+        });
 
-        // prompt to add subscription
-        initSubscription(url);
-    } catch (e) {
-        console.log(e);
-        byId('current-site').value = '@ unknown';
+        getActiveTab().then(tab => {
+            let url = new URL(tab.url);
+            byId('current-site-display').innerText = '@ ' + url.hostname;
+            byId('current-site').value = url.hostname;
+
+            // prompt to add subscription
+            initSubscription(url, this.settings);
+        }).catch(e => {
+            console.log(e);
+            byId('current-site').value = '@ unknown';
+        });
+
+        byId('dismiss').addEventListener('click', e => {
+            e.preventDefault();
+            bodyClasses.remove('subscribe-mode');
+            bodyClasses.add('settings-mode');
+        });
+
+        byId('quick-add-spoiler-form').addEventListener('submit', this.saveQuickAddSpoiler.bind(this));
+        byId('quick-add-selector-form').addEventListener('submit', this.saveQuickAddSelector.bind(this));
+
+        // toggle widths
+        byId('new-spoiler').addEventListener('focus', (e) => {
+            widen('spoiler');
+        });
+        byId('new-spoiler').addEventListener('blur', unwiden);
+
+        byId('new-selector').addEventListener('focus', (e) => {
+            widen('selector');
+        });
+        byId('new-selector').addEventListener('blur', unwiden);
+
+        byId('new-selector').addEventListener('keyup', helpers.debounce((e) => {
+            cmd('highlightElementsInActiveTab', e.target.value);
+        }), 300);
+
+        let blocked = this.settings.lifetimeBlockedCount.total;
+        let text = blocked == 1 ? ' spoiler blocked' : ' spoilers blocked';
+
+        byId('block-count').innerText = new Number(blocked).toLocaleString() + text;
+
+        // clear preview styles when closed
+        // this just fires off a disconnect event in the background script when the popup is closed
+        chrome.runtime.connect({name: "spoilers-blocker"});
+
+        updateExample(this.settings);
+
+        // from content.js
+        updateStyles();
     }
 
-    byId('dismiss').addEventListener('click', e => {
+    async saveSetting(e) {
+        let input = e.target;
+        if (input.nodeName !== 'SELECT' && input.nodeName !== 'INPUT') {
+            return;
+        }
+
+        if (input.classList.contains('no-auto-save')) {
+            return;
+        }
+
+        let name = input.getAttribute('name');
+        let val = (input.getAttribute('type') == 'checkbox') ? input.checked : input.value;
+        let tab;
+
+        this.settings[name] = val;
+
+        if (name == 'badgeDisplay') {
+            if (val == 'none') {
+                tab = await getActiveTab();
+                cmd('setBadgeText', {'text': '', tabId: tab.id});
+            } else {
+                // update badge with current ACTIVE tab (not THIS tab, because this tab is an internal one)
+                // for some reason this returns nothing if run through the normal cmd
+                tab = await getActiveTab();
+                cmd('showCorrectBadgeCount', {tab: tab});
+            }
+        }
+
+        let revealed = byQSOne('.spoiler-blocker-revealed');
+        if (revealed || input.getAttribute('type') != 'range') {
+            updateExample(this.settings);
+        }
+    }
+
+    saveQuickAddSpoiler(e) {
         e.preventDefault();
-        bodyClasses.remove('subscribe-mode');
-        bodyClasses.add('settings-mode');
-    });
+        var form = e.target;
+        var input = byId('new-spoiler');
+        var spoilers = input.value.trim().split(',');
+        var cleaned = [];
 
-    byId('quick-add-spoiler-form').addEventListener('submit', saveQuickAddSpoiler);
-    byId('quick-add-selector-form').addEventListener('submit', saveQuickAddSelector);
+        for (let str of spoilers) {
+            if (str.trim()) {
+                cleaned.push(str.trim());
+            }
+        }
 
-    // toggle widths
-    byId('new-spoiler').addEventListener('focus', (e) => {
-        widen('spoiler');
-    });
-    byId('new-spoiler').addEventListener('blur', unwiden);
+        if (cleaned.length > 0) {
+            for (let spoiler of cleaned) {
+                this.settings.spoilers.unshift({
+                    'spoiler': spoiler,
+                    'isRegex': false
+                });
+            }
 
-    byId('new-selector').addEventListener('focus', (e) => {
-        widen('selector');
-    });
-    byId('new-selector').addEventListener('blur', unwiden);
+            helpers.addFlash(input, 'success');
+            form.reset();
+            input.blur();
+        } else {
+            helpers.addFlash(input, 'fail');
+        }
 
-    byId('new-selector').addEventListener('keyup', helpers.debounce((e) => {
-        cmd('highlightElementsInActiveTab', e.target.value);
-    }), 300);
+        return false;
+    }
 
-    let blocked = settings.lifetimeBlockedCount.total;
-    let text = blocked == 1 ? ' spoiler blocked' : ' spoilers blocked';
+    saveQuickAddSelector(e) {
+        e.preventDefault();
+        var form = e.target;
+        var selectorInput = byId('new-selector');
+        var siteInput = byId('current-site');
 
-    byId('block-count').innerText = new Number(blocked).toLocaleString() + text;
+        if (!selectorInput.value || !siteInput.value) {
+            helpers.addFlash(selectorInput, 'fail');
+            return false;
+        }
 
-    // clear preview styles when closed
-    // this just fires off a disconnect event in the background script when the popup is closed
-    chrome.runtime.connect({name: "spoilers-blocker"});
+        this.settings.sites.unshift({
+            'urlRegex': siteInput.value,
+            'selector': selectorInput.value
+        });
 
-    updateStyles();
-    updateExample(settings);
+        helpers.addFlash(selectorInput, 'success');
+        form.reset();
+        selectorInput.blur();
+
+        return false;
+    }
+
+    saveQuickAddSubscription(e, subscriptions, sub, newSub) {
+        sub.useSpoilers = byQSOne('[name=useSpoilers]').checked;
+        sub.useSites = byQSOne('[name=useSites]').checked;
+
+        // only add sub if it's new
+        if (byQSOne('[name=subscribe]').checked) {
+            if (newSub) {
+                subscriptions.unshift(sub);
+            }
+        } else {
+            let i = subscriptions.indexOf(sub);
+            subscriptions.splice(i, 1);
+        }
+
+        helpers.addFlash(byId('new-subscription'), 'success');
+    }
+}
+
+(async function init() {
+    let bg = await helpers.getBackgroundPage();
+    let settings = bg.settings;
+    new PopupSettings(settings,);
 })();
 
 function widen(id) {
@@ -147,40 +261,6 @@ function unwiden() {
     selector.remove('inactive');
 }
 
-async function saveSetting(e) {
-    let input = e.target;
-    if (input.nodeName !== 'SELECT' && input.nodeName !== 'INPUT') {
-        return;
-    }
-
-    if (input.classList.contains('no-auto-save')) {
-        return;
-    }
-
-    let name = input.getAttribute('name');
-    let val = (input.getAttribute('type') == 'checkbox') ? input.checked : input.value;
-    let tab;
-
-    setSetting(name, val);
-
-    if (name == 'badgeDisplay') {
-        if (val == 'none') {
-            tab = await getActiveTab();
-            cmd('setBadgeText', {'text': '', tabId: tab.id});
-        } else {
-            // update badge with current ACTIVE tab (not THIS tab, because this tab is an internal one)
-            // for some reason this returns nothing if run through the normal cmd
-            tab = await getActiveTab();
-            cmd('showCorrectBadgeCount', {tab: tab});
-        }
-    }
-
-    let revealed = byQSOne('.spoiler-blocker-revealed');
-    if (revealed || input.getAttribute('type') != 'range') {
-        updateExample();
-    }
-}
-
 async function getActiveTab() {
     return new Promise(res => {
         chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
@@ -190,67 +270,7 @@ async function getActiveTab() {
     });
 }
 
-async function saveQuickAddSpoiler(e) {
-    e.preventDefault();
-    var form = e.target;
-    var input = byId('new-spoiler');
-    var spoilers = input.value.trim().split(',');
-    var cleaned = [];
-
-    for (let str of spoilers) {
-        if (str.trim()) {
-            cleaned.push(str.trim());
-        }
-    }
-
-    if (cleaned.length > 0) {
-        var cur = await getSetting('spoilers');
-
-        for (let spoiler of cleaned) {
-            cur.unshift({
-                'spoiler': spoiler,
-                'isRegex': false
-            });
-        }
-
-        setSetting('spoilers', cur);
-        helpers.addFlash(input, 'success');
-        form.reset();
-        input.blur();
-    } else {
-        helpers.addFlash(input, 'fail');
-    }
-
-    return false;
-}
-
-async function saveQuickAddSelector(e) {
-    e.preventDefault();
-    var form = e.target;
-    var selectorInput = byId('new-selector');
-    var siteInput = byId('current-site');
-
-    if (!selectorInput.value || !siteInput.value) {
-        helpers.addFlash(selectorInput, 'fail');
-        return false;
-    }
-
-    var cur = await getSetting('sites');
-
-    cur.unshift({
-        'urlRegex': siteInput.value,
-        'selector': selectorInput.value
-    });
-
-    setSetting('sites', cur);
-    helpers.addFlash(selectorInput, 'success');
-    form.reset();
-    selectorInput.blur();
-
-    return false;
-}
-
-async function updateExample(settings = null) {
+function updateExample(settings) {
     let template = byId('example-template').content;
     let ex = template.cloneNode(true);
     let container = byId('example');
@@ -267,10 +287,6 @@ async function updateExample(settings = null) {
     ex.querySelector('img').setAttribute('src', `assets/images/${exampleInfo.image}`);
 
     wrapper.replaceWith(ex);
-
-    if (!settings) {
-        settings = await cmd('getSettings');
-    }
 
     if (settings.blockingEnabled) {
         blockElement(byQSOne('.spoiler-blocker-glamoured'), exampleInfo.spoiler, settings, false);
@@ -329,7 +345,7 @@ function initInputs(settings) {
     }
 }
 
-async function initSubscription(url) {
+async function initSubscription(url, settings) {
     const subscribe = byId('subscribe');
 
     if (Subscription.isGitHubRevision(url) && !Subscription.isGitHubRawUrl(url)) {
@@ -340,8 +356,6 @@ async function initSubscription(url) {
 
         bodyClasses.add('subscribe-mode');
         subscribe.classList.add('loaded');
-
-        byId('dismiss').innerText = 'Settings';
         return;
     } else if (!Subscription.isSubscribableUrl(url)) {
         bodyClasses.add('settings-mode');
@@ -350,7 +364,7 @@ async function initSubscription(url) {
 
     bodyClasses.add('subscribe-mode');
 
-    let subscriptions = helpers.objsToModels(await getSetting('subscriptions'), 'subscriptions');
+    let subscriptions = helpers.objsToModels(settings.subscriptions, 'subscriptions');
 
     let sub = Subscription.factory({
         url: url
@@ -363,7 +377,6 @@ async function initSubscription(url) {
         bodyClasses.add('loaded');
 
         byId('new-subscription').classList.add('none');
-        byId('dismiss').innerText = 'Settings';
         return;
     }
 
@@ -442,22 +455,4 @@ async function initSubscription(url) {
             saveQuickAddSubscription(e, subscriptions, sub, newSub);
         }
     });
-}
-
-async function saveQuickAddSubscription(e, subscriptions, sub, newSub) {
-    sub.useSpoilers = byQSOne('[name=useSpoilers]').checked;
-    sub.useSites = byQSOne('[name=useSites]').checked;
-
-    // only add sub if it's new
-    if (byQSOne('[name=subscribe]').checked) {
-        if (newSub) {
-            subscriptions.unshift(sub);
-        }
-    } else {
-        let i = subscriptions.indexOf(sub);
-        subscriptions.splice(i, 1);
-    }
-
-    await setSetting('subscriptions', subscriptions);
-    helpers.addFlash(byId('new-subscription'), 'success');
 }
