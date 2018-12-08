@@ -85,9 +85,7 @@ var helpers = (function() {
         return limit ? excerpt(txt, limit) : txt;
     }
 
-    function excerpt(obj, limit, elsp) {
-        elsp = elsp || '…';
-
+    function excerpt(obj, limit, elsp = '…') {
         let text = describe(obj);
 
         if (text.length <= limit) {
@@ -282,3 +280,7 @@ var helpers = (function() {
         openPage: openPage,
     };
 })();
+
+if (typeof require !== 'undefined') {
+    module.exports = helpers;
+}

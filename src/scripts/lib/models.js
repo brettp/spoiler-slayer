@@ -288,5 +288,7 @@ class Subscription extends SpoilerBlockerModel {
 if (typeof require !== 'undefined') {
     module.exports = {
         Subscription: Subscription,
+        Spoiler: Spoiler,
+        Site: Site
     }
 }

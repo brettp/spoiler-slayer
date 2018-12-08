@@ -23,7 +23,7 @@ class CmdHandler {
     }
 
     validUrl(url) {
-        return this.settings.allSitesRegex.test(url);
+        return this.settings.sitesRegex.test(url);
     }
 
     shouldBlock(url) {
@@ -51,11 +51,11 @@ class CmdHandler {
     }
 
     setSetting(data) {
-        this.settings[data.name] = data.value;
+        return this.settings[data.name] = data.value;
     }
 
     saveSettings(data) {
-        this.settings.save(data);
+        return this.settings.save(data);
     }
 
     getDefaultSettings() {
@@ -192,6 +192,8 @@ class CmdHandler {
         if (sender.tab && sender.tab.id) {
             this.blockedCounts.page[sender.tab.id] = 0;
         }
+
+        return;
     }
 
     debug(msg) {

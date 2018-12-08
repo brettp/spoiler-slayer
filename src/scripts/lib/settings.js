@@ -32,12 +32,17 @@ class Settings {
 
     get compiledSettings() {
         return [
-            'allSitesRegex',
+            'sitesRegex',
+            'spoilersRegex',
             'compiledSitesAndSelectors',
             'transitionDurationSecs',
             'mergedSpoilers',
             'mergedSites',
         ];
+    }
+
+    get arraySettings() {
+        return ['spoilers', 'sites', 'subscriptions'];
     }
 
     /**
@@ -46,10 +51,10 @@ class Settings {
      */
     get compiledSettingsInfo() {
         return {
-            sites: ['allSitesRegex', 'compiledSitesAndSelectors'],
+            sites: ['sitesRegex', 'compiledSitesAndSelectors'],
             spoilers: ['spoilersRegex'],
             transitionDuration: ['transitionDurationSecs'],
-            subscriptions: ['mergedSpoilers', 'mergedSites', 'allSitesRegex', 'compiledSitesAndSelectors', 'spoilersRegex']
+            subscriptions: ['mergedSpoilers', 'mergedSites', 'sitesRegex', 'compiledSitesAndSelectors', 'spoilersRegex']
         };
     }
 
@@ -65,12 +70,9 @@ class Settings {
     }
 
     constructor(saved) {
-        if (saved && Object.keys(saved).length < 1) {
-            saved = Settings.defaultSettings;
-        } else {
-            // make sure we have defaults
-            saved = {...Settings.defaultSettings, ...saved};
-        }
+        let val;
+        // make sure we have defaults
+        saved = {...Settings.defaultSettings, ...saved};
 
         Object.defineProperty(this, 'cached', {
             value: saved,
@@ -79,54 +81,77 @@ class Settings {
 
         // make all settings accessible as normal props
         for (let k in saved) {
+            // not saveable so don't wrap
             if (this.compiledSettings.includes(k)) {
                 continue;
             }
 
-            Object.defineProperty(this, k, {
+            let props = {
                 get() {
                     return this.cached[k];
                 },
-                set(v) {
-                    this.set(k, v);
-                },
                 enumerable: true
-            });
+            };
+
+            // initial proxied setting
+            if (this.cached[k] instanceof Object) {
+                this.cached[k] = this.proxySetting(k, this.cached[k]);
+                // this sets the object itself
+                // the proxy sets the props on that object
+                props.set = function(v) {
+                    this.cached[k] = this.proxySetting(k, v);
+                    this.clearCompiledValues(k);
+                    this.update(k);
+                }
+            } else {
+                props.set = function(v) {
+                    this.cached[k] = v;
+                    this.clearCompiledValues(k);
+                    this.update(k);
+                }
+            }
+
+            Object.defineProperty(this, k, props);
         }
 
         this.setUpCompiledProps();
     }
 
-    setUpCompiledProps() {
-        for (let settingName in this.compiledSettingsInfo) {
-            let props = this.compiledSettingsInfo[settingName];
+    proxySetting(settingName, base) {
+       return new Proxy(base, {
+            get: (target, prop, receiver) => Reflect.get(target, prop, receiver),
+            set: (target, prop, val, receiver) => {
+                Reflect.set(target, prop, val, receiver);
 
-            for (let propName of props) {
-                this.addCompiledProp(propName);
+                if (prop !== 'length') {
+                    this.clearCompiledValues(settingName)
+                    this.update(settingName);
+                }
+                return true;
             }
+        });
+    }
+
+    setUpCompiledProps() {
+        for (let propName of this.compiledSettings) {
+            this.addCompiledProp(propName);
         }
 
         // update cached and compiled settings
         // this doesn't fire soon enough for immediate calls after,
         // so we also manually update the cached setting for each save
-        var self = this;
-        chrome.storage.onChanged.addListener(function(changes, namespace) {
-            for (let name in changes) {
-                console.log(`Updating cached settings for ${name} to`, changes[name].newValue);
-                self.cached[name] = changes[name].newValue;
+        // var self = this;
+        // chrome.storage.onChanged.addListener(function(changes, namespace) {
+        //     for (let name in changes) {
+        //         console.log(`Updating cached settings for ${name} to`, changes[name].newValue);
+        //         // self.cached[name] = changes[name].newValue;
 
-                self.clearCompiledValues(name);
-            }
-        });
+        //         self.clearCompiledValues(name);
+        //     }
+        // });
     }
 
     addCompiledProp(propName) {
-        let compiler = propName + 'Compiler';
-
-        if (!this[compiler]) {
-            return;
-        }
-
         // define lazy loading and caching props
         // these will be compiled on first access, then cached,
         // but removed if their settings change, causing them
@@ -156,18 +181,20 @@ class Settings {
 
     compileProp(name, compiler) {
         if (compiler) {
-            console.log(`Compiling setting ${name} using ${helpers.describe(compiler)}`);
+            if (this.debug) {
+                console.log(`Compiling setting ${name} using ${helpers.describe(compiler)}`);
+            }
             compiler.call(this, name);
         } else if (this[name + 'Compiler']) {
-            console.log(
-                `Compiling setting ${name} using ${this.constructor.name}.${name}Compiler()`
-            );
+            if (this.debug) {
+                console.log(`Compiling setting ${name} using ${this.constructor.name}.${name}Compiler()`);
+            }
             return this[name + 'Compiler'].call(this);
         }
     }
 
     mergedSpoilersCompiler() {
-        let spoilers = this.cached.spoilers;
+        let spoilers = this.spoilers;
 
         for (let sub of this.subscriptions) {
             if (sub.useSpoilers && sub.content && sub.content.spoilers && sub.content.spoilers.length > 0) {
@@ -179,7 +206,7 @@ class Settings {
     }
 
     mergedSitesCompiler() {
-        let sites = this.cached.sites;
+        let sites = this.sites;
 
         for (let sub of this.subscriptions) {
             if (sub.useSites && sub.content && sub.content.sites && sub.content.sites.length > 0) {
@@ -192,7 +219,7 @@ class Settings {
 
     spoilersRegexCompiler() {
         var spoiler_strs = [];
-        if (!this.mergedSpoilers) {
+        if (this.mergedSpoilers.length < 1) {
             return false;
         }
 
@@ -207,12 +234,22 @@ class Settings {
         return new RegExp(spoiler_strs.join('|'), 'iu');
     }
 
-    allSitesRegexCompiler() {
+    sitesRegexCompiler() {
         let urls = [];
+
+        if (this.mergedSites.length < 1) {
+            return false;
+        }
 
         for (let info of this.mergedSites) {
             let regex = helpers.getRegexStr(info.urlRegex, info.isRegex);
-            urls.push(regex);
+            if (regex) {
+                urls.push(regex);
+            }
+        }
+
+        if (urls.length < 1) {
+            return false;
         }
 
         let urlRegex = new RegExp(urls.join('|'), 'iu');
@@ -256,31 +293,25 @@ class Settings {
     //     console.log('sent cmd');
     // }
 
-    set(k, v) {
-        // only save if this is a known value
-        // if (k in Settings.defaultSettings) {
-            console.log(`Saving setting ${helpers.describe(k)} to`, v);
-            this.cached[k] = v;
+    update(name) {
+        var setting = {};
 
-            var setting = {};
-            setting[k] = v;
-            this.clearCompiledValues(k);
+        // don't save the arrays as objects
+        if (this.arraySettings.includes(name)) {
+            setting[name] = Object.values(this[name]);
+        } else {
+            setting[name] = this[name];
+        }
 
-            // @todo use a Setting class that knows when it changed
-            let cb = helpers.nullFunc;
-            if (typeof this[k + 'OnChange'] === 'function') {
-                cb = this[k + 'OnChange'];
-            }
+        // @todo use a Setting class that knows when it changed
+        let cb = helpers.nullFunc;
 
-            try {
-                chrome.storage.sync.set(setting, cb);
-            } catch (e) {
-                // this doesn't actually catch it...
-                console.log('Error syncing settings!', e);
-            }
-        // } else {
-        //     console.log(`Unknown settings ${helpers.describe(k)}. Will not set to`, v);
-        // }
+        try {
+            chrome.storage.sync.set(setting, cb);
+        } catch (e) {
+            // this doesn't actually catch it...
+            console.log('Error syncing settings!', e);
+        }
     }
 
     save(settings, cb) {
@@ -295,22 +326,12 @@ class Settings {
      * @param {String} changed
      */
     clearCompiledValues(changed) {
-        if (changed in this.compiledSettingsInfo) {
-            for (let name of this.compiledSettingsInfo[changed]) {
-                console.log(`Clearing compiled value ${name} because ${changed} changed`);
-                delete this[name];
-            }
+        if (this.debug) {
+            console.log("Clearing compiled values");
         }
-    }
-
-    /**
-     * Updates the cached version without firing a changed event
-     *
-     * @param {String} k
-     * @param {mixed} v
-     */
-    update(k, v) {
-        this.cached[k] = v;
+        for (let name of this.compiledSettings) {
+            delete this[name];
+        }
     }
 
     static factory() {
@@ -319,5 +340,11 @@ class Settings {
                 res(new Settings(settings));
             });
         });
+    }
+}
+
+if (typeof require !== 'undefined') {
+    module.exports = {
+        Settings: Settings
     }
 }

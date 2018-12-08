@@ -49,8 +49,9 @@
                 Subscribe to public spoilers lists that stay fresh with new spoilers, sites, and selectors
                 <br />
                 <small>
-                    Find lists on <a target="_blank" href="https://gist.github.com/search?q=%23spoiler-slayer">GitHub</a> or
-                    <a target="_blank" href="https://gitlab.com/search?search=%23spoiler-slayer&snippets=true">GitLab</a>.
+                    Find lists tagged <code>#spoilerSlayer</code> on
+                    <a target="_blank" href="https://gist.github.com/search?q=%23spoilerSlayer">GitHub</a> or
+                    <a target="_blank" href="https://gitlab.com/search?search=%23spoilerSlayer&snippets=true">GitLab</a>.
                     Only add trusted sources!
                 </small>
             </p>
@@ -62,12 +63,18 @@
                     <custom-icon icon="tip"></custom-icon>
                     The best way to use Spoiler Slayer is to subscribe to public, user-created lists.
                     <br /><br />
-                    Search for <code>#spoiler-slayer</code> on
-                    <a target="_blank" href="https://gist.github.com/search?q=%23spoiler-slayer">GitHub</a> or
-                    <a target="_blank" href="https://gitlab.com/search?search=%23spoiler-slayer&snippets=true">GitLab</a>,
+                    Search for <code>#spoilerSlayer</code> on
+                    <a target="_blank" href="https://gist.github.com/search?q=%23spoilerSlayer">GitHub</a> or
+                    <a target="_blank" href="https://gitlab.com/search?search=%23spoilerSlayer&snippets=true">GitLab</a>,
                     pick a list, then click the Spoiler Slayer icon
                     <img src="assets/icons/battered-axe-plus-one.svg" class="toolbar-icon-example" alt="battered axe" />
                     in your browser's toolbar to subscribe. Alternatively, copy and paste the URL into the form below.
+                    <br /><br />
+                    To create a subscription, export your spoilers or sites by clicking the Export icon
+                    <custom-icon icon='download'></custom-icon> in the upper right of each section, then
+                    upload the file to <a target="_blank" href="https://gist.github.com/">GitHub</a> or
+                    <a target="_blank" href="https://gitlab.com/">GitLab</a>. Don't forget to tag it
+                    <code>#spoilerSlayer</code> so others can find it!
                 </p>
             </div>
             <form class="new-entry" id="new-subscription">
@@ -180,7 +187,7 @@
                     <custom-icon icon="tip"></custom-icon>
                     Words and phrases are blocked by the exact entire word, case insensitively. "GoT" matches "got" but not "gotcha."
                     <br /><br />
-                    Check <code>/re/</code> to enable <a href="https://www.regular-expressions.info/" target="_blank">regex</a> for more flexible matching.
+                    Check <code>/re/</code> to use <a href="https://www.regular-expressions.info/" target="_blank">regex</a> for more flexible matching.
                 </p>
             </div>
 
@@ -295,8 +302,8 @@
             </form>
             <div class="left">
                 <ul class="menu-h">
-                    <li><a href="#" id='export-settings'>Export Settings</a></li>
-                    <li><a href="#" id='export'>Export all</a></li>
+                    <li><a href="#" id='export'>Export</a></li>
+                    <li><a href="#" id='export-settings'>Export settings only</a></li>
                     <li><a href="#" id='import'>Import</a></li>
                     <li><a href="#" id="clear-settings">Clear settings</a></li>
                 </ul>

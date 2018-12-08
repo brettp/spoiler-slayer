@@ -28,7 +28,8 @@
     "tiny-lr": "^0.2.1"
   },
   "scripts": {
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "vs-code-test": "clear ; jest"
   },
   "author": "Brett Profitt",
   "license": "MIT",

@@ -59,8 +59,9 @@ d.addEventListener('keyup', (event) => {
     d.body.addEventListener('change', saveSetting);
 
     byId('open-options-page').addEventListener('click', e => {
-        e.preventDefault();
+        // e.preventDefault();
         helpers.openOptionsPage();
+        window.close();
     });
 
     byQS('.open-page').forEach((el) => {
@@ -70,8 +71,6 @@ d.addEventListener('keyup', (event) => {
             if (page) {
                 helpers.openPage(page);
             }
-
-            return false;
         });
     });
 
@@ -398,11 +397,6 @@ async function initSubscription(url) {
                 byQSOne('[name=useSites]').setAttribute('checked', ' ');
             }
 
-            subscribe.querySelector('[name=useSpoilers]').addEventListener('input',
-                e => saveQuickAddSubscription(e, subscriptions, sub));
-
-            subscribe.querySelector('[name=useSites]').addEventListener('input',
-                e => saveQuickAddSubscription(e, subscriptions, sub));
             break;
         }
     }
@@ -442,8 +436,12 @@ async function initSubscription(url) {
         }
     }
 
-    subscribe.querySelector('[name=subscribe]').addEventListener('input',
-        e => saveQuickAddSubscription(e, subscriptions, sub, newSub));
+    subscribe.addEventListener('input', e => {
+        if (['subscribe', 'useSpoilers', 'useSites'].includes(e.target.name)) {
+            e.preventDefault();
+            saveQuickAddSubscription(e, subscriptions, sub, newSub);
+        }
+    });
 }
 
 async function saveQuickAddSubscription(e, subscriptions, sub, newSub) {
