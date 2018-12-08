@@ -446,3 +446,64 @@ test('Merges values if not SS objects', () => {
         }
     ]);
 });
+
+test.only('Splice clears cache', () => {
+    let settings = new Settings({
+        debug: true,
+        spoilers: [
+            {spoiler: 'test-spoiler'},
+            {spoiler: 'test-spoiler-2'},
+            {spoiler: 'test-spoiler-3'}
+        ],
+        sites: [{
+            urlRegex: 'test-site',
+            selector: 'test-selector'
+        }],
+        subscriptions: [{
+            url: 'https://test.org',
+            useSites: true,
+            useSpoilers: true,
+            content: {
+                spoilers: [{
+                    spoiler: 'sub-test-spoiler'
+                }],
+                sites: [{
+                    urlRegex: 'sub-test-site',
+                    selector: 'sub-test-selector'
+                }]
+            }
+        }]
+    });
+
+    // one from the middle
+    settings.spoilers.splice(1, 1);
+
+    expect(settings.mergedSpoilers.length).toBe(3);
+    expect(settings.spoilersRegex).toEqual(
+        /\btest-spoiler\b|\btest-spoiler-3\b|\bsub-test-spoiler\b/iu
+    );
+
+    // set to empty
+    settings.spoilers.splice(0, 2);
+
+    expect(settings.mergedSpoilers.length).toBe(1);
+    expect(settings.spoilersRegex).toEqual(
+        /\bsub-test-spoiler\b/iu
+    );
+
+    // remove sub
+    settings.subscriptions.splice(0, 1);
+
+    expect(settings.mergedSpoilers.length).toBe(0);
+    expect(settings.spoilersRegex).toBeFalsy();
+
+    expect(settings.mergedSites.length).toBe(1);
+    expect(settings.sitesRegex).toEqual(
+        /\btest-site\b/iu
+    );
+
+    settings.sites.splice(0, 1);
+    expect(settings.mergedSites.length).toBe(0);
+    expect(settings.sitesRegex).toBeFalsy();
+
+});

@@ -119,11 +119,11 @@ class Settings {
 
     proxySetting(settingName, base) {
        return new Proxy(base, {
-            get: (target, prop, receiver) => Reflect.get(target, prop, receiver),
             set: (target, prop, val, receiver) => {
                 Reflect.set(target, prop, val, receiver);
 
-                if (prop !== 'length') {
+                // when splicing an array that would leave it empty, nothing is set expect length
+                if (prop !== 'length' || prop === 'length' && val === 0) {
                     this.clearCompiledValues(settingName)
                     this.update(settingName);
                 }

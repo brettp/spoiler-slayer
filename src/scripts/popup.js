@@ -57,7 +57,7 @@ class PopupSettings {
         this.settings = settings;
         initInputs(settings);
 
-        d.body.addEventListener('change', this.saveSetting.bind(this));
+        d.body.addEventListener('change', this.saveSetting.bind());
 
         byId('open-options-page').addEventListener('click', e => {
             // e.preventDefault();
@@ -81,7 +81,7 @@ class PopupSettings {
             byId('current-site').value = url.hostname;
 
             // prompt to add subscription
-            initSubscription(url, this.settings);
+            this.initSubscription(url, this.settings);
         }).catch(e => {
             console.log(e);
             byId('current-site').value = '@ unknown';
@@ -214,18 +214,129 @@ class PopupSettings {
         return false;
     }
 
-    saveQuickAddSubscription(e, subscriptions, sub, newSub) {
+    async initSubscription(url) {
+        const subscribe = byId('subscribe');
+
+        if (Subscription.isGitHubRevision(url) && !Subscription.isGitHubRawUrl(url)) {
+            bodyClasses.add('is-github-rev-not-raw');
+            cmd('highlightElementsInActiveTab', '.file-actions > a.btn');
+            byQSOne('.github-rev-not-raw').classList.remove('none');
+            byId('new-subscription').classList.add('none');
+
+            bodyClasses.add('subscribe-mode');
+            subscribe.classList.add('loaded');
+            return;
+        } else if (!Subscription.isSubscribableUrl(url)) {
+            bodyClasses.add('settings-mode');
+            return;
+        }
+
+        bodyClasses.add('subscribe-mode');
+        let subscriptions = helpers.objsToModels(this.settings.subscriptions, 'subscriptions');
+
+        let sub = Subscription.factory({
+            url: url
+        });
+        let newSub = true;
+
+        if (!await sub.update()) {
+            subscribe.querySelector('.update-failed-banner').classList.remove('none');
+            subscribe.querySelector('.update-failed-text').innerText = sub.lastError;
+            bodyClasses.add('loaded');
+
+            byId('new-subscription').classList.add('none');
+            return;
+        }
+
+        subscribe.classList.remove('loading');
+        subscribe.classList.add('loaded');
+
+        if (Subscription.isGitHubRevision(url)) {
+            let warning = subscribe.querySelector('.github-rev-warning');
+            warning.classList.remove('none');
+
+            warning.querySelector('a').href = Subscription.getGitHubCurrentUrl(sub.url);
+        }
+
+        if (sub.content.exportName) {
+            byId('list-name').innerText = sub.content.exportName;
+        }
+        byId('spoilers-count').innerText = sub.spoilers.length;
+        byId('sites-count').innerText = sub.sites.length;
+
+        // see if it's already subscribed to
+        for (const tempSub of subscriptions) {
+            if (tempSub.url == sub.url) {
+                sub = tempSub;
+                newSub = false;
+                subscribe.querySelector('[name=subscribe]').setAttribute('checked', ' ');
+
+                if (sub.useSpoilers) {
+                    byQSOne('[name=useSpoilers]').setAttribute('checked', ' ');
+                }
+                if (sub.useSites) {
+                    byQSOne('[name=useSites]').setAttribute('checked', ' ');
+                }
+
+                break;
+            }
+        }
+
+        if (newSub) {
+            if (sub.spoilers.length > 0) {
+                subscribe.querySelector(`[name=useSpoilers]`).setAttribute('checked', ' ');
+            }
+            if (sub.sites.length > 0) {
+                subscribe.querySelector(`[name=useSites]`).setAttribute('checked', ' ');
+            }
+        }
+
+        // previews
+        for (const type of ['spoilers', 'sites']) {
+            if (sub[type] && sub[type].length > 0) {
+                const list = subscribe.querySelector(`.${type}`);
+
+                for (let i = 0; i < 4 && i < sub[type].length; i++) {
+                    let item = sub[type][i];
+                    let li = d.createElement('li');
+                    li.innerText = type === 'spoilers' ? item.spoiler : item.urlRegex;
+                    list.appendChild(li);
+                }
+
+                // add ... or the 5th element if only 5 total
+                if (sub[type].length == 5) {
+                    let item = sub[type][4];
+                    let li = d.createElement('li');
+                    li.innerText = type === 'spoilers' ? item.spoiler : item.urlRegex;
+                    list.appendChild(li);
+                } else if (sub[type].length > 5) {
+                    let li = d.createElement('li');
+                    li.innerText = '...and ' + (sub[type].length - 5) + ' more';
+                    list.appendChild(li);
+                }
+            }
+        }
+
+        subscribe.addEventListener('input', e => {
+            if (['subscribe', 'useSpoilers', 'useSites'].includes(e.target.name)) {
+                e.preventDefault();
+                this.saveQuickAddSubscription(e, sub, newSub);
+            }
+        });
+    }
+
+    saveQuickAddSubscription(e, sub, newSub) {
         sub.useSpoilers = byQSOne('[name=useSpoilers]').checked;
         sub.useSites = byQSOne('[name=useSites]').checked;
 
         // only add sub if it's new
         if (byQSOne('[name=subscribe]').checked) {
             if (newSub) {
-                subscriptions.unshift(sub);
+                this.settings.subscriptions.unshift(sub);
             }
         } else {
-            let i = subscriptions.indexOf(sub);
-            subscriptions.splice(i, 1);
+            let i = this.settings.subscriptions.indexOf(sub);
+            this.settings.subscriptions.splice(i, 1);
         }
 
         helpers.addFlash(byId('new-subscription'), 'success');
@@ -343,116 +454,4 @@ function initInputs(settings) {
             input.dispatchEvent(event);
         }
     }
-}
-
-async function initSubscription(url, settings) {
-    const subscribe = byId('subscribe');
-
-    if (Subscription.isGitHubRevision(url) && !Subscription.isGitHubRawUrl(url)) {
-        bodyClasses.add('is-github-rev-not-raw');
-        cmd('highlightElementsInActiveTab', '.file-actions > a.btn');
-        byQSOne('.github-rev-not-raw').classList.remove('none');
-        byId('new-subscription').classList.add('none');
-
-        bodyClasses.add('subscribe-mode');
-        subscribe.classList.add('loaded');
-        return;
-    } else if (!Subscription.isSubscribableUrl(url)) {
-        bodyClasses.add('settings-mode');
-        return;
-    }
-
-    bodyClasses.add('subscribe-mode');
-
-    let subscriptions = helpers.objsToModels(settings.subscriptions, 'subscriptions');
-
-    let sub = Subscription.factory({
-        url: url
-    });
-    let newSub = true;
-
-    if (!await sub.update()) {
-        subscribe.querySelector('.update-failed-banner').classList.remove('none');
-        subscribe.querySelector('.update-failed-text').innerText = sub.lastError;
-        bodyClasses.add('loaded');
-
-        byId('new-subscription').classList.add('none');
-        return;
-    }
-
-    subscribe.classList.remove('loading');
-    subscribe.classList.add('loaded');
-
-    if (Subscription.isGitHubRevision(url)) {
-        let warning = subscribe.querySelector('.github-rev-warning');
-        warning.classList.remove('none');
-
-        warning.querySelector('a').href = Subscription.getGitHubCurrentUrl(sub.url);
-    }
-
-    if (sub.content.exportName) {
-        byId('list-name').innerText = sub.content.exportName;
-    }
-    byId('spoilers-count').innerText = sub.spoilers.length;
-    byId('sites-count').innerText = sub.sites.length;
-
-    // see if it's already subscribed to
-    for (const tempSub of subscriptions) {
-        if (tempSub.url == sub.url) {
-            sub = tempSub;
-            newSub = false;
-            subscribe.querySelector('[name=subscribe]').setAttribute('checked', ' ');
-
-            if (sub.useSpoilers) {
-                byQSOne('[name=useSpoilers]').setAttribute('checked', ' ');
-            }
-            if (sub.useSites) {
-                byQSOne('[name=useSites]').setAttribute('checked', ' ');
-            }
-
-            break;
-        }
-    }
-
-    if (newSub) {
-        if (sub.spoilers.length > 0) {
-            subscribe.querySelector(`[name=useSpoilers]`).setAttribute('checked', ' ');
-        }
-        if (sub.sites.length > 0) {
-            subscribe.querySelector(`[name=useSites]`).setAttribute('checked', ' ');
-        }
-    }
-
-    // previews
-    for (const type of ['spoilers', 'sites']) {
-        if (sub[type] && sub[type].length > 0) {
-            const list = subscribe.querySelector(`.${type}`);
-
-            for (let i = 0; i < 4 && i < sub[type].length; i++) {
-                let item = sub[type][i];
-                let li = d.createElement('li');
-                li.innerText = type === 'spoilers' ? item.spoiler : item.urlRegex;
-                list.appendChild(li);
-            }
-
-            // add ... or the 5th element if only 5 total
-            if (sub[type].length == 5) {
-                let item = sub[type][4];
-                let li = d.createElement('li');
-                li.innerText = type === 'spoilers' ? item.spoiler : item.urlRegex;
-                list.appendChild(li);
-            } else if (sub[type].length > 5) {
-                let li = d.createElement('li');
-                li.innerText = '...and ' + (sub[type].length - 5) + ' more';
-                list.appendChild(li);
-            }
-        }
-    }
-
-    subscribe.addEventListener('input', e => {
-        if (['subscribe', 'useSpoilers', 'useSites'].includes(e.target.name)) {
-            e.preventDefault();
-            saveQuickAddSubscription(e, subscriptions, sub, newSub);
-        }
-    });
 }
