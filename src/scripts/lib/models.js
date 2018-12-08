@@ -135,7 +135,12 @@ class Subscription extends SpoilerBlockerModel {
      * @param {String} url
      */
     static isGitHubRevision(url) {
-        url = new URL(url.toString());
+        try {
+            url = new URL(url.toString());
+        } catch (e) {
+            console.log(`Invalid URL ${url}`, e);
+            return false;
+        }
 
         // must be github
         if (!/github/.test(url.hostname)) {

@@ -23,7 +23,7 @@ class CmdHandler {
     }
 
     validUrl(url) {
-        return this.settings.sitesRegex.test(url);
+        return this.settings.sitesRegex ? this.settings.sitesRegex.test(url) : false;
     }
 
     shouldBlock(url) {
@@ -55,7 +55,10 @@ class CmdHandler {
     }
 
     saveSettings(data) {
-        return this.settings.save(data);
+        settings = new Settings(data);
+        this.settings = settings;
+
+        return this.settings.save();
     }
 
     getDefaultSettings() {

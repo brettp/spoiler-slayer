@@ -286,13 +286,6 @@ class Settings {
         }
     }
 
-    // @todo this doesn't work...the cmd never hits the listener
-    // async badgeDisplayOnChange(changes) {
-    //     console.log("Need to update badge");
-    //     await cmd('debug', 'wtf');
-    //     console.log('sent cmd');
-    // }
-
     update(name) {
         var setting = {};
 
@@ -314,18 +307,28 @@ class Settings {
         }
     }
 
-    save(settings, cb) {
-        this.cached = settings;
-        chrome.storage.sync.set(settings, cb || helpers.nullFunc);
+    save() {
+        let settings = {};
+
+        for (const name in this) {
+            if (this.arraySettings.includes(name)) {
+                settings[name] = Object.values(this[name]);
+            } else {
+                settings[name] = this[name];
+            }
+        }
+
+        return new Promise(res => {
+            chrome.storage.sync.set(settings, setRes => res(setRes));
+        });
     }
 
     /**
      * Clears compiled values so they will be recalculated
      * based on new settings
      *
-     * @param {String} changed
      */
-    clearCompiledValues(changed) {
+    clearCompiledValues() {
         if (this.debug) {
             console.log("Clearing compiled values");
         }

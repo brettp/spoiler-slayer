@@ -227,6 +227,9 @@ var helpers = (function() {
 
     function objsToModels(objs, type) {
         let modelClass;
+        if (!Array.isArray(objs)) {
+            return objs;
+        }
 
         switch (type) {
             case 'spoilers':

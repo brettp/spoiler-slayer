@@ -343,12 +343,6 @@ class PopupSettings {
     }
 }
 
-(async function init() {
-    let bg = await helpers.getBackgroundPage();
-    let settings = bg.settings;
-    new PopupSettings(settings,);
-})();
-
 function widen(id) {
     let other = id === 'spoiler' ? 'selector' : 'spoiler';
 
@@ -455,3 +449,9 @@ function initInputs(settings) {
         }
     }
 }
+
+(async function() {
+    let bg = await helpers.getBackgroundPage();
+    let settings = bg.settings;
+    new PopupSettings(settings);
+})();

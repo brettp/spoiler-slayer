@@ -100,6 +100,11 @@ textarea {
 }
 
 #popup {
+    width: 400px;
+    background-color: #fff;
+    line-height: 1.75em;
+    overflow: hidden;
+
     &.settings-mode #subscribe {
         display: none;
     }
@@ -121,10 +126,6 @@ textarea {
             display: none;
         }
     }
-
-    width: 400px;
-    background-color: #fff;
-    line-height: 1.75em;
 
     :disabled {
         opacity: 0.25;
@@ -254,6 +255,14 @@ textarea {
             opacity: .5;
             width: 30%;
         }
+
+        #new-selector {
+            width: 50%;
+        }
+
+        #quick-add-selector-form {
+            text-align: left;
+        }
     }
 
     &.inactive {
@@ -264,11 +273,9 @@ textarea {
 }
 
 #quick-add-selector-form {
-    display: flex;
     color: $grey;
 
     input {
-        flex: 1;
         margin: 0 .5em;
     }
 
