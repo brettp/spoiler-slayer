@@ -21,7 +21,7 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - [X] Quick add spoiler phrase on popup
 - [X] Quick add site on popup?
 - [X] New example image
-- [ ] New icon
+- [X] New icon
 - [X] Less awful advanced settings interface
 - - [ ] Better text explaining what to do
 - - [X] Checkbox to mark spoilers as regexp
@@ -50,7 +50,7 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - [X] Don't block if parent has been glamoured and revealed.
 - [X] Set global transition-duration time injected as setting, built into injected CSS and then use that value as a timeout to remove revealed and glamoured-active instead of waiting on unreliable animationend / transitionend
 - [X] Add "global" mode that blocks full unknown sites if the body text matches any spoilers. (Not needed. Can just use body as the selector.)
-- [ ] Don't redraw entire lists when adding / deleting
+- [X] Don't redraw entire lists when adding / deleting
 - [ ] Add flashes to newly added content instead of inputs on options page
 - [ ] Localization
 - [ ] Don't try to sync settings if too large
@@ -58,9 +58,9 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - [X] Convert option sections to components
 - [X] Use real classes instead of generic objects for spoilers, sites, and subs
 - [ ] Clean up popup / content CSS
-- [ ] Don't export subscription contents?
-- [ ] Add tests
-- [ ] Use CSS rules instead of JS to hide / show elements in popup and options (JS is slow.)
+- [X] Don't export subscription contents?
+- [X] Add tests
+- [X] Use CSS rules instead of JS to hide / show elements in popup and options (JS is slow.)
 
 
 ### Known Bugs
@@ -68,7 +68,7 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 - [X] Example text in popup is slightly off centered
 - [X] Hovering over the spoiler text doesn't de-blur the spoiler
 - - [X] Neither does clicking on it
-- [ ] Popup spoiler blur checkbox has bad spacing in FF
+- [X] Popup spoiler blur checkbox has bad spacing in FF
 - [ ] Retweeted content has the retweeted username bleed through the no-fx censor
 - [X] Sometimes there can be embedded blocked elements
 - [X] Reddit's up and down arrows don't change color for glamoured content. Probably need to move all the content back to its real parent on reveal.
@@ -80,4 +80,4 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 1. Clone the repo.
 2. Run `npm install` to install dependencies.
 3. Run `gulp` to setup watches that will automatically compile any changes you make from the `src` dir to the `build` directory.
-4. To test the extension, go to the Chrome Extensions tab, click 'Load unpacked extension', and choose the `build` directory.
+4. To test the extension, go to the Chrome Extensions tab, click 'Load unpacked extension', and choose the `build/chrome` or `build/firefox` directory.
