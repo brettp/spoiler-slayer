@@ -7,6 +7,7 @@ var sass = require('gulp-sass');
 var gutil = require('gulp-util');
 var tinylr = require('tiny-lr');
 var exec = require('child_process').exec;
+var fs = require('fs');
 
 // Copy static folders to build directory
 gulp.task('update-static', function() {
@@ -22,6 +23,11 @@ gulp.task('update-static', function() {
 
     del('build/*/manifest.json');
     return gulp.src('src/manifest.json')
+        .pipe(jsontf(function(data, file) {
+            let pkg = JSON.parse(fs.readFileSync('./package.json'));
+            data.version = pkg.version;
+            return data;
+        }, 2))
         .pipe(gulp.dest('build/chrome'))
         .pipe(jsontf(function(data, file) {
             data.applications = {
