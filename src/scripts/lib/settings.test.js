@@ -507,3 +507,30 @@ test('Splice clears cache', () => {
     expect(settings.sitesRegex).toBeFalsy();
 
 });
+
+test('Can add :not() to selectors', () => {
+    let add = Settings.addNotToSelector;
+    expect(add('.classname',  '.bad-class'))
+        .toEqual('.classname:not(.bad-class)');
+
+    expect(add('.classname, .and-another', '.bad-class'))
+        .toEqual('.classname:not(.bad-class),.and-another:not(.bad-class)');
+
+    expect(add('.classname:not(already-has-a-not)', '.bad-class'))
+        .toEqual('.classname:not(already-has-a-not):not(.bad-class)');
+
+    expect(add('[data-gonna-break="asdf,fdsa"]', '.bad-class'))
+        .toEqual('[data-gonna-break="asdf,fdsa"]:not(.bad-class)');
+
+    expect(add('["name"=\'asdf,fdsa\']', '.bad-class'))
+        .toEqual('["name"=\'asdf,fdsa\']:not(.bad-class)');
+
+    expect(add('[data-gonna-break="asdf,fdsa"],[name="gonna-work"]', '.bad-class'))
+        .toEqual('[data-gonna-break="asdf,fdsa"]:not(.bad-class),[name="gonna-work"]:not(.bad-class)');
+
+    expect(add('[data-gonna-break=\'asdf,fdsa\'],[name=\'gonna-work\']', '.bad-class'))
+        .toEqual('[data-gonna-break=\'asdf,fdsa\']:not(.bad-class),[name=\'gonna-work\']:not(.bad-class)');
+
+    expect(add('[data-gonna-break="asdf,fdsa"],[name=\'gonna-work\']', '.bad-class'))
+        .toEqual('[data-gonna-break="asdf,fdsa"]:not(.bad-class),[name=\'gonna-work\']:not(.bad-class)');
+});

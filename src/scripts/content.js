@@ -151,16 +151,16 @@ function ancestorHasGlamour(el) {
 }
 
 async function searchForAndBlockSpoilers(selector, check_parent, settings) {
-    // let $items = $(selector).not('.spoiler-blocker-glamoured');
+    // the selectors have :not(.spoiler-blocker-glamoured) added by the settings compilers
     let items = byQS(selector);
     let blockedCount = 0;
 
     if (items.length > 0) {
         for (let el of items) {
-            if (el.classList.contains('spoiler-blocker-glamoured') ||
-                (check_parent && ancestorHasGlamour(el))) {
-                continue;
-            }
+            // if (el.classList.contains('spoiler-blocker-glamoured') ||
+            //     (check_parent && ancestorHasGlamour(el))) {
+            //     continue;
+            // }
 
             el.classList.add('spoiler-blocker-glamoured');
             el.classList.add(`spoiler-blocker-${hostname_dotless}`);

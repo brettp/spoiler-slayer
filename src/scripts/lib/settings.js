@@ -16,12 +16,7 @@ class Settings {
             badgeDisplay: 'pageload',
             sites: [],
             spoilers: [],
-            subscriptions: [
-                Subscription.factory({
-                    url: 'https://gist.github.com/brettp/60faa5f1e217b4fb082e4e8a808dd402',
-                    useSites: true
-                })
-            ],
+            subscriptions: [],
             lifetimeBlockedCount: {
                 total: 0,
                 hosts: {},
@@ -33,6 +28,24 @@ class Settings {
             debug: false,
             disableOnDocReady: false,
         };
+    }
+
+    static get demoSettings() {
+        return {
+            subscriptions: [
+                Subscription.factory({
+                    url: 'https://gist.github.com/brettp/60faa5f1e217b4fb082e4e8a808dd402',
+                    useSites: true,
+                    useSpoiler: false
+                })
+            ],
+            sites: [
+
+            ],
+            spoilers: [
+
+            ]
+        }
     }
 
     get compiledSettings() {
@@ -48,19 +61,6 @@ class Settings {
 
     get proxiedSettings() {
         return ['spoilers', 'sites', 'subscriptions'];
-    }
-
-    /**
-     * Defines which settings need recompiled when a setting changes.
-     * changed_setting: [settings to recompile]
-     */
-    get compiledSettingsInfo() {
-        return {
-            sites: ['sitesRegex', 'compiledSitesAndSelectors'],
-            spoilers: ['spoilersRegex'],
-            transitionDuration: ['transitionDurationSecs'],
-            subscriptions: ['mergedSpoilers', 'mergedSites', 'sitesRegex', 'compiledSitesAndSelectors', 'spoilersRegex']
-        };
     }
 
     /**
@@ -272,11 +272,43 @@ class Settings {
         for (let info of this.mergedSites) {
             val.push({
                 urlRegex: new RegExp(helpers.getRegexStr(info.urlRegex, info.isRegex), 'iu'),
-                selector: info.selector,
+                selector: Settings.addNotToSelector(info.selector, '.spoiler-blocker-glamoured'),
             });
         }
 
         return val;
+    }
+
+    static trimAndAppend(txt, append) {
+        txt = txt.trim();
+        return txt ? txt + append : '';
+    }
+
+    static addNotToSelector(selector, not) {
+        // technically commas are allowed in class names, but not as a selector
+        // more problematically, commas are allowed in data and name attributes
+        let re = /'[^']+'|"[^"]+"/g;
+        if (re.test(selector)) {
+            let tokens = [];
+            let replaced = selector.replace(re, match => {
+                tokens.push(match);
+                return `!TOKEN_${tokens.length - 1}!`;
+            });
+
+            let notted = replaced.split(',')
+                .map(txt => Settings.trimAndAppend(txt, `:not(${not})`))
+                .join(',');
+
+            for (let i = 0; i < tokens.length; i++) {
+                notted = notted.replace(`!TOKEN_${i}!`, tokens[i]);
+            }
+
+            return notted;
+        } else {
+            return selector.split(',')
+                .map(txt => Settings.trimAndAppend(txt, `:not(${not})`))
+                .join(',');
+        }
     }
 
     transitionDurationSecsCompiler() {

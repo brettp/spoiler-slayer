@@ -366,7 +366,7 @@ class OptionsSettings {
     async clearSettings(e) {
         e.preventDefault();
         if (confirm('Reset all settings?')) {
-            let defaults = Settings.defaultSettings;
+            let defaults = {...Settings.defaultSettings, ...Settings.demoSettings};
             await this.saveSettings(defaults);
             this.populateFromSettings(true);
             byId('update-subscriptions').click();
