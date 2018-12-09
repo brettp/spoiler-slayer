@@ -137,7 +137,7 @@ class CmdHandler {
         }
 
         if (this.badgeDisplay == 'none') {
-            return this.setBadgeText('');
+            return this.setBadgeText('', '', tab.id);
         }
 
         // if we're showing life, tabs don't matter
@@ -174,7 +174,7 @@ class CmdHandler {
             }
         }
 
-        this.setBadgeText(helpers.friendlyNum(newC), '', tab.id);
+        this.setBadgeText(helpers.friendlyNum(newC), '#4688f1', tab.id);
 
         // set timeout doesn't work in extensions
         // not sure how to do a count up timer from here...
@@ -208,24 +208,19 @@ class CmdHandler {
         return _getActiveTabInfo();
     }
 
-    setBadgeText(text = 0, color = null, tabId = null) {
-        if (!text || text == '') {
-            text = 0;
-        }
+    setBadgeText(text = '', color = null, tabId = null) {
         if (typeof text !== 'object') {
-            text = {text: text};
+            color = text.color || '#4688f1';
+
+            text = {
+                text: text.toString(),
+                tabId: tabId
+            }
         }
 
-        if (!text.text) {
-            text.text = 0;
-        }
-
-        if (text.text == 0) {
+        if (text === "0" || text === 0) {
             text.text = '';
         }
-
-        text.text = text.text.toString();
-        text.tabId = tabId;
 
         chrome.browserAction.setBadgeText(text);
         if (chrome.browserAction.setBadgeTextColor) {
@@ -372,9 +367,11 @@ async function init() {
         }
     });
 
-    chrome.runtime.onInstalled.addListener(details => {
+    chrome.runtime.onInstalled.addListener(async details => {
         if (details.reason === 'install') {
-            helpers.openOptionsPage();
+            let defaults = {...Settings.defaultSettings, ...Settings.demoSettings};
+            await settings.save(defaults);
+            helpers.openPage('tutorial.html');
         }
     });
 
