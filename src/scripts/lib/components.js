@@ -118,11 +118,32 @@ class SpoilerBlockerList extends HTMLUListElement {
 
     // @todo probably better to use native funcs on the array
     add(model) {
-        this.items.push(model);
+        this.items.unshift(model);
+        let li = this.renderLi(model);
+        this.elements.unshift(li.customElement);
+
+        this.prepend(li);
+
+        let e = new CustomEvent('add', {detail: {
+            item: model
+        }});
+
+        this.dispatchEvent(e);
     }
 
     remove(id) {
-        this.items.splice(id, 1);
+        let item = this.items.splice(id, 1).pop();
+        let el = this.elements.splice(id, 1).pop();
+
+        let e = new CustomEvent('remove', {
+            detail: {
+                id: id,
+                item: item
+            }
+        });
+
+        this.dispatchEvent(e);
+        this.removeChild(el.listItem);
     }
 
     save() {
@@ -159,40 +180,51 @@ class SpoilerBlockerList extends HTMLUListElement {
         if (li.customElement) {
             let index = this.elements.indexOf(li.customElement);
             if (index >= 0) {
-                this.elements.splice(index, 1);
-                this.items.splice(index, 1);
+                this.remove(index)
             }
         }
 
-        this.removeChild(li);
         this.save();
+    }
+
+    renderLi(item) {
+        let li = d.createElement('li');
+        let el = this.renderItem(item);
+        li.customElement = el;
+        el.listItem = li;
+        li.appendChild(el);
+        return li;
+    }
+
+    renderItem(item) {
+        let el = d.createElement(this.listItemElementName);
+        el.attachModel(item);
+
+        if (helpers.toBool(this.getAttribute('disabled'))) {
+            el.setAttribute('disabled', true);
+        }
+
+        return el;
     }
 
     render() {
         if (this.items) {
-            let name = this.getAttribute('list-item-element-name');
-            if (!name || name === 'null') {
-                throw `Missing attribute list-item-element-name in ${this.constructor.name}`;
-            }
-
             for (const item of this.items) {
-                let li = d.createElement('li');
-                let el = d.createElement(name);
-                el.attachModel(item);
-                li.customElement = el;
-
-                if (helpers.toBool(this.getAttribute('disabled'))) {
-                    el.setAttribute('disabled', true);
-                }
-
+                let li = this.renderLi(item);
+                this.elements.push(li.customElement);
                 this.appendChild(li);
-                li.appendChild(el);
-                this.elements.push(el);
             }
         }
     }
 
     connectedCallback() {
+        let name = this.getAttribute('list-item-element-name');
+        if (!name || name === 'null') {
+            throw `Missing attribute list-item-element-name in ${this.constructor.name}`;
+        }
+
+        this.listItemElementName = name;
+
         this.render();
     }
 }

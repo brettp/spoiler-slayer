@@ -228,6 +228,9 @@ class CmdHandler {
         text.tabId = tabId;
 
         chrome.browserAction.setBadgeText(text);
+        if (chrome.browserAction.setBadgeTextColor) {
+            chrome.browserAction.setBadgeTextColor({color: '#ffffff'});
+        }
 
         if (color) {
             chrome.browserAction.setBadgeBackgroundColor({
@@ -266,7 +269,7 @@ class CmdHandler {
         });
     }
 
-    async refreshSubscriptions() {
+    async updateSubscriptions() {
         let success = true;
         let subs = [];
 
@@ -284,7 +287,7 @@ class CmdHandler {
         }
 
         this.settings.subscriptions = subs;
-        return success ? this.settings.subscriptions : false;
+        return success ? subs : false;
     }
 }
 
@@ -350,21 +353,23 @@ async function init() {
     chrome.tabs.onActivated.addListener(cmdHandler.tabOnActivated);
     // cmdHandler.showCorrectBadgeCount();
 
-    chrome.runtime.onConnect.addListener((port) => {
-        port.onDisconnect.addListener(() => {
-            cmdHandler.highlightElementsInActiveTab('!!invalid selector!!');
-        });
-    });
+    // @todo doens't work on ff reliably
+    // chrome.runtime.onConnect.addListener((port) => {
+    //     port.onDisconnect.addListener(() => {
+    //         cmdHandler.highlightElementsInActiveTab('!!invalid selector!!');
+    //     });
+    // });
 
     // update subs once a day (@todo if enabled)
-    chrome.alarms.create('autoRefreshSubscriptions', {
+    chrome.alarms.create('autoupdateSubscriptions', {
         delayInMinutes: 1,
         periodInMinutes: 60 * 1
     });
 
     chrome.alarms.onAlarm.addListener((alarm) => {
-        if (alarm.name === 'autoRefreshSubscriptions') {
-            cmdHandler.refreshSubscriptions();
+        if (alarm.name === 'autoupdateSubscriptions') {
+            console.log('Autoupdating subscriptions');
+            cmdHandler.updateSubscriptions();
         }
     });
 

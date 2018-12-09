@@ -278,13 +278,13 @@ class Subscription extends SpoilerBlockerModel {
     static factory(info) {
         let sub = super.factory(info);
 
-        if (sub.content && sub.content.spoilers) {
-            sub.content.spoilers = helpers.objsToModels(sub.content.spoilers, 'spoilers');
-        }
+        // if (sub.content && sub.content.spoilers) {
+        //     sub.content.spoilers = helpers.objsToModels(sub.content.spoilers, 'spoilers');
+        // }
 
-        if (sub.content && sub.content.sites) {
-            sub.content.sites = helpers.objsToModels(sub.content.sites, 'sites');
-        }
+        // if (sub.content && sub.content.sites) {
+        //     sub.content.sites = helpers.objsToModels(sub.content.sites, 'sites');
+        // }
 
         return sub;
     }

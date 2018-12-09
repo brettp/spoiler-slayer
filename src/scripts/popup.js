@@ -53,6 +53,12 @@ d.addEventListener('keyup', (event) => {
 });
 
 class PopupSettings {
+    setSetting(name, val) {
+        this.settings[name] = val;
+        // in msgApi.js
+        return setSetting(name, val);
+    }
+
     constructor(settings) {
         this.settings = settings;
         initInputs(settings);
@@ -140,7 +146,7 @@ class PopupSettings {
         let val = (input.getAttribute('type') == 'checkbox') ? input.checked : input.value;
         let tab;
 
-        this.settings[name] = val;
+        this.setSetting(name, val);
 
         if (name == 'badgeDisplay') {
             if (val == 'none') {
@@ -162,24 +168,22 @@ class PopupSettings {
 
     saveQuickAddSpoiler(e) {
         e.preventDefault();
-        var form = e.target;
-        var input = byId('new-spoiler');
-        var spoilers = input.value.trim().split(',');
-        var cleaned = [];
+        const form = e.target;
+        const input = byId('new-spoiler');
+        let spoilers = input.value.trim().split(',').filter(str => str.trim());
+        let cleaned = [];
 
         for (let str of spoilers) {
             if (str.trim()) {
-                cleaned.push(str.trim());
+                cleaned.push({
+                    spoiler: str.trim(),
+                    isRegex: false
+                });
             }
         }
 
         if (cleaned.length > 0) {
-            for (let spoiler of cleaned) {
-                this.settings.spoilers.unshift({
-                    'spoiler': spoiler,
-                    'isRegex': false
-                });
-            }
+            this.setSetting('spoilers', cleaned.concat(this.settings.spoilers));
 
             helpers.addFlash(input, 'success');
             form.reset();
@@ -193,19 +197,21 @@ class PopupSettings {
 
     saveQuickAddSelector(e) {
         e.preventDefault();
-        var form = e.target;
-        var selectorInput = byId('new-selector');
-        var siteInput = byId('current-site');
+        const form = e.target;
+        const selectorInput = byId('new-selector');
+        const siteInput = byId('current-site');
 
         if (!selectorInput.value || !siteInput.value) {
             helpers.addFlash(selectorInput, 'fail');
             return false;
         }
 
-        this.settings.sites.unshift({
+        let site = {
             'urlRegex': siteInput.value,
             'selector': selectorInput.value
-        });
+        };
+
+        this.setSetting('sites', [site, ...this.settings.sites]);
 
         helpers.addFlash(selectorInput, 'success');
         form.reset();
@@ -332,11 +338,12 @@ class PopupSettings {
         // only add sub if it's new
         if (byQSOne('[name=subscribe]').checked) {
             if (newSub) {
-                this.settings.subscriptions.unshift(sub);
+                this.setSetting('subscriptions', [sub, ...this.settings.subscriptions]);
             }
         } else {
             let i = this.settings.subscriptions.indexOf(sub);
             this.settings.subscriptions.splice(i, 1);
+            this.setSetting('subscriptions', this.settings.subscriptions);
         }
 
         helpers.addFlash(byId('new-subscription'), 'success');
@@ -451,7 +458,6 @@ function initInputs(settings) {
 }
 
 (async function() {
-    let bg = await helpers.getBackgroundPage();
-    let settings = bg.settings;
+    let settings = await cmd('getSettings');
     new PopupSettings(settings);
 })();

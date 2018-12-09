@@ -1,4 +1,15 @@
 class OptionsSettings {
+    setSetting(name, val) {
+        this.settings[name] = val;
+        // in msgApi.js
+        return setSetting(name, val);
+    }
+
+    saveSettings(settings) {
+        this.settings = settings;
+        return saveSettings(settings);
+    }
+
     constructor(settings) {
         this.settings = settings;
         this.populateFromSettings();
@@ -26,7 +37,7 @@ class OptionsSettings {
 
         byId('new-subscription').addEventListener('submit', e => this.onNewSubmit(e, 'subscriptions'));
         byId('plus-subscription').addEventListener('click', e => this.onNewSubmit(e, 'subscriptions'));
-        byId('refresh-subscriptions').addEventListener('click', this.refreshSubscriptions.bind(this));
+        byId('update-subscriptions').addEventListener('click', this.updateSubscriptions.bind(this));
 
         // toolbar links
         d.body.addEventListener('click', this.handleToolbarClick.bind(this));
@@ -42,7 +53,7 @@ class OptionsSettings {
 
         const hideTips = byId('hideTips');
         hideTips.addEventListener('click', e => {
-            this.settings.hideTips = e.target.checked;
+            this.setSetting('hideTips', e.target.checked);
             if (e.target.checked) {
                 d.body.classList.add('hide-tips');
             } else {
@@ -53,7 +64,7 @@ class OptionsSettings {
         for (const link of byQS('.set-hide-tips')) {
             link.addEventListener('click', e => {
                 e.preventDefault();
-                this.settings.hideTips = true;
+                this.setSetting('hideTips', true);
                 d.body.classList.add('hide-tips');
                 byId('hideTips').checked = true;
             });
@@ -63,18 +74,37 @@ class OptionsSettings {
     }
 
     populateFromSettings(clear = false) {
-        renderList(this.settings.spoilers, 'spoilers', clear);
-        renderList(this.settings.sites, 'sites', clear);
-        renderList(this.settings.subscriptions, 'subscriptions', clear);
+        this.renderList(this.settings.spoilers, 'spoilers', clear);
+        this.renderList(this.settings.sites, 'sites', clear);
+        this.renderList(this.settings.subscriptions, 'subscriptions', clear);
 
         const hideTips = byId('hideTips');
 
-        if (this.settings.hideTips) {
-            d.body.classList.add('hide-tips');
-            hideTips.setAttribute('checked', ' ');
-        } else {
+        if (!this.settings.hideTips) {
+            d.body.classList.remove('hide-tips');
             hideTips.removeAttribute('checked');
+        } else {
+            hideTips.setAttribute('checked', ' ');
         }
+    }
+
+    renderList(data, type, clear = false) {
+        const container = byId(type);
+
+        if (clear) {
+            container.removeChild(container.children[0]);
+        }
+
+        let list = d.createElement('ul', {is: 'spoilers-blocker-list'});
+        list.setAttribute('settings-name', type);
+        list.setAttribute('list-item-element-name', type.substring(0, type.length - 1) + '-item');
+
+        list.addEventListener('change', e => this.settings[type] = list.items);
+        list.addEventListener('add', e => this.settings[type] = list.items);
+        list.addEventListener('remove', e => this.settings[type] = list.items);
+
+        list.items = helpers.objsToModels(data, type);
+        container.appendChild(list);
     }
 
     handleToolbarClick(e) {
@@ -97,7 +127,7 @@ class OptionsSettings {
                 if (!confirm(`Clear all ${type}?`)) {
                     return;
                 }
-                this.settings[type] = [];
+                this.setSetting(type, []);
                 break;
 
             case target.classList.contains('import'):
@@ -111,15 +141,15 @@ class OptionsSettings {
         this.populateFromSettings(true);
     }
 
-    async refreshSubscriptions(e) {
+    async updateSubscriptions(e) {
         e.preventDefault();
         const icon = e.target.querySelector('custom-icon');
         icon.classList.add('spin');
 
-        let result = await cmd('refreshSubscriptions');
+        let result = await cmd('updateSubscriptions');
 
         if (result) {
-            renderList(result, 'subscriptions', true);
+            this.renderList(result, 'subscriptions', true);
             helpers.addFlash(byId('subscriptions-settings'), 'success');
         } else {
             helpers.addFlash(byId('subscriptions-settings'), 'fail');
@@ -131,7 +161,7 @@ class OptionsSettings {
 
     resetToOgSites(e) {
         e.preventDefault();
-        if (confirm('Are you use you want to reset to the original list of sites?')) {
+        if (confirm('Reset to the original list of sites?')) {
             resetToOg('sites');
             this.populateFromSettings(true);
         }
@@ -140,7 +170,7 @@ class OptionsSettings {
     resetToOgSpoilers(e) {
         e.preventDefault();
 
-        if (confirm('Are you use you want to reset to the original list of spoilers?')) {
+        if (confirm('Reset to the original list of spoilers?')) {
             resetToOg('spoilers');
             this.populateFromSettings(true);
         }
@@ -148,9 +178,9 @@ class OptionsSettings {
 
     reset(e) {
         e.preventDefault();
-        if (confirm('Are you use you want to reset all settings?')) {
+        if (confirm('Reset all settings to defaults?')) {
             let defaults = Settings.defaultSettings;
-            this.settings.save(defaults);
+            this.saveSettings(defaults);
             this.populateFromSettings(true);
         }
     }
@@ -158,8 +188,8 @@ class OptionsSettings {
     async onNewSubmit(e, type) {
         e.preventDefault();
         let form = helpers.getNearest('form', e.target);
+        let list = byQSOne(`[settings-name=${type}]`);
         let datum = containerToDatum(form);
-        let data = this.settings[type];
 
         if (datum.length < 1) {
             helpers.addFlash(form, 'fail');
@@ -214,7 +244,7 @@ class OptionsSettings {
                 // fall through
 
             default:
-                data.unshift(datum);
+                list.add(datum);
                 break;
         }
 
@@ -230,9 +260,9 @@ class OptionsSettings {
             reEl.reset();
         }
 
-        form.querySelector('input').focus();
+        await list.save();
 
-        renderList(data, type, true);
+        form.querySelector('input').focus();
     }
 
     importSettings(e) {
@@ -256,11 +286,14 @@ class OptionsSettings {
                         case 'sites':
                         case 'spoilers':
                             if (self.settings[item]) {
-                                self.settings[item] = self.settings[item].concat(obj[item]);
+                                self.setSetting(item, self.settings[item].concat(obj[item]));
+                            } else {
+                                self.setSetting(item, obj[item]);
                             }
+
                             self.populateFromSettings(true);
                             if (item === 'subscriptions') {
-                                byId('refresh-subscriptions').click();
+                                byId('update-subscriptions').click();
                             }
                             break;
                     }
@@ -269,19 +302,25 @@ class OptionsSettings {
         }
     }
 
-    exportSettings(section = 'all') {
+    async exportSettings(section = 'all') {
         // Work on a deep copy so nothing is saved to settings
         let val;
-        let info = JSON.parse(JSON.stringify(this.settings, null, 2));
+        let info = JSON.parse(JSON.stringify(await cmd('getSettings'), null, 2));
 
         switch (section) {
             case 'all':
                 break;
 
             case 'settings':
-                delete info.sites;
-                delete info.spoilers;
-                delete info.subscriptions;
+                let newInfo = {};
+                for (const name in Settings.defaultSettings) {
+                    newInfo[name] = info[name];
+                }
+
+                delete newInfo.sites;
+                delete newInfo.spoilers;
+                delete newInfo.subscriptions;
+                info = newInfo;
                 break;
 
             case 'subscriptions':
@@ -336,13 +375,8 @@ class OptionsSettings {
     async clearSettings(e) {
         e.preventDefault();
         if (confirm('Reset all settings?')) {
-            // use a background message here so we don't have to re-init
             let defaults = Settings.defaultSettings;
-            await cmd('saveSettings', defaults);
-
-            let bg = await helpers.getBackgroundPage();
-            this.settings = bg.settings;
-
+            await this.saveSettings(defaults);
             this.populateFromSettings(true);
         }
     }
@@ -350,36 +384,25 @@ class OptionsSettings {
     resetToOg(section = 'all') {
         switch (section) {
             case 'sites':
-                return this.settings.sites = ogSettings.sites;
+                return this.setSetting('sites', ogSettings.sites);
 
             case 'spoilers':
-                return this.settings.spoilers = ogSettings.spoilers;
+                return this.setSetting('spoilers', ogSettings.spoilers);
 
             case 'settings':
                 let info = {...ogSettings};
+                let newSettings = {};
+
                 delete info.sites;
                 delete info.spoilers;
+                delete info.subscriptions;
+
                 for (let k of info) {
-                    this.settings[k] = info[k];
+                    newSettings[k] = info[k];
                 }
                 break;
         }
     }
-}
-
-function renderList(data, type, clear = false) {
-    const container = byId(type);
-
-    if (clear) {
-        container.removeChild(container.children[0]);
-    }
-
-    let list = d.createElement('ul', {is: `spoilers-blocker-list`});
-    list.setAttribute('settings-name', type);
-    list.setAttribute('list-item-element-name', type.substring(0, type.length - 1) + '-item');
-
-    list.items = helpers.objsToModels(data, type);
-    container.appendChild(list);
 }
 
 function containerToDatum(container) {
@@ -396,7 +419,6 @@ function containerToDatum(container) {
 }
 
 (async function() {
-    let bg = await helpers.getBackgroundPage();
-    let settings = bg.settings;
-    new OptionsSettings(settings);
+    let settings = await cmd('getSettings');
+    options = new OptionsSettings(settings);
 })();

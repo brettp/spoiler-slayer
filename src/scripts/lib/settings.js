@@ -41,7 +41,7 @@ class Settings {
         ];
     }
 
-    get arraySettings() {
+    get proxiedSettings() {
         return ['spoilers', 'sites', 'subscriptions'];
     }
 
@@ -66,6 +66,11 @@ class Settings {
         for (const setting of this.compiledSettings) {
             settings[setting] = this[setting];
         }
+
+        settings.spoilers = Object.values(this.spoilers);
+        settings.sites = Object.values(this.sites);
+        settings.subscriptions = Object.values(this.subscriptions);
+
         return settings;
     }
 
@@ -94,7 +99,7 @@ class Settings {
             };
 
             // initial proxied setting
-            if (this.cached[k] instanceof Object) {
+            if (this.proxiedSettings.includes(k)) {
                 this.cached[k] = this.proxySetting(k, this.cached[k]);
                 // this sets the object itself
                 // the proxy sets the props on that object
@@ -290,7 +295,7 @@ class Settings {
         var setting = {};
 
         // don't save the arrays as objects
-        if (this.arraySettings.includes(name)) {
+        if (this.proxiedSettings.includes(name)) {
             setting[name] = Object.values(this[name]);
         } else {
             setting[name] = this[name];
@@ -311,7 +316,7 @@ class Settings {
         let settings = {};
 
         for (const name in this) {
-            if (this.arraySettings.includes(name)) {
+            if (this.proxiedSettings.includes(name)) {
                 settings[name] = Object.values(this[name]);
             } else {
                 settings[name] = this[name];

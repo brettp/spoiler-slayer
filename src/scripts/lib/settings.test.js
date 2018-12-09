@@ -447,7 +447,7 @@ test('Merges values if not SS objects', () => {
     ]);
 });
 
-test.only('Splice clears cache', () => {
+test('Splice clears cache', () => {
     let settings = new Settings({
         debug: true,
         spoilers: [

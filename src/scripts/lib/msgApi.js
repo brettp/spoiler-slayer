@@ -1,6 +1,5 @@
 // call this manually first to set early.
 var debug = false;
-let sendMsg;
 
 if (chrome.storage) {
     chrome.storage.sync.get(
@@ -17,15 +16,15 @@ if (chrome.storage) {
             debug = changes.debug.newValue;
         }
     });
-
-    sendMsg = async function(msg) {
-        return new Promise(res => {
-            chrome.runtime.sendMessage(msg, ret => {
-                res(ret);
-            });
-        });
-    };
 }
+
+async function sendMsg(msg) {
+    return new Promise(res => {
+        chrome.runtime.sendMessage(msg, ret => {
+            res(ret);
+        });
+    });
+};
 
 async function getSetting(name) {
     return await cmd('getSetting', name);
