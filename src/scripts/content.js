@@ -159,7 +159,7 @@ async function searchForAndBlockSpoilers(selector, check_parent, settings) {
         for (let el of items) {
             if (el.classList.contains('spoiler-blocker-glamoured') ||
                 (check_parent && ancestorHasGlamour(el))) {
-                return;
+                continue;
             }
 
             el.classList.add('spoiler-blocker-glamoured');
@@ -170,7 +170,7 @@ async function searchForAndBlockSpoilers(selector, check_parent, settings) {
             // we need this so we don't get extra content appended / prepended to
             // spoilers at the start / end of nodes
             // let content = el.innerText.trim();
-            let content = el.innerHTML.replace(/<[^>]+>/g, ' ');
+            let content = el.innerHTML.replace(/<[^>]+>/g, ' ').replace(/\s\s+/g, ' ');
 
             // check for spoilers and block if found
             if (content) {
