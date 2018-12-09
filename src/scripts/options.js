@@ -176,15 +176,6 @@ class OptionsSettings {
         }
     }
 
-    reset(e) {
-        e.preventDefault();
-        if (confirm('Reset all settings to defaults?')) {
-            let defaults = Settings.defaultSettings;
-            this.saveSettings(defaults);
-            this.populateFromSettings(true);
-        }
-    }
-
     async onNewSubmit(e, type) {
         e.preventDefault();
         let form = helpers.getNearest('form', e.target);
@@ -378,6 +369,8 @@ class OptionsSettings {
             let defaults = Settings.defaultSettings;
             await this.saveSettings(defaults);
             this.populateFromSettings(true);
+            byId('update-subscriptions').click();
+            window.scroll(0, 0);
         }
     }
 

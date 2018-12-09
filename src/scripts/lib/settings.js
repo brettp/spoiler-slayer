@@ -16,7 +16,12 @@ class Settings {
             badgeDisplay: 'pageload',
             sites: [],
             spoilers: [],
-            subscriptions: [],
+            subscriptions: [
+                Subscription.factory({
+                    url: 'https://gist.github.com/brettp/60faa5f1e217b4fb082e4e8a808dd402',
+                    useSites: true
+                })
+            ],
             lifetimeBlockedCount: {
                 total: 0,
                 hosts: {},

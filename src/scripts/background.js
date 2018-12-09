@@ -256,7 +256,6 @@ class CmdHandler {
     tabOnActivated(info) {
         var self = this;
         chrome.tabs.get(info.tabId, function(tabInfo) {
-            debugMsg({cmd: 'tabs.onActivated'}, tabInfo);
             self.showCorrectBadgeCount(null, {tab: tabInfo});
         });
     }
