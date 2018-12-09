@@ -6,7 +6,7 @@
   "description": "A customizable spoiler blocking plugin with support for Facebook, Reddit, Twitter, Google News, and many more sites!",
   "version": "UNRELEASED",
   "author": "Brett Profitt",
-  "homepage_url": "https://www.github.com/brettp/game-of-spoils",
+  "homepage_url": "https://www.github.com/brettp/spoiler-slayer",
 
   "browser_action": {
     "default_icon": "assets/icons/battered-axe-48.png",

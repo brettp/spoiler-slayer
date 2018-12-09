@@ -1,8 +1,8 @@
 {
-  "name": "gameofspoilerslite",
+  "name": "spoiler-slayer",
   "repository": {
     "type": "git",
-    "url": "git@github.com:brettp/game-of-spoils.git"
+    "url": "git@github.com:brettp/spoiler-slayer.git"
   },
   "version": "1.0.0",
   "description": "",
