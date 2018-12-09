@@ -64,6 +64,10 @@
             animation: none !important;
         }
 
+        .spoiler-blocker-content-wrapper {
+            filter: none !important;
+        }
+
         &:after {
             content: '';
             position: absolute;
