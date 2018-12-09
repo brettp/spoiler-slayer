@@ -1,7 +1,7 @@
 const examples = [
     {
         'text': 'Jon Snow is Arya!',
-        'image': 'blind_stark.png',
+        'image': 'Blind_Stark.png',
         'spoiler': 'Arya'
     },
     {
