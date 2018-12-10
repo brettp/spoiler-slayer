@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Spoiler Slayer</title>
+        <link href="/styles/popup.css" rel="stylesheet" />
+        <link href="/styles/content.css" rel="stylesheet" />
+
+        <style>
+            section {
+                height: 600px;
+            }
+
+            #wrapper {
+                display: flex;
+                flex-direction: column;
+            }
+
+            #wrapper h2 {
+                padding-top: 1em;
+            }
+
+            ol {
+                list-style-type: none;
+                text-align: center;
+                padding: 0;
+                margin: 0;
+                position: relative;
+            }
+
+            ol > li {
+                position: absolute;
+                opacity: 0;
+                background-color: white;
+                width: 100%;
+                transition: opacity .75s ease-in .25s;
+            }
+
+            ol > li.active {
+                opacity: 1;
+                transition: opacity .75s ease-out;
+            }
+
+            img {
+                width: 600px;
+            }
+
+            #controls {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 100%;
+            }
+
+            .toolbar-icon-example {
+                height: .9em;
+                width: 1em;
+            }
+
+            @keyframes cross-fade-in {
+                0% {
+                    opacity: 0;
+                }
+
+                30% {
+                    opacity: 1;
+                }
+
+                100% {
+                    opacity: 1;
+                }
+            }
+
+            @keyframes cross-fade-out {
+                0% {
+                    opacity: 1;
+                }
+
+                70% {
+                    opacity: 0;
+                }
+
+                100% {
+                    opacity: 0;
+                }
+            }
+        </style>
+    </head>
+
+    <body id="options">
+        <h2>Spoiler Slayer</h2>
+        <hr />
+        <section>
+            <div id="wrapper">
+                <ol>
+                    <li class="active">
+                        <img class="spoiler-blocker-selector-preview" src="./assets/images/tutorial/reddit.png" />
+                        <h2>
+                            Click the Spoiler Slayer icon <img src="assets/icons/battered-axe.svg" class="toolbar-icon-example" alt="battered axe" />
+                            ...
+                        </h2>
+                    </li>
+                    <li>
+                        <img src="./assets/images/tutorial/reddit_unblocked_popup.png" />
+                        <h2>
+                            ...to open settings...
+                        </h2>
+                    </li>
+                    <li>
+                        <img src="./assets/images/tutorial/reddit_blocked.png" />
+                        <h2>...and customize...</h2>
+                    </li>
+                    <li>
+                        <img src="./assets/images/tutorial/reddit_blocked_censored.png" />
+                        <h2>...blocking options.</h2>
+                    </li>
+                    <li>
+                        <img src="./assets/images/tutorial/subscription_popup.png" />
+                        <h2>
+                            Click the Spoiler Slayer subscribe icon
+                            <img src="assets/icons/battered-axe-plus-one.svg" class="toolbar-icon-example" alt="battered axe" />
+                            when on a supported site to subscribe to a list that is continuously updated.
+                        </h2>
+                    </li>
+                    <li>
+                        <img src="./assets/images/tutorial/settings_with_sub.png" />
+                        <h2>
+                            Use advanced settings to fine tune spoiler blocking on sites you visit most.
+                        </h2>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <footer>
+            <div class="right">
+                <ul class="menu-h">
+                    <li><a id="options" href="/options.html">Options</a></li>
+                </ul>
+            </div>
+        </footer>
+
+        <script src="./scripts/tutorial.js"></script>
+    </body>
+</html>
