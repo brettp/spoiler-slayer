@@ -124,6 +124,7 @@ class Subscription extends SpoilerBlockerModel {
             )
             && !/\/edit\/?$/.test(url)
             && !/github.com\/([^\/]+)$/.test(url)
+            && !/^https:\/\/gist\.github\.com\/?$/.test(url)
             && (!Subscription.isGitHubRevision(url) || Subscription.isGitHubRawUrl(url))
         );
     }
