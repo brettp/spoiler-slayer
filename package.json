@@ -4,7 +4,7 @@
     "type": "git",
     "url": "git@github.com:brettp/spoiler-slayer.git"
   },
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "gulpfile.js",
   "devDependencies": {
