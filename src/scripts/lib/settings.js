@@ -36,14 +36,28 @@ class Settings {
                 Subscription.factory({
                     url: 'https://gist.github.com/brettp/60faa5f1e217b4fb082e4e8a808dd402',
                     useSites: true,
-                    useSpoiler: false
+                    useSpoilers: false
+                }),
+                Subscription.factory({
+                    url: 'https://gist.github.com/brettp/97b82250323d0b8b3e29e2c833da2354',
+                    useSites: false,
+                    useSpoilers: true
                 })
             ],
             sites: [
-
+                Site.factory({
+                    urlRegex: 'cnn.com',
+                    selector: 'article'
+                })
             ],
             spoilers: [
-
+                Spoiler.factory({
+                    spoiler: 'zombie butterflies'
+                }),
+                Spoiler.factory({
+                    spoiler: '\\b(zomber|zombe|zomba|zombie)flies\\b',
+                    isRegex: true
+                })
             ]
         }
     }

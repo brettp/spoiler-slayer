@@ -365,7 +365,7 @@ class OptionsSettings {
 
     async clearSettings(e) {
         e.preventDefault();
-        if (confirm('Reset all settings?')) {
+        if (confirm('Reset all settings to defaults?')) {
             let defaults = {...Settings.defaultSettings, ...Settings.demoSettings};
             await this.saveSettings(defaults);
             this.populateFromSettings(true);
