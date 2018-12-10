@@ -147,6 +147,11 @@ class Subscription extends SpoilerBlockerModel {
             return false;
         }
 
+        // cannot be an edit page
+        if (/^\/([^\/]+)\/([a-z0-9]+)\/edit\/?$/.test(url.pathname)) {
+            return false;
+        }
+
         // ends in /raw, so it's the latest
         // (revision urls require a filename)
         if (/^\/([^\/]+)\/([a-z0-9]+)\/raw\/?$/.test(url.pathname)) {
