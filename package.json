@@ -25,11 +25,13 @@
     "jshint": "^2.9.6",
     "node-sass": "^4.0.0",
     "sass-loader": "^7.1.0",
+    "standard-version": "^4.4.0",
     "tiny-lr": "^0.2.1"
   },
   "scripts": {
     "test": "jest --coverage",
-    "vs-code-test": "clear ; jest"
+    "vs-code-test": "clear ; jest",
+    "release": "standard-version"
   },
   "author": "Brett Profitt",
   "license": "MIT",
