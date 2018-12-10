@@ -1,18 +1,54 @@
 # Spoiler Slayer
-An open-source browser extension to block spoilers.
+Spoiler Slayer is an open source, tracking-free extension for Chrome and Firefox
+that blocks TV and movies spoilers on your favorite sites. Subscribe in one
+click to public spoilers lists that always stay fresh and make sure no spoilers
+slip by, or use the advanced features like RegEx to fine tune control of which
+spoilers to block on what sites.
 
-Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils).
+Spoiler Slayer includes out of the box support for many popular sites
+including Facebook, Reddit, Twitter, Tumblr, YouTube, and Gizmodo; and it's
+easy to add more.
+
+Settings allow users to customize the blocking experience with 3 modes:
+* Censor - Hides potential spoilers under a black censor bar
+* Blur - Blurs out potential spoilers
+* Remove - Removes spoilers completely from the page as if they were never there
+
+Other features include:
+* Imports, exports, and subscriptions - Create your list of spoilers or sites and share it with the world!
+* Spoiler blur intensity - Blur spoilers to oblivion, or keep them just under legible
+* Reveal on hover or click - Feeling brave? Spoiler Slayer can reveal
+the spoiler when you hover over or click on the censored area
+* Selector helper - It's easy to add new sites with the built-in selector helper, which
+highlights items on the page as you type
+* Blocked counts - Know how many times you've avoided mild panic!
+
+## Available for Chrome and FireFox
+
+[<img src="screenshots/etc/chrome-web-store.png" title="Chrome" height="60" />](https://chrome.google.com/webstore/detail/spoiler-slayer/mploapfinhlhbgddjadjnhgiockogjlc)
+[<img src="screenshots/etc/firefox-add-ons.png" title="Firefox Add-ons" height="60" />](https://addons.mozilla.org/en-US/firefox/addon/spoiler-slayer?src=external-github)
+
+# Screenshots
+
+![](screenshots/reddit_blocked_popup_ff.png)
+
+![](screenshots/reddit_blocked_censored.png)
+
+![](screenshots/facebook.png)
+
+![](screenshots/twitter.png)
+
+![](screenshots/selector_highlight_popup.png)
+
+![](screenshots/subscription_popup.png)
+
+![](screenshots/settings_with_sub.png)
 
 ## Differences from Game of Spoils
 * Removed superfluous fonts and long-winded block notifications (@todo but you can still enable them if you want).
 * Simplified and improved UI
 * Improved code readability and maintainability
 * Switched to modern ES6 and SCSS
-
-
-## Installation
-@TODO Upload to stores
-
 
 ### Todo
 - [X] Dom change events instead of tracking element content
@@ -81,3 +117,8 @@ Originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils
 2. Run `npm install` to install dependencies.
 3. Run `gulp` to setup watches that will automatically compile any changes you make from the `src` dir to the `build` directory.
 4. To test the extension, go to the Chrome Extensions tab, click 'Load unpacked extension', and choose the `build/chrome` or `build/firefox` directory.
+
+
+
+
+Concept originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils).
