@@ -260,7 +260,10 @@ var helpers = (function() {
     }
 
     function openPage(page) {
-        window.open(chrome.runtime.getURL(page));
+        chrome.tabs.create({
+            url: chrome.runtime.getURL('tutorial.html'),
+            active: true
+        });
         return false;
     }
 

@@ -20,9 +20,13 @@ if (chrome.storage) {
 
 async function sendMsg(msg) {
     return new Promise(res => {
-        chrome.runtime.sendMessage(msg, ret => {
-            res(ret);
-        });
+        try {
+            chrome.runtime.sendMessage(msg, ret => {
+                res(ret);
+            });
+        } catch (e) {
+            console.log("Could not send message to bg script", msg);
+        }
     });
 };
 

@@ -209,20 +209,23 @@ class CmdHandler {
     }
 
     setBadgeText(text = '', color = null, tabId = null) {
-        if (typeof text !== 'object') {
+        if (typeof text === 'object') {
             color = text.color || '#4688f1';
-
+            delete text.color;
+            tabId = text.tabId || null;
+        } else {
             text = {
                 text: text.toString(),
                 tabId: tabId
             }
         }
 
-        if (text === "0" || text === 0) {
+        if (text.text === "0" || text.text === 0) {
             text.text = '';
         }
 
         chrome.browserAction.setBadgeText(text);
+
         if (chrome.browserAction.setBadgeTextColor) {
             chrome.browserAction.setBadgeTextColor({color: '#ffffff'});
         }
@@ -367,14 +370,6 @@ async function init() {
         }
     });
 
-    chrome.runtime.onInstalled.addListener(async details => {
-        if (details.reason === 'install') {
-            let defaults = {...Settings.defaultSettings, ...Settings.demoSettings};
-            await settings.save(defaults);
-            helpers.openPage('tutorial.html');
-        }
-    });
-
     return settings;
 }
 
@@ -397,6 +392,13 @@ async function _getActiveTabInfo() {
         });
     });
 }
+
+chrome.runtime.onInstalled.addListener(details => {
+    if (details.reason == 'install') {
+        helpers.openPage('tutorial.html');
+    }
+});
+
 
 // so it's accessible on the background page console
 var settings;
