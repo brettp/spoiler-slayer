@@ -1,9 +1,15 @@
 # Spoiler Slayer
-Spoiler Slayer is an open source, tracking-free extension for Chrome and Firefox
+Spoiler Slayer is an open source, tracking-free, simple extension for Chrome and Firefox
 that blocks TV and movies spoilers on your favorite sites. Subscribe in one
 click to public spoilers lists that always stay fresh and make sure no spoilers
-slip by, or use the advanced features like RegEx to fine tune control of which
+slip by, or use the advanced settings to fine tune which
 spoilers to block on what sites.
+
+## Available for Chrome and FireFox
+
+[<img src="screenshots/etc/chrome-web-store.png" title="Chrome" height="60" />](https://chrome.google.com/webstore/detail/spoiler-slayer/mploapfinhlhbgddjadjnhgiockogjlc)
+[<img src="screenshots/etc/firefox-add-ons.png" title="Firefox Add-ons" height="60" />](https://addons.mozilla.org/en-US/firefox/addon/spoiler-slayer?src=external-github)
+
 
 Spoiler Slayer includes out of the box support for many popular sites
 including Facebook, Reddit, Twitter, Tumblr, YouTube, and Gizmodo; and it's
@@ -19,14 +25,20 @@ Other features include:
 * Spoiler blur intensity - Blur spoilers to oblivion, or keep them just under legible
 * Reveal on hover or click - Feeling brave? Spoiler Slayer can reveal
 the spoiler when you hover over or click on the censored area
+* RegEx support - Anticipate common misspellings of spoilers or only block certain URLs
 * Selector helper - It's easy to add new sites with the built-in selector helper, which
 highlights items on the page as you type
 * Blocked counts - Know how many times you've avoided mild panic!
 
-## Available for Chrome and FireFox
+# Permissions details
+No data is sent to any 3rd party servers by this extension. Data is fetched
+from GitHub or GitLab when subscribed to lists, but this is not required
+for functionality.
 
-[<img src="screenshots/etc/chrome-web-store.png" title="Chrome" height="60" />](https://chrome.google.com/webstore/detail/spoiler-slayer/mploapfinhlhbgddjadjnhgiockogjlc)
-[<img src="screenshots/etc/firefox-add-ons.png" title="Firefox Add-ons" height="60" />](https://addons.mozilla.org/en-US/firefox/addon/spoiler-slayer?src=external-github)
+## Specific permissions
+* "Access your data for all websites" - Needed to be able to match which sites to block spoilers
+* "Download files and read and modify the browser’s download history" - Needed to export and import settings to files
+* "Access browser tabs" - Needed to display counts and subscription status in Spoiler Slayer badge icon
 
 # Screenshots
 
