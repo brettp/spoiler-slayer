@@ -15,9 +15,9 @@ const examples = [
         'spoiler': 'Teddy Flood'
     },
     {
-        'text': 'Bucky Barnes likes Steve Rodgers!',
+        'text': 'Bucky Barnes likes Steve Rogers!',
         'image': 'Avengers.svg',
-        'spoiler': 'Steve Rodgers'
+        'spoiler': 'Steve Rogers'
     },
     {
         'text': 'The 13th Doctor lives here!',
