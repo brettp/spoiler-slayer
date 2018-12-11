@@ -63,7 +63,7 @@ for functionality.
 4. Chrome:
     1. Go to the Chrome Extensions tab, click 'Load unpacked extension', and choose the `build/chrome` directory.
 5. Firefox
-    1. Go to `about:debugger` and click `Enable add-on debuggin`, then `Load Temporary Add-on` and choose any file within the `build/firefox` directory.
+    1. Go to `about:debugger` and click `Enable add-on debugging`, then `Load Temporary Add-on` and choose any file within the `build/firefox` directory.
 6. Microsoft Edge
     1. Not currently supported pending Edge's full and correct implementation of the [browser extension API](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions), HTML 5, CSS 3, and ES6.
 7. Microsoft Internet Explorer
