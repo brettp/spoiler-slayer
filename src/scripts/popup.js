@@ -35,7 +35,7 @@ const bodyClasses = d.body.classList;
 
 // changing the example while the popup is open is too distracting
 // pick one and use it per popup instance
-const exampleInfo = examples[Math.floor(Math.random() * examples.length)];
+let exampleInfo = examples[Math.floor(Math.random() * examples.length)];
 
 d.addEventListener('keydown', (event) => {
     if (event.key && event.key.toLowerCase() == 'alt') {
@@ -130,6 +130,17 @@ class PopupSettings {
 
         // from content.js
         updateStyles();
+
+        d.addEventListener('keyup', (event) => {
+            // support changing example image with number keys
+            if (event.key) {
+                let num = parseInt(event.key);
+                if (num && examples[num]) {
+                    exampleInfo = examples[num];
+                    updateExample(this.settings);
+                }
+            }
+        });
     }
 
     async saveSetting(e) {
