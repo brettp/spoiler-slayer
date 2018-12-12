@@ -19,7 +19,8 @@ test('isGitHubRevision() finds revision URLs', () => {
         'https://gist.githubusercontent.com/brettp/0e3e61b22c930b429670ac94de605c57/raw/',
         'https://google.com',
         'https://gist.github.com/brettp/0e3e61b22c930b429670ac94de605c57/raw',
-        'https://gist.github.com/brettp/0e3e61b22c930b429670ac94de605c57/edit'
+        'https://gist.github.com/brettp/0e3e61b22c930b429670ac94de605c57/edit',
+        'https://github.com/brettp/spoilerslayer/abc/123/xyz.json'
     ]
 
     for (const url of urls) {

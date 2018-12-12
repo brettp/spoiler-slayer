@@ -143,8 +143,8 @@ class Subscription extends SpoilerBlockerModel {
             return false;
         }
 
-        // must be github
-        if (!/github/.test(url.hostname)) {
+        // must be github(usercontent)
+        if (!/gist\.github/.test(url.hostname)) {
             return false;
         }
 
@@ -155,7 +155,7 @@ class Subscription extends SpoilerBlockerModel {
 
         // ends in /raw, so it's the latest
         // (revision urls require a filename)
-        if (/^\/([^\/]+)\/([a-z0-9]+)\/raw\/?$/.test(url.pathname)) {
+        if (/^\/([^\/]+)\/([^\/]+)\/raw\/?$/.test(url.pathname)) {
             return false;
         }
 
