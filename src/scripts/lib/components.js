@@ -684,6 +684,10 @@ class CustomIcon extends HTMLElement {
                 icon = 'arrows-ccw';
                 break;
 
+            case "sort":
+                icon = 'chart-bar'
+                break;
+
             default:
                 icon = iconAttr;
                 break;

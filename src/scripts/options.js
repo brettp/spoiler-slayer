@@ -133,8 +133,13 @@ class OptionsSettings {
             case target.classList.contains('import'):
                 byId('import-files').click()
                 break;
+
             case target.classList.contains('export'):
                 this.exportSettings(type);
+                break;
+
+            case target.classList.contains('sort'):
+                this.sortList(type);
                 break;
         }
 
@@ -158,6 +163,30 @@ class OptionsSettings {
         // feels better with at least a second to spin
         icon.endAnimation();
     }
+
+    async sortList(type) {
+        let list = this.settings[type];
+        let comp;
+
+        switch (type) {
+            case 'subscriptions':
+                comp = (a, b) => a.content.exportName.localeCompare(b.content.exportName);
+                break;
+
+            case 'sites':
+                comp = (a, b) => a.urlRegex.localeCompare(b.urlRegex);
+                break;
+
+            case 'spoilers':
+                comp = (a, b) => a.spoiler.localeCompare(b.spoiler);
+                break;
+        }
+
+        list.sort(comp);
+        this.setSetting(type, list);
+    }
+
+
 
     resetToOgSites(e) {
         e.preventDefault();

@@ -878,9 +878,8 @@ custom-icon > img {
     pointer-events: none;
 }
 
-// adjust to spin in the center
-custom-icon[icon=cw] > img {
-    transform-origin: 44% 50%;
+custom-icon[icon=sort] {
+    transform: rotate(90deg);
 }
 
 blockquote {
