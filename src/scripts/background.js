@@ -110,6 +110,16 @@ class CmdHandler {
         return this.blockedCounts;
     }
 
+    isSubscribed(url) {
+        for (let sub of this.settings.subscriptions) {
+            if (url == sub.url) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     // when a tab is activated, see if the badge needs updated
     // based on the settings
     showCorrectBadgeCount(data, sender) {
@@ -131,7 +141,11 @@ class CmdHandler {
         }
 
         if (Subscription.isSubscribableUrl(tab.url)) {
-            return this.setBadgeText('+1', '#1fca23', tab.id);
+            if (this.isSubscribed(tab.url)) {
+                return this.setBadgeText('✓', '#1fca23', tab.id);
+            } else {
+                return this.setBadgeText('+1', '#1fca23', tab.id);
+            }
         } else if (Subscription.isGitHubRevision(tab.url)) {
             return this.setBadgeText('+1', '#f2b52d', tab.id);
         }

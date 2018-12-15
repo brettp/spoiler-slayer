@@ -282,9 +282,12 @@ class PopupSettings {
         byId('sites-count').innerText = sub.sites.length;
 
         // see if it's already subscribed to
+        // and pass the index if so
+        let i = 0;
         for (const tempSub of subscriptions) {
             if (tempSub.url == sub.url) {
                 sub = tempSub;
+                sub.index = i;
                 newSub = false;
                 subscribe.querySelector('[name=subscribe]').setAttribute('checked', ' ');
 
@@ -297,6 +300,8 @@ class PopupSettings {
 
                 break;
             }
+
+            i++;
         }
 
         if (newSub) {
@@ -352,9 +357,10 @@ class PopupSettings {
                 this.setSetting('subscriptions', [sub, ...this.settings.subscriptions]);
             }
         } else {
-            let i = this.settings.subscriptions.indexOf(sub);
-            this.settings.subscriptions.splice(i, 1);
-            this.setSetting('subscriptions', this.settings.subscriptions);
+            if (sub.index >= 0) {
+                this.settings.subscriptions.splice(sub.index, 1);
+                this.setSetting('subscriptions', this.settings.subscriptions);
+            }
         }
 
         helpers.addFlash(byId('new-subscription'), 'success');
