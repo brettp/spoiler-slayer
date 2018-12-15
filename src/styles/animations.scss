@@ -11,6 +11,30 @@
     animation: pulse-opacity 0.75s alternate infinite;
 }
 
+custom-icon {
+    &.spin > img {
+        animation: spin 1s infinite;
+    }
+
+    &.r180 > img {
+        transform: rotate(180deg);
+    }
+
+    &.r180 > img {
+        transform: inherit;
+    }
+
+    &.end-animation > img {
+        animation-iteration-count: 1;
+    }
+}
+
+@keyframes spin {
+	to {
+    	transform: rotate(360deg);
+    }
+}
+
 @keyframes flash-fade {
     to {
         opacity: 0;

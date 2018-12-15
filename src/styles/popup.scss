@@ -456,8 +456,7 @@ subscription-item h4 {
 
 .inline-icon {
     font-style: inherit;
-    display: inline;
-    filter: grayscale(100%);
+    display: inline-flex;
 }
 
 .col-2 {
@@ -481,7 +480,8 @@ label[for=hideTips] {
 
     [icon=tip] {
         font-size: 250%;
-        margin: 0 .25em;
+        margin: 0 .25em 0 0;
+        opacity: .25;
         float: left;
     }
 
@@ -862,11 +862,25 @@ regex-input {
 }
 
 custom-icon {
-    display: none;
+    width: 1em;
+    height: 1em;
+    display: inline-flex;
+    align-content: center;
+    justify-content: center;
+    pointer-events: none;
 }
 
-custom-icon.active {
-    display: initial;
+custom-icon > img {
+    position: relative;
+    width: 1em;
+    height: 1em;
+    font-size: 1em;
+    pointer-events: none;
+}
+
+// adjust to spin in the center
+custom-icon[icon=cw] > img {
+    transform-origin: 44% 50%;
 }
 
 blockquote {

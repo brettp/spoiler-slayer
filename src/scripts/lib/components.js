@@ -650,130 +650,61 @@ customElements.define('subscription-item', SubscriptionItem);
 class CustomIcon extends HTMLElement {
     constructor() {
         super();
-
-        this.attachShadow({
-            mode: "open"
-        });
-
-        const template = document.createElement('i');
-        const style = document.createElement('style');
-        this.shadowRoot.appendChild(style);
-
-        // fix for FF's weird short fonts
-        // let transformOrigin = '50% 64.25%';
-        let transformOrigin = '44% 51.25%';
-        if (/firefox/i.test(navigator.userAgent)) {
-            transformOrigin = '31% 63%';
-        }
-
-        style.innerText = `
-:host {
-    display: inline-flex;
-    position: relative;
-    width: 1em;
-    height: 1em;
-    font-size: 1em;
-    pointer-events: none;
-    filter: grayscale(100%);
-}
-
-i {
-    display: inline-flex;
-    line-height: 1em;
-    height: 1em;
-    width: 1em;
-    font-style: initial;
-}
-
-i.reload {
-    vertical-align: bottom;
-    transform-origin: ${transformOrigin};
-}
-
-i.upload {
-    vertical-align: text-top;
-}
-
-:host(.spin) > i {
-    animation: spin 1s infinite;
-}
-
-:host(.r180) > i {
-	transform: rotate(180deg);
-}
-
-:host(.r180.spin) > i {
-    transform: inherit;
-}
-
-:host(.end-animation) > i {
-    animation-iteration-count: 1;
-}
-
-@keyframes spin {
-	to {
-    	transform: rotate(360deg);
-    }
-}
-`.replace(/[\n\r]/g, '');
-
-        this.shadowRoot.appendChild(template);
-        this.classList.add('active');
+        this.imgEl = document.createElement('img');
+        // this.classList.add('active');
     }
 
     renderIcon() {
         let iconAttr = this.getAttribute('icon');
         let icon;
 
-        if (iconAttr) {
-            switch (iconAttr) {
-                case "delete":
-                    icon = '✖️';
-                    break;
+        // alias icons for a bit more semantics
+        switch (iconAttr) {
+            case "delete":
+                icon = 'cancel';
+                break;
 
-                case "add":
-                    icon = '➕';
-                    break;
+            case "add":
+                icon = 'plus';
+                break;
 
-                case "download":
-                    icon = '⇪';
-                    this.classList.add('r180');
-                    break;
+            case "download":
+                icon = 'down';
+                break;
 
-                case "upload":
-                    icon = '⇪';
-                    break;
+            case "upload":
+                icon = 'up';
+                break;
 
-                case "reload":
-                    icon = '↻'
-                    break;
+            case "tip":
+                icon = 'lamp'
+                break;
 
-                case "tip":
-                    icon = '💡';
-                    break;
+            case "reload":
+                icon = 'arrows-ccw';
+                break;
 
-                case 'ok':
-                    icon = '✔️'
-            }
-        } else {
-            icon = this.innerText.trim();
+            default:
+                icon = iconAttr;
+                break;
         }
 
-        if (this.getAttribute('icon')) {
-            this.shadowRoot.querySelector('i').classList = iconAttr;
-        }
-
-        this.shadowRoot.querySelector('i').innerText = icon;
+        this.imgEl.src = `assets/icons/icons.svg#icon-${icon}`;
     }
 
     connectedCallback() {
+        if (!this._appended) {
+            this._appended = true;
+            this.appendChild(this.imgEl);
+        }
+
         this.renderIcon();
     }
 
     endAnimation() {
         this.classList.add('end-animation');
 
-        this.shadowRoot.addEventListener('animationend', e => {
+        this.imgEl.addEventListener('animationend', e => {
             e.stopPropagation();
             this.classList.remove('spin');
             this.classList.remove('end-animation');

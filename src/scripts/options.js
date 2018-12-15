@@ -143,7 +143,7 @@ class OptionsSettings {
 
     async updateSubscriptions(e) {
         e.preventDefault();
-        const icon = e.target.querySelector('custom-icon');
+        const icon = e.currentTarget.querySelector('custom-icon');
         icon.classList.add('spin');
 
         let result = await cmd('updateSubscriptions');

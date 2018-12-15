@@ -56,7 +56,7 @@
                 </small>
             </p>
             <div class='tip'>
-                <a title="Hide tips" href="#" class="fader set-hide-tips">
+                <a title="Hide tips" href="#" class="inline-icon fader set-hide-tips">
                     <custom-icon icon="delete"></custom-icon>
                 </a>
                 <p>
@@ -127,7 +127,7 @@
                             </summary>
                             <div class="subscription-content">
                                 <div class="row">
-                                    <a class="fader delete-item"><custom-icon icon="delete"></custom-icon></a>
+                                    <a class="fader inline-icon delete-item"><custom-icon icon="delete"></custom-icon></a>
                                     <a class="subscription-url" href="#" target="_blank">Invalid</a>
                                 </div>
                                 <div class="update-failed-banner none">
@@ -197,6 +197,7 @@
                     <regex-input
                         name="spoiler"
                         placeholder="teddy flood"
+
                         regex-placeholder="west ?world">
                     </regex-input>
                 </div>
@@ -205,9 +206,8 @@
             <form id="existing-spoilers">
                 <template id="spoiler">
                     <div class="row spoiler-row">
-                        <a class="fader delete-item"><custom-icon icon="delete"></custom-icon></a>
+                        <a class="fader inline-icon delete-item"><custom-icon icon="delete"></custom-icon></a>
                         <regex-input name="spoiler"></regex-input>
-                        <!-- <a class="inline-icon fader">🏷️</a> -->
                     </div>
                 </template>
                 <div id="spoilers"></div>
@@ -236,7 +236,7 @@
                 </ul>
             </header>
             <p>
-                Specify the parts of sites to search for spoilers
+                Specify CSS selectors for sites to block spoilers
             </p>
 
             <div class='tip'>
@@ -278,7 +278,7 @@
             <form id="existing-sites">
                 <template id="site">
                     <div class="row site-row">
-                        <a class="fader delete-item"><custom-icon icon="delete"></custom-icon></a>
+                        <a class="fader inline-icon delete-item"><custom-icon icon="delete"></custom-icon></a>
                         <label class="selector-input">
                             <input
                                 name="selector"

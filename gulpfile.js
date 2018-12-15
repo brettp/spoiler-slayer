@@ -8,11 +8,12 @@ var gutil = require('gulp-util');
 var tinylr = require('tiny-lr');
 var exec = require('child_process').exec;
 var fs = require('fs');
+var svgSprite = require('gulp-svg-sprite');
 
 // Copy static folders to build directory
-gulp.task('update-static', function() {
+gulp.task('update-static', ['build-svg-sprites'], function() {
     del('build/*/assets/icons/*');
-    gulp.src('src/assets/icons/**')
+    gulp.src(['src/assets/icons/**','!src/assets/icons/svg_exploded{,/**}'])
         .pipe(gulp.dest('build/chrome/assets/icons'))
         .pipe(gulp.dest('build/firefox/assets/icons'));
 
@@ -39,6 +40,29 @@ gulp.task('update-static', function() {
             return data;
         }, 2))
         .pipe(gulp.dest('build/firefox'));
+});
+
+gulp.task('build-svg-sprites', function() {
+    del('build/*/assets/icons/svg_exploded{,/**}');
+
+    gulp.src('src/assets/icons/svg_exploded/*.svg')
+    .pipe(svgSprite({
+        "shape": {
+            "id": {
+                "generator": "icon-"
+            }
+        },
+        "mode": {
+            "stack": {
+                // both options required to make it write the file
+                // directly to the gulp dest
+                "sprite": 'icons.svg',
+                "dest": "./"
+            }
+        }
+    }))
+    .pipe(gulp.dest('build/chrome/assets/icons/'))
+    .pipe(gulp.dest('build/firefox/assets/icons/'))
 });
 
 // HTML
