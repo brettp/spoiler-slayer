@@ -706,12 +706,8 @@ class CustomIcon extends HTMLElement {
     }
 
     endAnimation() {
-        this.classList.add('end-animation');
-
-        this.imgEl.addEventListener('animationend', e => {
-            e.stopPropagation();
+        this.imgEl.addEventListener('animationiteration', e => {
             this.classList.remove('spin');
-            this.classList.remove('end-animation');
         }, {once: true});
     }
 
@@ -724,3 +720,27 @@ class CustomIcon extends HTMLElement {
 
 CustomIcon.observedAttributes = ['icon'];
 customElements.define('custom-icon', CustomIcon);
+
+
+class Toolbar extends HTMLUListElement {
+    constructor() {
+        super();
+
+        this.template = document.getElementById('toolbar').content.cloneNode(true);
+    }
+
+    connectedCallback() {
+        if (!this._attached) {
+            this._attached = true;
+            this.prepend(this.template);
+        }
+    }
+
+    attributeChangedCallback(name, was, is) {
+        if (name === 'icon' && was !== 'is') {
+            this.renderIcon();
+        }
+    }
+}
+
+customElements.define('sss-toolbar', Toolbar, {extends: 'ul'});

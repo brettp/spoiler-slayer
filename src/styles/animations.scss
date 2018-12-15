@@ -23,10 +23,6 @@ custom-icon {
     &.r180 > img {
         transform: inherit;
     }
-
-    &.end-animation > img {
-        animation-iteration-count: 1;
-    }
 }
 
 @keyframes spin {

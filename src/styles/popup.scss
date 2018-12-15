@@ -112,7 +112,7 @@ textarea {
     &.subscribe-mode {
         #subscribe {
             &.loaded {
-                custom-icon.loading.active {
+                custom-icon.loading {
                     display: none;
                 }
             }
@@ -675,7 +675,7 @@ section {
         margin-top: .5em;
     }
 
-    .toolbar {
+    [is=sss-toolbar] {
         position: absolute;
         top: 0;
         left: 0;

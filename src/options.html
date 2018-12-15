@@ -16,35 +16,38 @@
             <label class="regex-checkbox"><input type="checkbox" name="isRegex" value="1" /><code>/re/</code></label>
         </template>
 
+        <template id="toolbar">
+            <li>
+                <a title="Remove all" href="#" class="toolbar-action fader remove-all">
+                    <custom-icon icon="delete"></custom-icon>
+                </a>
+            </li>
+            <li>
+                <a title="Import from a file" href="#" class="toolbar-action fader import">
+                    <custom-icon icon="upload"></custom-icon>
+                </a>
+            </li>
+            <li>
+                <a title="Export to a file" href="#" class="toolbar-action fader export">
+                    <custom-icon icon="download"></custom-icon>
+                </a>
+            </li>
+            <li>
+                <a title="Sort alphabetically" href="#" class="toolbar-action fader sort">
+                    <custom-icon icon="sort"></custom-icon>
+                </a>
+            </li>
+        </template>
+
         <h1 id="title">Spoiler Slayer</h1>
         <hr />
 
         <section id="subscriptions-settings" data-type="subscriptions">
             <header>
                 <h2>Subscriptions</h2>
-                <ul class="toolbar">
+                <ul is="sss-toolbar">
                     <li>
-                        <a title="Remove all subscriptions" href="#" class="toolbar-action fader remove-all">
-                            <custom-icon icon="delete"></custom-icon>
-                        </a>
-                    </li>
-                    <li>
-                        <a title="Import subscriptions from a file" href="#" class="toolbar-action fader import">
-                            <custom-icon icon="upload"></custom-icon>
-                        </a>
-                    </li>
-                    <li>
-                        <a title="Export subscriptions to a file" href="#" class="toolbar-action fader export">
-                            <custom-icon icon="download"></custom-icon>
-                        </a>
-                    </li>
-                    <li>
-                        <a title="Sort alphabetically" href="#" class="toolbar-action fader sort">
-                            <custom-icon icon="sort"></custom-icon>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" id="update-subscriptions" class="fader">
+                        <a title="Update subscriptions" href="#" id="update-subscriptions" class="fader">
                             <custom-icon icon='reload'></custom-icon>
                         </a>
                     </li>
@@ -162,28 +165,7 @@
         <section id="spoilers-settings" data-type="spoilers">
             <header>
                 <h2>Spoilers</h2>
-                <ul class="toolbar">
-                    <li>
-                        <a title="Remove all spoilers" href="#" class="toolbar-action fader remove-all">
-                            <custom-icon icon="delete"></custom-icon>
-                        </a>
-                    </li>
-                    <li>
-                        <a title="Import spoilers from a file" href="#" class="toolbar-action fader import">
-                            <custom-icon icon="upload"></custom-icon>
-                        </a>
-                    </li>
-                    <li>
-                        <a title="Export spoilers to a file" href="#" class="toolbar-action fader export">
-                            <custom-icon icon="download"></custom-icon>
-                        </a>
-                    </li>
-                    <li>
-                        <a title="Sort alphabetically" href="#" class="toolbar-action fader sort">
-                            <custom-icon icon="sort"></custom-icon>
-                        </a>
-                    </li>
-                </ul>
+                <ul is="sss-toolbar"></ul>
             </header>
             <p>
                 Add words and phrases to block
@@ -227,28 +209,7 @@
         <section id="sites-settings" data-type="sites">
             <header>
                 <h2>Sites &amp; Selectors</h2>
-                <ul class="toolbar">
-                    <li>
-                        <a title="Remove all sites &amp; selectors" href="#" class="toolbar-action fader remove-all">
-                            <custom-icon icon="delete"></custom-icon>
-                        </a>
-                    </li>
-                    <li>
-                        <a title="Import sites &amp; selectors from a file" href="#" class="toolbar-action fader import">
-                            <custom-icon icon="upload"></custom-icon>
-                        </a>
-                    </li>
-                    <li>
-                        <a title="Export sites &amp; selectors to a file" href="#" class="toolbar-action fader export">
-                            <custom-icon icon="download"></custom-icon>
-                        </a>
-                    </li>
-                    <li>
-                        <a title="Sort alphabetically" href="#" class="toolbar-action fader sort">
-                            <custom-icon icon="sort"></custom-icon>
-                        </a>
-                    </li>
-                </ul>
+                <ul is="sss-toolbar"></ul>
             </header>
             <p>
                 Specify CSS selectors for sites to block spoilers
