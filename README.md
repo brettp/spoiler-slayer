@@ -1,8 +1,8 @@
 # Spoiler Slayer
-Spoiler Slayer is an open source, tracking-free, simple extension for Chrome and Firefox
-that blocks TV and movies spoilers on your favorite sites. Subscribe in one
-click to public spoilers lists that always stay fresh and make sure no spoilers
-slip by, or use the advanced settings to fine tune which
+Spoiler Slayer is an open source, tracking-free, simple extension for Chrome
+and Firefox that blocks TV and movies spoilers on your favorite sites.
+Subscribe in one click to public spoilers lists that always stay fresh and
+make sure no spoilers slip by, or use the advanced settings to fine tune which
 spoilers to block on what sites.
 
 ## Available for Chrome and FireFox
@@ -36,8 +36,10 @@ from GitHub or GitLab when subscribed to lists, but this is not required
 for functionality.
 
 ## Specific permissions
-* "Access your data for all websites" - Needed to be able to match which sites to block spoilers
-* "Download files and read and modify the browser’s download history" - Needed to export and import settings to files
+* "Access your data for all websites" or "Read and change all your data on the websites you visit" -
+   Needed to be able to match which sites to block spoilers
+* "Download files and read and modify the browser’s download history" or "Manage your downloads" -
+   Needed to export and import settings to files
 * "Access browser tabs" - Needed to display counts and subscription status in Spoiler Slayer badge icon
 
 # Screenshots
