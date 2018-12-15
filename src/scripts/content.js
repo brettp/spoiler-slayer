@@ -26,6 +26,8 @@ async function init(settings) {
     let url = window.location.href.toLowerCase();
     let shouldBlock = await cmd('shouldBlock', url);
 
+    cmd('showCorrectBadgeCount');
+
     if (!shouldBlock) {
         return;
     }
@@ -100,24 +102,9 @@ async function updateStyles() {
 
 function initiateSpoilerBlocking(selector_string, settings) {
     searchForAndBlockSpoilers(selector_string, false, settings);
+
     var observer = new window.MutationObserver(helpers.debounce(function(muts, obs) {
         searchForAndBlockSpoilers(selector_string, true, settings);
-        // let fire = false;
-        // for (let mut of muts) {
-        //     console.log("Observed ", mut.target);
-        //     if (mut.target) {
-        //         let cl = mut.target.classList;
-        //         if (!cl.contains('glamoured') && !cl.contains('content-wrapper') && !cl.contains('spoiler-info')) {
-        //             fire = true;
-        //             break;
-        //         }
-        //     }
-        // }
-
-        // console.log('Firing', fire);
-        // if (fire) {
-        //     searchForAndBlockSpoilers(selector_string, false, settings);
-        // }
     }, 150));
 
     const opts = {
@@ -185,7 +172,6 @@ async function searchForAndBlockSpoilers(selector, check_parent, settings) {
 
     if (blockedCount) {
         await cmd('incBlockCount', blockedCount);
-        cmd('showCorrectBadgeCount');
     }
 }
 
