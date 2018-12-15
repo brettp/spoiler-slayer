@@ -364,17 +364,17 @@ async function init() {
     chrome.tabs.onActivated.addListener(cmdHandler.tabOnActivated);
     // cmdHandler.showCorrectBadgeCount();
 
-    // @todo doens't work on ff reliably
-    // chrome.runtime.onConnect.addListener((port) => {
-    //     port.onDisconnect.addListener(() => {
-    //         cmdHandler.highlightElementsInActiveTab('!!invalid selector!!');
-    //     });
-    // });
+    // @todo doesn't work on ff reliably
+    chrome.runtime.onConnect.addListener((port) => {
+        port.onDisconnect.addListener(() => {
+            cmdHandler.highlightElementsInActiveTab('!!invalid selector!!');
+        });
+    });
 
-    // update subs once a day (@todo if enabled)
+    // update subs once an hour
     chrome.alarms.create('autoupdateSubscriptions', {
         delayInMinutes: 1,
-        periodInMinutes: 60 * 1
+        periodInMinutes: 60
     });
 
     chrome.alarms.onAlarm.addListener((alarm) => {
