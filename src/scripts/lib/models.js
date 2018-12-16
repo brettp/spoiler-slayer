@@ -294,6 +294,22 @@ class Subscription extends SpoilerBlockerModel {
 
         return sub;
     }
+
+    static findByUrl(url, allSubs, index = false) {
+        let i = 0;
+        for (const tempSub of allSubs) {
+            if (tempSub.url == url) {
+                if (index) {
+                    return i;
+                } else {
+                    return tempSub;
+                }
+            }
+            i++;
+        }
+
+        return false;
+    }
 }
 
 if (typeof require !== 'undefined') {

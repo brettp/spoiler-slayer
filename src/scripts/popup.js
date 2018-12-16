@@ -155,11 +155,10 @@ class PopupSettings {
 
         let name = input.getAttribute('name');
         let val = (input.getAttribute('type') == 'checkbox') ? input.checked : input.value;
-        let tab;
 
         this.setSetting(name, val);
 
-        tab = await getActiveTab();
+        let tab = await getActiveTab();
         cmd('showCorrectBadgeCount', {tab: tab});
 
         let revealed = byQSOne('.spoiler-blocker-revealed');
@@ -240,12 +239,10 @@ class PopupSettings {
         }
 
         bodyClasses.add('subscribe-mode');
-        let subscriptions = helpers.objsToModels(this.settings.subscriptions, 'subscriptions');
 
         let sub = Subscription.factory({
             url: url
         });
-        let newSub = true;
 
         if (!await sub.update()) {
             subscribe.querySelector('.update-failed-banner').classList.remove('none');
@@ -273,29 +270,19 @@ class PopupSettings {
         byId('sites-count').innerText = sub.sites.length;
 
         // see if it's already subscribed to
-        // and pass the index if so
-        let i = 0;
-        for (const tempSub of subscriptions) {
-            if (tempSub.url == sub.url) {
-                sub = tempSub;
-                sub.index = i;
-                newSub = false;
-                subscribe.querySelector('[name=subscribe]').setAttribute('checked', ' ');
+        let tempSub = Subscription.findByUrl(url, this.settings.subscriptions);
 
-                if (sub.useSpoilers) {
-                    byQSOne('[name=useSpoilers]').setAttribute('checked', ' ');
-                }
-                if (sub.useSites) {
-                    byQSOne('[name=useSites]').setAttribute('checked', ' ');
-                }
+        if (tempSub) {
+            sub = Subscription.factory(tempSub);
+            subscribe.querySelector('[name=subscribe]').setAttribute('checked', ' ');
 
-                break;
+            if (sub.useSpoilers) {
+                byQSOne('[name=useSpoilers]').setAttribute('checked', ' ');
             }
-
-            i++;
-        }
-
-        if (newSub) {
+            if (sub.useSites) {
+                byQSOne('[name=useSites]').setAttribute('checked', ' ');
+            }
+        } else {
             if (sub.spoilers.length > 0) {
                 subscribe.querySelector(`[name=useSpoilers]`).setAttribute('checked', ' ');
             }
@@ -333,26 +320,29 @@ class PopupSettings {
         subscribe.addEventListener('input', e => {
             if (['subscribe', 'useSpoilers', 'useSites'].includes(e.target.name)) {
                 e.preventDefault();
-                this.saveQuickAddSubscription(e, sub, newSub);
+                this.saveQuickAddSubscription(e, sub);
             }
         });
     }
 
-    saveQuickAddSubscription(e, sub, newSub) {
+    async saveQuickAddSubscription(e, sub) {
+        let checked = byQSOne('[name=subscribe]').checked;
         sub.useSpoilers = byQSOne('[name=useSpoilers]').checked;
         sub.useSites = byQSOne('[name=useSites]').checked;
 
-        // only add sub if it's new
-        if (byQSOne('[name=subscribe]').checked) {
-            if (newSub) {
-                this.setSetting('subscriptions', [sub, ...this.settings.subscriptions]);
-            }
-        } else {
-            if (sub.index >= 0) {
-                this.settings.subscriptions.splice(sub.index, 1);
-                this.setSetting('subscriptions', this.settings.subscriptions);
-            }
+        let index = Subscription.findByUrl(sub.url, this.settings.subscriptions, true);
+
+        if (!checked && index >= 0) {
+            // already exists, so remove
+            this.settings.subscriptions.splice(index, 1);
+            await this.setSetting('subscriptions', this.settings.subscriptions);
+        } else if (checked && !index) {
+            // adding and doesn't already exist
+            await this.setSetting('subscriptions', [sub, ...this.settings.subscriptions]);
         }
+
+        let tab = await getActiveTab();
+        await cmd('showCorrectBadgeCount', {tab: tab});
 
         helpers.addFlash(byId('new-subscription'), 'success');
     }

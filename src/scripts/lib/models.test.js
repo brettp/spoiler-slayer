@@ -106,3 +106,27 @@ test('Returns Unnamed List after update', () => {
 
     expect(sub.exportName).toBe('Unnamed List');
 });
+
+
+test('Find subs by URL', () => {
+    let subs = [
+        models.Subscription.factory({
+            url: 'https://gist.github.com/brettp/123'
+        }),
+        models.Subscription.factory({
+            url: 'https://gist.github.com/brettp/456'
+        }),
+        models.Subscription.factory({
+            url: 'https://gist.github.com/brettp/789'
+        }),
+        models.Subscription.factory({
+            url: 'https://gist.github.com/brettp/abc'
+        }),
+    ];
+
+    expect(models.Subscription.findByUrl('https://gist.github.com/brettp/789', subs).url).toBe('https://gist.github.com/brettp/789');
+    expect(models.Subscription.findByUrl('https://gist.github.com/brettp/abc', subs).url).toBe('https://gist.github.com/brettp/abc');
+    expect(models.Subscription.findByUrl('https://gist.github.com/brettp/456', subs, true)).toBe(1);
+    expect(models.Subscription.findByUrl('https://gist.github.com/brettp/nothing', subs)).toBe(false);
+    expect(models.Subscription.findByUrl('https://gist.github.com/brettp/nothing', subs, true)).toBe(false);
+});
