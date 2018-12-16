@@ -159,17 +159,8 @@ class PopupSettings {
 
         this.setSetting(name, val);
 
-        if (name == 'badgeDisplay') {
-            if (val == 'none') {
-                tab = await getActiveTab();
-                cmd('setBadgeText', {'text': '', tabId: tab.id});
-            } else {
-                // update badge with current ACTIVE tab (not THIS tab, because this tab is an internal one)
-                // for some reason this returns nothing if run through the normal cmd
-                tab = await getActiveTab();
-                cmd('showCorrectBadgeCount', {tab: tab});
-            }
-        }
+        tab = await getActiveTab();
+        cmd('showCorrectBadgeCount', {tab: tab});
 
         let revealed = byQSOne('.spoiler-blocker-revealed');
         if (revealed || input.getAttribute('type') != 'range') {

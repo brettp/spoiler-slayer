@@ -142,7 +142,7 @@ class CmdHandler {
 
         if (Subscription.isSubscribableUrl(tab.url)) {
             if (this.isSubscribed(tab.url)) {
-                return this.setBadgeText('✓', '#1fca23', tab.id);
+                return this.setBadgeText('✓', '#4688f1', tab.id);
             } else {
                 return this.setBadgeText('+1', '#1fca23', tab.id);
             }
@@ -150,7 +150,7 @@ class CmdHandler {
             return this.setBadgeText('+1', '#f2b52d', tab.id);
         }
 
-        if (this.badgeDisplay == 'none') {
+        if (this.settings.badgeDisplay == 'none') {
             return this.setBadgeText('', '', tab.id);
         }
 
