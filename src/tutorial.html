@@ -18,7 +18,7 @@
             }
 
             #wrapper h2 {
-                padding-top: 1em;
+                padding-top: 0;
             }
 
             ol {
@@ -52,12 +52,65 @@
                 width: 1em;
             }
 
-            .tri-image {
+            li .stacking > img {
+                position: absolute;
+            }
+
+            li .stacking > img:not(:first-of-type) {
+                opacity: 0;
+            }
+
+            li.active .stacking > img:not(:first-of-type) {
+                animation: fade-in 1s forwards;
+            }
+
+            li.active .stacking > img:nth-of-type(2) {
+                animation-delay: 1.5s;
+            }
+
+            li.active .stacking > img:nth-of-type(3) {
+                animation-delay: 3s;
+            }
+
+            li.active .stacking > img:nth-of-type(4) {
+                animation-delay: 4.5s;
+            }
+
+            li.active .stacking > img:nth-of-type(5) {
+                animation-delay: 6s;
+            }
+
+            li.active .stacking > img:nth-of-type(6) {
+                animation-delay: 7.5s;
+            }
+
+            li.active .stacking > img:nth-of-type(7) {
+                animation-delay: 9s;
+            }
+
+            li.active .stacking > img:nth-of-type(8) {
+                animation-delay: 10.5s;
+            }
+
+            li.active .stacking > img:nth-of-type(9) {
+                animation-delay: 12s;
+            }
+
+            li.active .stacking > img:nth-of-type(10) {
+                animation-delay: 13.5s;
+            }
+
+            .stacking, .tri-image {
+                width: 100%;
                 height: 450px;
                 position: relative;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
             }
 
             .tri-image > img {
+                position: absolute;
                 opacity: 0;
             }
 
@@ -107,50 +160,57 @@
             <div id="wrapper">
                 <ol>
                     <li class="active">
-                        <img class="spoiler-blocker-selector-preview" src="./assets/images/tutorial/reddit.png" />
                         <h2>
                             Click the Spoiler Slayer icon <img src="assets/icons/battered-axe.svg" class="toolbar-icon-example" alt="battered axe" />
-                            ...
+                            to customize blocking options
                         </h2>
+                        <div class="stacking">
+                            <img src="./assets/images/tutorial/step_1/reddit.png" />
+                            <img src="./assets/images/tutorial/step_1/reddit_popup.png" />
+                            <img src="./assets/images/tutorial/step_1/reddit_popup_enabled.png" />
+                            <img src="./assets/images/tutorial/step_1/reddit_popup_enabled_blur.png" />
+                            <img src="./assets/images/tutorial/step_1/reddit_popup_enabled_blurred_no_text.png" />
+                            <img src="./assets/images/tutorial/step_1/reddit_popup_enabled_censor.png" />
+                            <img src="./assets/images/tutorial/step_1/reddit_censor.png" />
+                            <img src="./assets/images/tutorial/step_1/reddit_blur.png" />
+                            <img src="./assets/images/tutorial/step_1/reddit.png" />
+                        </div>
                     </li>
                     <li>
-                        <img src="./assets/images/tutorial/reddit_unblocked_popup.png" />
-                        <h2>
-                            ...to open settings...
-                        </h2>
-                    </li>
-                    <li>
-                        <img src="./assets/images/tutorial/reddit_blocked.png" />
-                        <h2>...and customize...</h2>
-                    </li>
-                    <li>
-                        <img src="./assets/images/tutorial/reddit_blocked_censored.png" />
-                        <h2>...blocking options.</h2>
-                    </li>
-                    <li>
-                        <img src="./assets/images/tutorial/subscription_popup.png" />
                         <h2>
                             Click the Spoiler Slayer subscribe icon
                             <img src="assets/icons/battered-axe-plus-one.svg" class="toolbar-icon-example" alt="battered axe" />
                             when on a supported site to subscribe to a list that is continuously updated.
                         </h2>
+                        <div class="stacking">
+                            <img src="./assets/images/tutorial/step_2/gh_unsubscribed.png" />
+                            <img src="./assets/images/tutorial/step_2/gh_unsubscribed_popup.png" />
+                            <img src="./assets/images/tutorial/step_2/gh_subscribed_popup.png" />
+                            <img src="./assets/images/tutorial/step_2/gh_subscribed.png" />
+                            <img src="./assets/images/tutorial/step_2/gh_unsubscribed.png" />
+                        </div>
                     </li>
                     <li>
-                        <img src="./assets/images/tutorial/settings_with_sub.png" />
                         <h2>
                             Use advanced settings to fine tune spoiler blocking on sites you visit most.
                         </h2>
+                        <div class="stacking">
+                            <img src="./assets/images/tutorial/step_3/settings.png" />
+                            <img src="./assets/images/tutorial/step_3/settings_default_sites_expanded.png" />
+                            <img src="./assets/images/tutorial/step_3/settings_sub_exampled.png" />
+                            <img src="./assets/images/tutorial/step_3/settings_sites.png" />
+                            <img src="./assets/images/tutorial/step_3/settings.png" />
+                        </div>
                     </li>
                     <li class="last">
+                        <h2>
+                            That's it! Enjoy your spoiler-free browsing!
+                        </h2>
                         <div class="tri-image">
                             <img src="./assets/images/tutorial/facebook.png">
                             <img src="./assets/images/tutorial/youtube.png">
                             <img src="./assets/images/tutorial/twitter.png">
                         </div>
-                        <h2>
-                            All set. Enjoy your spoiler-free browsing!
-                        </h2>
-                        <small>Click to open the options page and optionally load defaults</small>
                 </ol>
             </div>
         </section>
@@ -158,7 +218,7 @@
         <footer>
             <div class="right">
                 <ul class="menu-h">
-                    <li><a id="options" href="/options.html">Options</a></li>
+                    <li><a id="options" href="/options.html">Skip tutorial</a></li>
                 </ul>
             </div>
         </footer>

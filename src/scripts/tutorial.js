@@ -3,14 +3,16 @@ let promptedDefaults = false;
 list.classList.add('slideshow');
 
 list.addEventListener('click', async e => {
+    if (['H2', 'SMALL'].includes(e.target.nodeName)) {
+        return;
+    }
     let active = list.querySelector('li.active');
+
     for (const li of list.querySelectorAll('.spoiler-blocker-selector-preview')) {
         li.classList.remove('spoiler-blocker-selector-preview');
     }
-    active.classList.remove('active');
     let next = active.nextElementSibling;
 
-    // loop to first, prompting to set defaults if haven't already
     if (!next) {
         if (!promptedDefaults) {
             promptedDefaults = true;
@@ -20,12 +22,22 @@ list.addEventListener('click', async e => {
                 await cmd('updateSubscriptions');
             }
 
-            helpers.openOptionsPage();
-            window.close();
+            window.location = '/options.html';
         }
         return;
-        // next = list.querySelector('li');
     }
 
+    active.classList.remove('active');
     next.classList.add('active');
+});
+
+document.body.addEventListener('animationend', e => {
+    if (e.target.matches('li.active .stacking > img:last-of-type')) {
+        let parent = e.target.parentNode.parentNode;
+
+        parent.classList.remove('active');
+        // force redraw
+        parent.getClientRects();
+        parent.classList.add('active');
+    }
 });
