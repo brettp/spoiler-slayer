@@ -26,9 +26,9 @@ async function init(settings) {
     let url = window.location.href.toLowerCase();
     let shouldBlock = await cmd('shouldBlock', url);
 
-    cmd('showCorrectBadgeCount');
-
     if (!shouldBlock) {
+        // still update the badge for subscriptions
+        cmd('showCorrectBadgeCount');
         return;
     }
 
@@ -159,6 +159,7 @@ async function searchForAndBlockSpoilers(selector, check_parent, settings) {
 
     if (blockedCount) {
         await cmd('incBlockCount', blockedCount);
+        cmd('showCorrectBadgeCount');
     }
 }
 
