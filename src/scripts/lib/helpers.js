@@ -261,7 +261,7 @@ var helpers = (function() {
 
     function openPage(page) {
         chrome.tabs.create({
-            url: chrome.runtime.getURL('tutorial.html'),
+            url: chrome.runtime.getURL(page),
             active: true
         });
         return false;
