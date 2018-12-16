@@ -237,7 +237,8 @@ textarea {
         }
 
         input[type='checkbox'] {
-            margin-left: -1em;
+            // adding the fraction prevents a slight misalignment in chrome
+            margin-left: -1.2em;
         }
     }
 }
