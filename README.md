@@ -62,13 +62,16 @@ for functionality.
 1. Clone the repo.
 2. Run `npm install` to install dependencies.
 3. Run `gulp` to setup watches that will automatically compile any changes you make from the `src` dir to the `build` directory.
-4. Chrome:
-    1. Go to the Chrome Extensions tab, click 'Load unpacked extension', and choose the `build/chrome` directory.
-5. Firefox
-    1. Go to `about:debugger` and click `Enable add-on debugging`, then `Load Temporary Add-on` and choose any file within the `build/firefox` directory.
-6. Microsoft Edge
-    1. Not currently supported pending Edge's full and correct implementation of the [browser extension API](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions), HTML 5, CSS 3, and ES6.
-7. Microsoft Internet Explorer
-    1. No.
+4. Tutorial images built by taking screenshots with Chrome at 1280x800 (2560x1600 native), then:
+   1. `mogrify -resize 50%  *`
+   2. `optipng *`
+5. Chrome:
+   1. Go to the Chrome Extensions tab, click 'Load unpacked extension', and choose the `build/chrome` directory.
+6. Firefox
+   1. Go to `about:debugger` and click `Enable add-on debugging`, then `Load Temporary Add-on` and choose any file within the `build/firefox` directory.
+7. Microsoft Edge
+   1. Not currently supported pending Edge's full and correct implementation of the [browser extension API](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions), HTML 5, CSS 3, and ES6.
+8. Microsoft Internet Explorer
+   1. No.
 
 Concept originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils).
