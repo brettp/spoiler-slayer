@@ -44,19 +44,21 @@ for functionality.
 
 # Screenshots
 
-![Block spoilers on your favorite sites](screenshots/reddit_blocked.png)
+![Block spoilers on your favorite sites](screenshots/chrome/reddit_blur.png)
 
-![Pick from 3 differen blocking modes](screenshots/reddit_blocked_censored.png)
+![Pick from 3 different blocking modes](screenshots/chrome/reddit_popup_enabled_censor.png)
 
-![](screenshots/facebook.png)
+![Subscribe to lists public lists to keep spoilers updated](screenshots/chrome/gh_subscribed_popup.png)
 
-![](screenshots/twitter.png)
+![Simple, but powerful settings let you customize blocking how you want](screenshots/chrome/settings.png)
 
-![](screenshots/selector_highlight_popup.png)
+![Use the built-in selector tester to create your own rules](screenshots/chrome/popup_selector_highlighter.png)
 
-![Subscribe to lists public lists to keep spoilers updated](screenshots/subscription_popup.png)
+![](screenshots/chrome/facebook.png)
 
-![Simple, but powerful settings let you customize blocking how you want](screenshots/settings_with_sub.png)
+![](screenshots/chrome/twitter.png)
+
+![](screenshots/chrome/tumblr.png)
 
 # Building From Source
 1. Clone the repo.
@@ -65,13 +67,23 @@ for functionality.
 4. Tutorial images built by taking screenshots with Chrome at 1280x800 (2560x1600 native), then:
    1. `mogrify -resize 50%  *`
    2. `optipng *`
-5. Chrome:
+5. Screenshots
+   1. Facebook
+      1.
+      ```
+      for (const el of document.querySelectorAll('.fbChatSidebar')) { el.remove(); }
+      for (const el of document.querySelectorAll('[title=Profile]')) { el.remove(); }
+      document.getElementById('u_ps_fetchstream_9_0_l').remove()
+      ```
+   2. Twitter
+      1. `$('[data-component-context="users_module"]').remove()`
+6. Chrome:
    1. Go to the Chrome Extensions tab, click 'Load unpacked extension', and choose the `build/chrome` directory.
-6. Firefox
+7. Firefox
    1. Go to `about:debugger` and click `Enable add-on debugging`, then `Load Temporary Add-on` and choose any file within the `build/firefox` directory.
-7. Microsoft Edge
+8. Microsoft Edge
    1. Not currently supported pending Edge's full and correct implementation of the [browser extension API](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions), HTML 5, CSS 3, and ES6.
-8. Microsoft Internet Explorer
-   1. No.
+9.  Microsoft Internet Explorer
+   2. No.
 
 Concept originally based on [Game of Spoils](https://github.com/stu-blair/game-of-spoils).
