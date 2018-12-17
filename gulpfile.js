@@ -9,6 +9,9 @@ var tinylr = require('tiny-lr');
 var exec = require('child_process').exec;
 var fs = require('fs');
 var svgSprite = require('gulp-svg-sprite');
+var jest = require('gulp-jest').default;
+var zip = require('gulp-vinyl-zip');
+let pkg = JSON.parse(fs.readFileSync('./package.json'));
 
 // Copy static folders to build directory
 gulp.task('update-static', ['build-svg-sprites'], function() {
@@ -136,6 +139,32 @@ gulp.task('watch', function() {
             }
         });
     });
+});
+
+gulp.task('test', function () {
+    process.env.NODE_ENV = 'test';
+
+    return gulp.src('src/scripts').pipe(jest({
+        testFileExtensions: ['test.js'],
+        automock: false
+    }));
+});
+
+gulp.task('package', ['test', 'build'], function () {
+    process.env.NODE_ENV = 'test';
+
+    del('build/*.zip');
+
+    // chrome
+    gulp.src('build/chrome/**/*')
+        .pipe(zip.dest(`build/spoiler-slayer-${pkg.version}-chrome.zip`));
+
+    // ff and required src package
+    gulp.src('build/firefox/**/*')
+        .pipe(zip.dest(`build/spoiler-slayer-${pkg.version}-ff.zip`));
+
+    gulp.src(['./src{,/**}', './gulpfile.js', './package-lock.json', './package.json', './README.md', './LICENSE', './CHANGELOG.md'])
+        .pipe(zip.dest(`build/spoiler-slayer-${pkg.version}-ff-src.zip`));
 });
 
 gulp.task('build', ['update-static', 'html', 'js', 'scss'], function() {});

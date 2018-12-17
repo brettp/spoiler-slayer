@@ -21,6 +21,7 @@
     "gulp-svg-sprite": "^1.5.0",
     "gulp-uglify": "^1.5.1",
     "gulp-util": "^3.0.7",
+    "gulp-vinyl-zip": "^2.1.2",
     "gulp-zip": "^3.1.0",
     "jest": "^23.6.0",
     "jshint": "^2.9.6",
@@ -44,5 +45,9 @@
     "bracketSpacing": false,
     "arrowFunctionParentheses": "always",
     "printWidth": 100
+  },
+  "dependencies": {
+    "gulp-jest": "^4.0.2",
+    "jest-cli": "^23.6.0"
   }
 }
