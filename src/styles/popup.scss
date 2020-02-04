@@ -61,6 +61,7 @@ label.checkbox {
     font-family: Arial; // my name is HELVETICA
     display: flex;
     align-items: center;
+    outline: none;
 
     &.inline {
         display: inline-flex;
@@ -70,6 +71,7 @@ label.checkbox {
 input[type='checkbox'] {
     padding: 0.1em;
     border: 0.1em dashed $grey;
+    outline: none;
 
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -77,6 +79,10 @@ input[type='checkbox'] {
     height: 1em;
     width: 1em;
     background-clip: content-box;
+
+    &:hover, &:active {
+        border: 0.1em dashed $grey;
+    }
 
     &:checked {
         background-image: linear-gradient(black, black);
