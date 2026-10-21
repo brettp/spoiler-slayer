@@ -23,6 +23,7 @@
     "gulp-vinyl-zip": ">=2.2.0",
     "gulp-zip": ">=6.1.0",
     "jest": ">=30.5.2",
+    "jest-environment-jsdom": "^30.5.2",
     "jshint": ">=2.13.6",
     "sass": "^1.106.0",
     "sass-loader": ">=7.3.1",
@@ -30,7 +31,7 @@
     "tiny-lr": ">=2.0.0"
   },
   "scripts": {
-    "test": "jest --coverage",
+    "test": "jest --coverage --testEnvironment=jsdom",
     "vs-code-test": "clear ; jest",
     "release": "standard-version"
   },

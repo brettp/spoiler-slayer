@@ -9,7 +9,7 @@ var tinylr = require('tiny-lr');
 var exec = require('child_process').exec;
 var fs = require('fs');
 var svgSprite = require('gulp-svg-sprite');
-var jest = require('gulp-jest').default;
+var jest = require('jest');
 var zip = require('gulp-vinyl-zip');
 let pkg = JSON.parse(fs.readFileSync('./package.json'));
 
@@ -147,13 +147,13 @@ gulp.task('watch', function(cb) {
     cb();
 });
 
-gulp.task('test', function () {
+gulp.task('test', async function (cb) {
     process.env.NODE_ENV = 'test';
 
-    return gulp.src('src/scripts').pipe(jest({
-        testFileExtensions: ['test.js'],
-        automock: false
-    }));
+    // https://dev.to/darasimiajewole/integrating-jest-with-gulp-59mm
+    const { results } =  await jest.runCLI({testEnvironment: 'jsdom'}, ['src'])
+    return(results);
+    cb();
 });
 
 gulp.task('build', gulp.series('update-static', 'html', 'js', 'scss'));
