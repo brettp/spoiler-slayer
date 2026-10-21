@@ -1,7 +1,7 @@
 'use strict';
 
 var gulp = require('gulp');
-var del = require('del');
+const { deleteSync } = require('del');
 var jsontf = require('gulp-json-transform');
 var sass = require('gulp-sass')(require('sass'));
 var gutil = require('gulp-util');
@@ -14,7 +14,7 @@ var zip = require('gulp-vinyl-zip');
 let pkg = JSON.parse(fs.readFileSync('./package.json'));
 
 gulp.task('build-svg-sprites', function(cb) {
-    del('build/*/assets/icons/svg_exploded{,/**}');
+    deleteSync('build/*/assets/icons/svg_exploded{,/**}');
 
     gulp.src('src/assets/icons/svg_exploded/*.svg')
     .pipe(svgSprite({
@@ -39,17 +39,17 @@ gulp.task('build-svg-sprites', function(cb) {
 
 // Copy static folders to build directory
 gulp.task('update-static', gulp.series('build-svg-sprites', function(cb) {
-    del('build/*/assets/icons/*');
+    deleteSync('build/*/assets/icons/*');
     gulp.src(['src/assets/icons/**','!src/assets/icons/svg_exploded{,/**}'])
         .pipe(gulp.dest('build/chrome/assets/icons'))
         .pipe(gulp.dest('build/firefox/assets/icons'));
 
-    del('build/*/assets/images/*');
+    deleteSync('build/*/assets/images/*');
     gulp.src('src/assets/images/**')
         .pipe(gulp.dest('build/chrome/assets/images'))
         .pipe(gulp.dest('build/firefox/assets/images'));
 
-    del('build/*/manifest.json');
+    deleteSync('build/*/manifest.json');
     return gulp.src('src/manifest.json')
         .pipe(jsontf(function(data, file) {
             let pkg = JSON.parse(fs.readFileSync('./package.json'));
@@ -72,7 +72,7 @@ gulp.task('update-static', gulp.series('build-svg-sprites', function(cb) {
 
 // HTML
 gulp.task('html', function(cb) {
-    del('build/*/*.html');
+    deleteSync('build/*/*.html');
     gulp.src('src/*.html')
         .pipe(gulp.dest('build/chrome'))
         .pipe(gulp.dest('build/firefox'));
@@ -81,13 +81,13 @@ gulp.task('html', function(cb) {
 
 // JS
 gulp.task('js', function(cb) {
-    del('build/*/scripts/*.js');
+    deleteSync('build/*/scripts/*.js');
 
     gulp.src(['src/scripts/*.js', '!src/scripts/*.test.js'])
         .pipe(gulp.dest('build/chrome/scripts/'))
         .pipe(gulp.dest('build/firefox/scripts/'));
 
-    del('build/*/scripts/lib/*.js');
+    deleteSync('build/*/scripts/lib/*.js');
 
     gulp.src(['src/scripts/lib/*.js', '!src/scripts/lib/*.test.js'])
         .pipe(gulp.dest('build/chrome/scripts/lib/'))
@@ -97,7 +97,7 @@ gulp.task('js', function(cb) {
 
 // SCSS
 gulp.task('scss', function(cb) {
-    del('build/*/styles/*.css');
+    deleteSync('build/*/styles/*.css');
     gulp.src('src/styles/*.scss')
         .pipe(sass({
             outputStyle: 'expanded'
@@ -161,7 +161,7 @@ gulp.task('build', gulp.series('update-static', 'html', 'js', 'scss'));
 gulp.task('package', gulp.parallel('test', 'build', function (cb) {
     process.env.NODE_ENV = 'test';
 
-    del('build/*.zip');
+    deleteSync('build/*.zip');
 
     // chrome
     gulp.src('build/chrome/**/*')
