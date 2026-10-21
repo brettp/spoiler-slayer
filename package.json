@@ -24,6 +24,7 @@
     "gulp-zip": ">=6.1.0",
     "jest": ">=30.5.2",
     "jshint": ">=2.13.6",
+    "sass": "^1.106.0",
     "sass-loader": ">=7.3.1",
     "standard-version": ">=9.5.0",
     "tiny-lr": ">=2.0.0"
